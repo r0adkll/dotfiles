@@ -90,7 +90,7 @@
       });
 
       systems.hosts.nixpi.modules = with inputs; [
-        nixos-hardware.nixosModules.rapsberry-pi-4
+        nixos-hardware.nixosModules.raspberry-pi-4
       ];
     };
 }
