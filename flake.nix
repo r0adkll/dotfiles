@@ -5,6 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixpkgs-24.05-darwin";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     darwin = {
       url = "github:lnl7/nix-darwin/master";
@@ -77,6 +78,7 @@
       );
     in
     lib.mkFlake {
+      
       channels-config = {
         allowUnfree = true;
       };
@@ -86,5 +88,9 @@
       checks = eachSystem (pkgs: {
         formatting = treefmtEval.${pkgs.system}.config.build.check self;
       });
+
+      systems.hosts.nixpi.modules = with inputs; [
+        nixos-hardware.nixosModules.rapsberry-pi-4
+      ];
     };
 }

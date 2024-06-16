@@ -3,9 +3,9 @@ let
   hostname = "nixpi";
 in {
   
-  imports = [
-    "${builtins.fetchGit { url = "https://github.com/NixOS/nixos-hardware.git"; }}/raspberry-pi/4"
-  ];
+  # imports = [
+  #   "${builtins.fetchGit { url = "https://github.com/NixOS/nixos-hardware.git"; }}/raspberry-pi/4"
+  # ];
 
   boot = {
     kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
