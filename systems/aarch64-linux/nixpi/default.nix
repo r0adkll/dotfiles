@@ -64,7 +64,7 @@ in {
         initialPassword = "pass";
         openssh.authorizedKeys.keys = [ (builtins.readFile keys/dhMBP.pub) ];
       };
-    }
+    };
   };
 
   hardware.enableRedistributableFirmware = true;
