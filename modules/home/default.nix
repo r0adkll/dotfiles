@@ -54,7 +54,7 @@
               repo = "lucid.fish";
               rev = "v1.0";
               sha256 = "0sr35zv6qdj8rnlyvjx56h7lks03bzg5ric624v4xznwx0573j9w";
-            }
+            };
           }
         ];
       };
