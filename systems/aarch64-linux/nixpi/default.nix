@@ -55,15 +55,17 @@ in {
     eternal-terminal.enable = true;
   };
 
-  users = [
-    r0adkll = {
-      isNormalUser = true;
-      extraGroups = [ "wheel" ];
-      shell = pkgs.fish;
-      initialPassword = "pass";
-      openssh.authorizedKeys.keys = [ (builtins.readFile keys/dhMBP.pub) ];
-    };
-  ];
+  users = {
+    users = {
+      r0adkll = {
+        isNormalUser = true;
+        extraGroups = [ "wheel" ];
+        shell = pkgs.fish;
+        initialPassword = "pass";
+        openssh.authorizedKeys.keys = [ (builtins.readFile keys/dhMBP.pub) ];
+      };
+    }
+  };
 
   hardware.enableRedistributableFirmware = true;
 
