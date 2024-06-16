@@ -1,5 +1,5 @@
 {
-  libs,   # Snowfall Lib
+  lib,   # Snowfall Lib
   pkgs,   # nixpgks w/ overlays and packages applied and available
   inputs, # flake inputs
 
@@ -62,5 +62,5 @@
   };
 
   # NEVER change this value after the initial install, for any reason,
-  home.stateVersion = libs.mkDefault "24.05";
+  home.stateVersion = lib.mkDefault "24.05";
 }
