@@ -4,7 +4,7 @@ let
 in {
   
   imports = [
-    "${fetchTarball "https://github.com/NixOS/nixos-hardware/tarball/master"}/raspberry-pi/4"
+    "${builtins.fetchGit { url = "https://github.com/NixOS/nixos-hardware.git"; }}/raspberry-pi/4"
   ];
 
   boot = {
