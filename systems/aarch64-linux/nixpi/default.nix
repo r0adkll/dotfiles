@@ -1,11 +1,11 @@
-{ libs, pkgs, config, ... }:
+{ libs, pkgs, inputs, config, ... }:
 let
   hostname = "nixpi";
 in {
   
-  # imports = [
-  #   "${builtins.fetchGit { url = "https://github.com/NixOS/nixos-hardware.git"; }}/raspberry-pi/4"
-  # ];
+  imports = [
+    inputs.nixos-hardware.nixosModules.raspberry-pi-4
+  ];
 
   boot = {
     kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
@@ -75,6 +75,6 @@ in {
 
   system = {
     # NEVER change this value after the initial install, for any reason,
-    stateVersion = "23.11"; # Did you read the comment?
+    stateVersion = "24.05"; # Did you read the comment?
   };
 }

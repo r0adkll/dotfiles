@@ -89,8 +89,8 @@
         formatting = treefmtEval.${pkgs.system}.config.build.check self;
       });
 
-      systems.hosts.nixpi.modules = with inputs; [
-        nixos-hardware.nixosModules.raspberry-pi-4
-      ];
+      # systems.hosts.nixpi.modules = with inputs; [
+      #   nixos-hardware.nixosModules.raspberry-pi-4
+      # ];
     };
 }
