@@ -67,7 +67,7 @@ in {
         extraGroups = [ "wheel" ];
         shell = pkgs.fish;
         initialPassword = "pass";
-        openssh.authorizedKeys.keys = [ (builtins.readFile ./../keys/dhMBP.pub) ];
+        openssh.authorizedKeys.keys = [ (builtins.readFile ../../keys/dhMBP.pub) ];
       };
     };
   };
