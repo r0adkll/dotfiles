@@ -37,7 +37,6 @@ in
     home = {
       packages = with pkgs; [
         nix-search-cli
-        neovim
         nnn
         fd
         ripgrep
