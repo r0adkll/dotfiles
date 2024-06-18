@@ -73,7 +73,8 @@ in
         linger = true;
         shell = pkgs.fish;
         openssh.authorizedKeys.keys = [ 
-          (builtins.readFile ../../keys/dhMBP.pub) 
+          (builtins.readFile ../../keys/dhMBP.pub)
+          (builtins.readFile ../../keys/dhWIN.pub) 
         ];
       };
 
