@@ -51,12 +51,12 @@
         src = ./.;
 
         snowfall = {
-          meta = {
-            name = "r0adkll";
-            title = "r0adkll Flake";
-          };
-
           namespace = "r0adkll";
+
+          meta = {
+            name = "r0adkll-dotfile-flake";
+            title = "r0adkll's Dotfile Flake";
+          };
         };
       };
 
@@ -88,9 +88,5 @@
       checks = eachSystem (pkgs: {
         formatting = treefmtEval.${pkgs.system}.config.build.check self;
       });
-
-      # systems.hosts.nixpi.modules = with inputs; [
-      #   nixos-hardware.nixosModules.raspberry-pi-4
-      # ];
     };
 }

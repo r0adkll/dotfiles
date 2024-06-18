@@ -20,6 +20,15 @@ in {
     };
   };
 
+  environment.systemPackages = with pkgs; [
+    git
+    git-lfs
+  ];
+
+  hardware.enableRedistributableFirmware = true;
+  time.timeZone = "America/New_York";
+  i18n.defaultLocale = "en_US.UTF-8";
+
   fileSystems = {
     "/" = {
       device = "/dev/disk/by-label/NIXOS_SD";
@@ -33,14 +42,6 @@ in {
     networkmanager.enable = true;
     firewall.enable = false;
   };
-
-  time.timeZone = "America/New_York";
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  environment.systemPackages = with pkgs; [
-    git
-    git-lfs
-  ];
 
   programs = {
     fish.enable = true;
@@ -66,12 +67,10 @@ in {
         extraGroups = [ "wheel" ];
         shell = pkgs.fish;
         initialPassword = "pass";
-        openssh.authorizedKeys.keys = [ (builtins.readFile keys/dhMBP.pub) ];
+        openssh.authorizedKeys.keys = [ (builtins.readFile ../keys/dhMBP.pub) ];
       };
     };
   };
-
-  hardware.enableRedistributableFirmware = true;
 
   system = {
     # NEVER change this value after the initial install, for any reason,

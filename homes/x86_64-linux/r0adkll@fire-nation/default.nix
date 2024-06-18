@@ -28,7 +28,7 @@ with lib.r0adkll;
       common.enable = true;
     };
   };
-    
+
   # Home Configuration
   
 }
