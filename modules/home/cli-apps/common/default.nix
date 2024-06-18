@@ -84,24 +84,23 @@ in
         defaultEditor = true;
         viAlias = true;
         vimAlias = true;
-        configure = {
-          customRC = ''
-            set tabstop=2
-            set softtabstop=-1
-            set shiftwidth=0
-            set shiftround
-            set expandtab
-            
-            set autoindent
-            set smartindent
-            set cindent
-            filetype plugin indent on
-          '';
 
-          packages.myVimPackage = with pkgs.vimPlugins; {
-            start = [ LazyVim ];
-          };
-        };
+        plugins = with pkgs.vimPlugins; [
+          LazyVim
+        ];
+
+        extraConfig = ''
+          set tabstop=2
+          set softtabstop=-1
+          set shiftwidth=0
+          set shiftround
+          set expandtab
+          
+          set autoindent
+          set smartindent
+          set cindent
+          filetype plugin indent on
+        '';
       };
     };
   };
