@@ -130,7 +130,13 @@ in
     };
 
     fish.enable = true;
-    ssh.startAgent = true;
+
+    ssh = {
+      startAgent = true;
+      extraConfig = ''
+        AddKeysToAgent yes
+      '';
+    };
   };
 
   # List services that you want to enable:
