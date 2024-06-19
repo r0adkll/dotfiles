@@ -37,6 +37,11 @@ in
     motd = {
       enable = true;
       bannerText = "FireNation";
+      filesystems = {
+        home = "/mnt/home";
+        cache = "/mnt/cache";
+        cookie-jar = "mnt/cookie-jar";
+      };
     };
   };
 
@@ -121,17 +126,6 @@ in
         };
       };
     };
-
-    # rust-motd = {
-    #   settings = {
-    #     filesystems = {
-    #       root = "/";
-    #       home = "/mnt/home";
-    #       cache = "/mnt/cache";
-    #       cookie-jar = "mnt/cookie-jar";
-    #     };
-    #   };
-    # };
 
     fish.enable = true;
     ssh.startAgent = true;

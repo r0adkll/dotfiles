@@ -22,6 +22,7 @@
 
 let
   inherit (lib) mkEnableOption mkOption mkIf mkDefault;
+  format = pkgs.formats.toml { };
   cfg = config.r0adkll.motd;
 in
 {
@@ -52,6 +53,13 @@ in
           The SHA256 hash of the above URL for the banner font
         '';
       };
+      filesystems = mkOption {
+        default = {};
+        type = lib.types.attrsOf format.type;
+        description = ''
+          filesystem rust-motd attribute set configuration
+        '';
+      }
     };
   };
 
@@ -94,9 +102,9 @@ in
         uptime.prefix = "Up";
         memory.swap_pos = "none";
 
-        filesystems = {
+        filesystems = lib.attrsets.recursiveUpdate {
           root = "/";
-        };
+        } cfg.filesystems;
 
         last_login = builtins.listToAttrs (map (user: {
           name = user;
