@@ -31,6 +31,15 @@ in
     ./file-systems.nix
   ];
 
+  # Local Custom Configurations
+  r0adkll = {
+    # Enable the common CLI module configuration for this Home
+    motd = {
+      enable = true;
+      bannerText = "FireNation";
+    };
+  };
+
   # Bootloader Configuration
   boot = {
     loader = {

@@ -7,6 +7,15 @@ in {
     inputs.nixos-hardware.nixosModules.raspberry-pi-4
   ];
 
+  # Local Custom Configurations
+  r0adkll = {
+    # Enable the common CLI module configuration for this Home
+    motd = {
+      enable = true;
+      bannerText = "NixPi";
+    };
+  };
+
   boot = {
     kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
     kernelParams = [
