@@ -22,7 +22,8 @@
 let
   hostname = "fire-nation";
   zfs_pools = [
-    "scache" # raidz0 SSD Cache - /mnt/cache
+    "scache"        # raidz0 SSD Cache  - /mnt/cache
+    "boiling-rock"  # raidz2 Media Tank - /mnt/media
   ];
 in
 {
@@ -41,6 +42,7 @@ in
       filesystems = {
         home = "/mnt/home";
         cache = "/mnt/cache";
+        media = "/mnt/media";
       };
     };
   };
