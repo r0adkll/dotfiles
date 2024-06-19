@@ -122,6 +122,17 @@ in
       };
     };
 
+    rust-motd = {
+      settings = {
+        filesystems = {
+          root = "/";
+          home = "/mnt/home";
+          cache = "/mnt/cache";
+          cookie-jar = "mnt/cookie-jar";
+        };
+      };
+    };
+
     fish.enable = true;
     ssh.startAgent = true;
   };

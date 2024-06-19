@@ -104,14 +104,15 @@ in
         }) (builtins.attrNames config.home-manager.users));
 
         # Display weather from wttr.in
-        weather = {
-          loc = "Columbia,South Carolina";
-          style = "day"; # oneline|day|full
-          timeout = 5;
-          #url = "https://wttr.in/Columbia,South%20Carolina?format=4";
-          #user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36";
-          #proxy = "http://proxy:8080";
-        };
+        # FIXME: This API is busted at the moment
+        # weather = {
+        #   loc = "Columbia,South Carolina";
+        #   style = "day"; # oneline|day|full
+        #   timeout = 5;
+        #   #url = "https://wttr.in/Columbia,South%20Carolina?format=4";
+        #   #user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36";
+        #   #proxy = "http://proxy:8080";
+        # };
       };
     };
   };
