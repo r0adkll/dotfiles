@@ -40,7 +40,6 @@ in
       filesystems = {
         home = "/mnt/home";
         cache = "/mnt/cache";
-        cookie-jar = "mnt/cookie-jar";
       };
     };
   };
