@@ -22,7 +22,7 @@
 let
   hostname = "fire-nation";
   zfs_pools = [
-    "scache" # raidz0 SSD Cache
+    "scache" # raidz0 SSD Cache - /mnt/cache
   ];
 in
 {

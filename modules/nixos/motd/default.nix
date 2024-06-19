@@ -99,7 +99,7 @@ in
           command = mkDefault "echo ${cfg.bannerText} | ${pkgs.figlet}/bin/figlet -f ${builtins.fetchurl { url = cfg.bannerFontUrl; name = "banner-font.flf"; sha256 = cfg.bannerFontSha256; }}";
         };
 
-        uptime.prefix = "Up";
+        uptime.prefix = "Uptime: ";
         memory.swap_pos = "none";
 
         filesystems = lib.attrsets.recursiveUpdate {
