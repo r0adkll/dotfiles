@@ -94,7 +94,7 @@ in
         uptime.prefix = "Up";
         memory.swap_pos = "none";
 
-        filesystems = mkDefault {
+        filesystems = {
           root = "/";
         };
 
