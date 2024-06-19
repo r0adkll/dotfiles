@@ -33,7 +33,8 @@ in
 
   # Local Custom Configurations
   r0adkll = {
-    # Enable the common CLI module configuration for this Home
+    
+    # Setup the MOTD for this system
     motd = {
       enable = true;
       bannerText = "FireNation";
