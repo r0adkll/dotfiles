@@ -72,7 +72,7 @@ in
         "last_login"
         "filesystems"
         "memory"
-        "weather"
+        # "weather"
       ];
       settings = {
         # Apply to all components
