@@ -123,6 +123,7 @@ in
     };
 
     fish.enable = true;
+    ssh.startAgent = true;
   };
 
   # List services that you want to enable:

@@ -78,7 +78,7 @@ in
         # Apply to all components
         global = {
           progress_full_character = "=";
-          progress_empty_character = "=";
+          progress_empty_character = "-";
           progress_prefix = "[";
           progress_suffix = "]";
           progress_width = lib.mkDefault 40;
