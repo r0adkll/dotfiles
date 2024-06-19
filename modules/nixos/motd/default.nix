@@ -46,7 +46,7 @@ in
         '';
       };
       bannerFontSha256 = mkOption {
-        defult = "18bxisj5164ylwgzf77nvrka16xaz7xny4jqxgwalbi6rw12nycl";
+        default = "18bxisj5164ylwgzf77nvrka16xaz7xny4jqxgwalbi6rw12nycl";
         type = lib.types.str;
         description = ''
           The SHA256 hash of the above URL for the banner font
@@ -93,7 +93,7 @@ in
 
         uptime.prefix = "Up";
         memory.swap_pos = "none";
-        
+
         filesystems = mkDefault {
           root = "/";
         };
