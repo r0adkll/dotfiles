@@ -117,20 +117,6 @@ in
 
   # Program Configurations
   programs = {
-    neovim = {
-      enable = true;
-      defaultEditor = true;
-      viAlias = true;
-      vimAlias = true;
-      configure = {
-        packages.myVimPackage = with pkgs.vimPlugins; {
-          start = [ LazyVim ];
-        };
-      };
-    };
-
-    fish.enable = true;
-
     ssh = {
       startAgent = true;
       extraConfig = ''
