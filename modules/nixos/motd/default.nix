@@ -60,7 +60,7 @@ in
       settings = {
         banner = {
           color = "red";
-          command = "echo ${cfg.bannerText} | ${pkgs.figlet}/bin/figlet -f ${builtins.fetchurl { url = cfg.bannerFontUrl; name = "banner-font"; sha256 = "18bxisj5164ylwgzf77nvrka16xaz7xny4jqxgwalbi6rw12nycl"; }}";
+          command = "echo ${cfg.bannerText} | ${pkgs.figlet}/bin/figlet -f ${builtins.fetchurl { url = cfg.bannerFontUrl; name = "banner-font.flf"; sha256 = "18bxisj5164ylwgzf77nvrka16xaz7xny4jqxgwalbi6rw12nycl"; }}";
         };
         # TODO: Make this an option that systems can override
         # filesystems = {
