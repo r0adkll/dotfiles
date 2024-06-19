@@ -59,7 +59,7 @@ in
         description = ''
           filesystem rust-motd attribute set configuration
         '';
-      }
+      };
     };
   };
 
