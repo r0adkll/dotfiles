@@ -21,7 +21,7 @@
 }:
 
 let
-  inherit (lib) mkEnableOption mkOption mkIf;
+  inherit (lib) mkEnableOption mkOption mkIf mkDefault;
   cfg = config.r0adkll.motd;
 in
 {
@@ -45,6 +45,13 @@ in
           The url to download the figlet font to use
         '';
       };
+      bannerFontSha256 = mkOption {
+        defult = "18bxisj5164ylwgzf77nvrka16xaz7xny4jqxgwalbi6rw12nycl";
+        type = lib.types.str;
+        description = ''
+          The SHA256 hash of the above URL for the banner font
+        '';
+      };
     };
   };
 
@@ -57,17 +64,54 @@ in
 
     programs.rust-motd = {
       enable = true;
+      enableMotdInSSHD = true;
+      order = [
+        "global"
+        "banner"
+        "uptime"
+        "last_login"
+        "filesystems"
+        "memory"
+        "weather"
+      ];
       settings = {
-        banner = {
-          color = "red";
-          command = "echo ${cfg.bannerText} | ${pkgs.figlet}/bin/figlet -f ${builtins.fetchurl { url = cfg.bannerFontUrl; name = "banner-font.flf"; sha256 = "18bxisj5164ylwgzf77nvrka16xaz7xny4jqxgwalbi6rw12nycl"; }}";
+        # Apply to all components
+        global = {
+          progress_full_character = "=";
+          progress_empty_character = "=";
+          progress_prefix = "[";
+          progress_suffix = "]";
+          progress_width = lib.mkDefault 40;
+          time_format = "%Y-%m-%d %H:%M:%S"; # TODO: relative time format?
         };
-        # TODO: Make this an option that systems can override
-        # filesystems = {
-        #   root = "/";
-        #   cache = "/mnt/cache";
-        #   cookie-jar = "/mnt/cookie-jar";
-        # };
+
+        # Banner
+        banner = {
+          color = mkDefault "red";
+          command = mkDefault "echo ${cfg.bannerText} | ${pkgs.figlet}/bin/figlet -f ${builtins.fetchurl { url = cfg.bannerFontUrl; name = "banner-font.flf"; sha256 = cfg.bannerFontSha256; }}";
+        };
+
+        uptime.prefix = "Up";
+        memory.swap_pos = "none";
+        
+        filesystems = mkDefault {
+          root = "/";
+        };
+
+        last_login = builtins.listToAttrs (map (user: {
+          name = user;
+          value = 2;
+        }) (builtins.attrNames config.home-manager.users));
+
+        # Display weather from wttr.in
+        weather = {
+          loc = "Columbia,South Carolina";
+          style = "day"; # oneline|day|full
+          timeout = 5;
+          #url = "https://wttr.in/Columbia,South%20Carolina?format=4";
+          #user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36";
+          #proxy = "http://proxy:8080";
+        };
       };
     };
   };
