@@ -60,7 +60,7 @@ in
       settings = {
         banner = {
           color = "red";
-          command = "echo ${cfg.bannerText} | ${pkgs.figlet}/bin/figlet -f ${builtins.fetchurl { url = config.bannerFontUrl; name = "banner-font"; }}";
+          command = "echo ${cfg.bannerText} | ${pkgs.figlet}/bin/figlet -f ${builtins.fetchurl { url = cfg.bannerFontUrl; name = "banner-font"; }}";
         };
         filesystems = {
           root = "/";
