@@ -117,6 +117,10 @@ in
 
   # Program Configurations
   programs = {
+    # Even though we enable this in r0adkll.cli-apps.common we need to enable here
+    # due to a check on users.users.r0adkll.shell = pkgs.fish;
+    fish.enable = true;
+
     ssh = {
       startAgent = true;
       extraConfig = ''
