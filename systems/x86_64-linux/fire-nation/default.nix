@@ -114,6 +114,7 @@ in
     cifs-utils
     eternal-terminal
     python3
+    docker-compose
   ];
 
   # Program Configurations
@@ -171,6 +172,16 @@ in
         weekly = lib.mkDefault 3;
         monthly = lib.mkDefault 0;
       };
+    };
+  };
+
+  # Virtualization / Docker
+  virtualization.docker = {
+    enable = true;
+
+    rootless = {
+      enable = true;
+      setSocketVariable = true;
     };
   };
 
