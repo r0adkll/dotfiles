@@ -113,6 +113,7 @@ in
     zfs
     cifs-utils
     eternal-terminal
+    python3
   ];
 
   # Program Configurations
