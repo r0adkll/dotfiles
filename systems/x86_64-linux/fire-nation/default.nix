@@ -175,8 +175,8 @@ in
     };
   };
 
-  # Virtualization / Docker
-  virtualization.docker = {
+  # Virtualisation / Docker
+  virtualisation.docker = {
     enable = true;
 
     rootless = {
