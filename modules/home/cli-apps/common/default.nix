@@ -63,6 +63,8 @@ in
         vi = "nvim";
         cat = "bat --style=plain --no-pager";
         ls = "eza -g";
+        lla = "eza -gls";
+        llt = "eza -gT";
         reloadNix = "cd ~ && cd .config/nixos/ && git pull && sudo nixos-rebuild switch && cd ~";
       };
     };
