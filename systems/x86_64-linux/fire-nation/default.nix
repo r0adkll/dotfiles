@@ -114,6 +114,7 @@ in
     cifs-utils
     eternal-terminal
     python3
+    pipx
     docker-compose
   ];
 
