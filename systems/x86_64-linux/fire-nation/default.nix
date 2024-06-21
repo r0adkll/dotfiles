@@ -117,11 +117,6 @@ in
     docker-compose
   ];
 
-  environment.shellAliases = {
-    # This is a convienence alias to shortcut run a poetry2nix python project
-    firelord = "nix run . -- ";
-  };
-
   # Program Configurations
   programs = {
     # Even though we enable this in r0adkll.cli-apps.common we need to enable here

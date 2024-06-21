@@ -30,5 +30,10 @@ with lib.r0adkll;
   };
 
   # Home Configuration
-  
+  home = {
+    shellAliases = {
+      # This is a convienence alias to shortcut run a poetry2nix python project
+      firelord = "nix run ~/.config/home -- ";
+    };
+  };
 }
