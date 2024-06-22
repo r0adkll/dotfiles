@@ -39,6 +39,7 @@ in
     motd = {
       enable = true;
       bannerText = "FireNation";
+      bannerFont = "Fire Font-s.flf";
       filesystems = {
         home = "/mnt/home";
         cache = "/mnt/cache";

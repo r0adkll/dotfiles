@@ -87,7 +87,7 @@ in
         # Banner
         banner = {
           color = mkDefault "red";
-          command = mkDefault "echo ${cfg.bannerText} | ${pkgs.figlet}/bin/figlet -f ${cfg.bannerFont}";
+          command = mkDefault "echo ${cfg.bannerText} | ${pkgs.figlet}/bin/figlet -f \"${cfg.bannerFont}\"";
         };
 
         uptime.prefix = "Uptime: ";

@@ -13,6 +13,7 @@ in {
     motd = {
       enable = true;
       bannerText = "NixPi";
+      bannerFont = "Graffiti.flf";
     };
   };
 
