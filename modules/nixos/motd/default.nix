@@ -37,20 +37,11 @@ in
           The banner text to display in the rust-motd post
         '';
       };
-      # TODO: We should probably just create a custom package for https://github.com/xero/figlet-fonts that lets us
-      #       download and ref the entire library.
-      bannerFontUrl = mkOption {
-        default = "https://raw.githubusercontent.com/xero/figlet-fonts/master/Fire%20Font-s.flf";
+      bannerFont = mkOption {
+        default = "Fire Font-s.flf";
         type = lib.types.str;
         description = ''
-          The url to download the figlet font to use
-        '';
-      };
-      bannerFontSha256 = mkOption {
-        default = "18bxisj5164ylwgzf77nvrka16xaz7xny4jqxgwalbi6rw12nycl";
-        type = lib.types.str;
-        description = ''
-          The SHA256 hash of the above URL for the banner font
+          The name of the font file found in https://github.com/xero/figlet-fonts
         '';
       };
       filesystems = mkOption {
@@ -96,7 +87,7 @@ in
         # Banner
         banner = {
           color = mkDefault "red";
-          command = mkDefault "echo ${cfg.bannerText} | ${pkgs.figlet}/bin/figlet -f ${builtins.fetchurl { url = cfg.bannerFontUrl; name = "banner-font.flf"; sha256 = cfg.bannerFontSha256; }}";
+          command = mkDefault "echo ${cfg.bannerText} | ${pkgs.figlet}/bin/figlet -f ${cfg.bannerFont}";
         };
 
         uptime.prefix = "Uptime: ";
