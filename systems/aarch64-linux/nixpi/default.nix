@@ -33,6 +33,11 @@ in {
   environment.systemPackages = with pkgs; [
     git
     git-lfs
+    python312
+    python312Packages.gpiozero
+    python312Packages.pip
+    python312Packages.setuptools
+    i2c-tools
   ];
 
   hardware.enableRedistributableFirmware = true;
