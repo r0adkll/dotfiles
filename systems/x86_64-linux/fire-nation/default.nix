@@ -116,6 +116,7 @@ in
     eternal-terminal
     python3
     docker-compose
+    htop
   ];
 
   # Program Configurations
