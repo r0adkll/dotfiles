@@ -67,7 +67,9 @@ in
     hostName = "fire-nation";
     hostId = "787059bc";
     defaultGateway = "192.168.1.1";
+    nameservers = [ "192.168.1.1" ];
     useDHCP = lib.mkDefault true;
+    enableIPv6 = false;
   };
 
   # Timezone & Locale
