@@ -74,7 +74,7 @@ in
     firewall = {
       enable = true;
       allowedTCPPorts = [ 80 443 ];
-    }
+    };
   };
 
   # Timezone & Locale
