@@ -91,7 +91,10 @@ in
     defaultSopsFile = "./secret/secrets.yaml";
     defaultSopsFormat = "yaml";
     age.sshKeyPaths = "${config.users.users.r0adkll.home}/.ssh/firenation-sops";
+
     secrets."services/crowdsec/firewall-bouncer-api-key" = { };
+    secrets."samba/cookie-jar" = { };
+
     templates = {
       crowdsec-firewall-bouncer-secrets.content = ''
         CS_FIREWALL_API_KEY=${config.sops.placeholder."services/crowdsec/firewall-bouncer-api-key"}
