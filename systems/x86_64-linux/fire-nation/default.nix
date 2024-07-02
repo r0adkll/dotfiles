@@ -30,6 +30,7 @@ in
   imports = [
     ./hardware-configuration.nix
     ./file-systems.nix
+    inputs.sops-nix.nixosModules.sops
   ];
 
   # Local Custom Configurations
@@ -70,6 +71,10 @@ in
     nameservers = [ "192.168.1.1" ];
     useDHCP = lib.mkDefault true;
     enableIPv6 = false;
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [ 80 443 ];
+    }
   };
 
   # Timezone & Locale
@@ -79,6 +84,19 @@ in
     font = "Lat2-Terminus16";
     keyMap = "us";
     useXkbConfig = false;
+  };
+
+  # SOPS config
+  sops = {
+    defaultSopsFile = "./secret/secrets.yaml";
+    defaultSopsFormat = "yaml";
+    age.sshKeyPaths = "${config.users.users.r0adkll.home}/.ssh/firenation-sops";
+    secrets."services/crowdsec/firewall-bouncer-api-key" = { };
+    templates = {
+      crowdsec-firewall-bouncer-secrets.content = ''
+        CS_FIREWALL_API_KEY=${config.sops.placeholder."services/crowdsec/firewall-bouncer-api-key"}
+      '';
+    };
   };
 
   users = {
@@ -96,17 +114,12 @@ in
           (builtins.readFile ../../keys/dhWIN.pub) 
         ];
       };
-
-      # TODO: Users for Servarr services
-    };
-
-    groups = {
-      # TODO: Group for Servarr services
     };
   };
 
   # System Profile Packages
   environment.systemPackages = with pkgs; [
+    r0adkll.firewall-bouncer
     neovim 
     wget
     git
@@ -138,6 +151,13 @@ in
 
   # List services that you want to enable:
 
+  # Add the template sops secret to the bouncer service so that it can be looked up in the config
+  systemd.services = {
+    crowdsec-firewall-bouncer.serviceConfig = {
+      EnvironmentFile = config.sops.templates.crowdsec-firewall-bouncer-secrets.path;
+    };
+  };
+
   # Enable the OpenSSH daemon.
   services = {
 
@@ -148,6 +168,15 @@ in
         PasswordAuthentication = false;
         KbdInteractiveAuthentication = false;
         PermitRootLogin = "no";
+      };
+    };
+
+    # Crowdsec Firewall Bouncer
+    crowdsec-firewall-bouncer = {
+      enable = true;
+      settings = {
+        api_key = "\${CS_FIREWALL_API_KEY}";
+        api_url = "http://localhost:3002";
       };
     };
 
