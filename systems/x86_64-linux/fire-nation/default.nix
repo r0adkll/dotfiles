@@ -88,7 +88,7 @@ in
 
   # SOPS config
   sops = {
-    defaultSopsFile = "./secret/secrets.yaml";
+    defaultSopsFile = ./secret/secrets.yaml;
     defaultSopsFormat = "yaml";
     age.sshKeyPaths = "${config.users.users.r0adkll.home}/.ssh/firenation-sops";
 
