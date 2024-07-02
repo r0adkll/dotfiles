@@ -119,6 +119,7 @@ in
     python3
     docker-compose
     htop
+    rsync
   ];
 
   # Program Configurations
