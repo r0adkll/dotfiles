@@ -156,7 +156,7 @@ in
 
   # Add the template sops secret to the bouncer service so that it can be looked up in the config
   systemd.services = {
-    firewall-bouncer.serviceConfig = {
+    crowdsec-firewall-bouncer.serviceConfig = {
       EnvironmentFile = config.sops.templates.crowdsec-firewall-bouncer-secrets.path;
     };
   };
@@ -175,7 +175,7 @@ in
     };
 
     # Crowdsec Firewall Bouncer
-    firewall-bouncer = {
+    crowdsec-firewall-bouncer = {
       enable = true;
       settings = {
         api_key = "\${CS_FIREWALL_API_KEY}";
