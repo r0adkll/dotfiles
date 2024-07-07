@@ -54,6 +54,18 @@ in
         "/vscode-server" = "VSCode";
       };
     };
+
+    programs = {
+      nh = {
+        enable = true;
+        flake = "path:/home/r0adkll/.config/nixos";
+        clean = {
+          enable = true;
+          extraArgs = "--keep-since 4d --keep 3";
+        };
+      };
+    };
+
   };
 
   # Bootloader Configuration
