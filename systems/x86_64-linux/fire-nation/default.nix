@@ -46,6 +46,13 @@ in
         cache = "/mnt/cache";
         media = "/mnt/data";
       };
+      dockerContainers = {
+        "/traefik" = "Traefik";
+        "/crowdsec" = "Crowdsec";
+        "/watchtower" = "Watchtower";
+        "/azulon" = "Azulon";
+        "/vscode-server" = "VSCode";
+      };
     };
   };
 
@@ -90,14 +97,24 @@ in
   sops = {
     defaultSopsFile = ./secrets/secrets.yaml;
     defaultSopsFormat = "yaml";
-    age.sshKeyPaths = "${config.users.users.r0adkll.home}/.ssh/firenation-sops";
+    age.sshKeyPaths = [ "${config.users.users.r0adkll.home}/.ssh/firenation-sops" ];
 
     secrets."services/crowdsec/firewall-bouncer-api-key" = { };
     secrets."samba/cookie-jar" = { };
 
     templates = {
-      crowdsec-firewall-bouncer-secrets.content = ''
-        CS_FIREWALL_API_KEY=${config.sops.placeholder."services/crowdsec/firewall-bouncer-api-key"}
+      "crowdsec.yaml".content = ''
+        api_key: ${config.sops.placeholder."services/crowdsec/firewall-bouncer-api-key"}
+        api_url: http://127.0.0.1:3002
+        blacklists_ipv4: crowdsec-blacklists
+        blacklists_ipv6: crowdsec6-blacklists
+        deny_action: DROP
+        ipset_type: nethash
+        iptables_chains:
+        - INPUT
+        log_mode: stdout
+        mode: iptables
+        update_frequency: 10s
       '';
     };
   };
@@ -122,7 +139,7 @@ in
 
   # System Profile Packages
   environment.systemPackages = with pkgs; [
-    r0adkll.firewall-bouncer
+    r0adkll.crowdsec-firewall-bouncer
     neovim 
     wget
     git
@@ -153,15 +170,6 @@ in
   };
 
   # List services that you want to enable:
-
-  # Add the template sops secret to the bouncer service so that it can be looked up in the config
-  systemd.services = {
-    crowdsec-firewall-bouncer.serviceConfig = {
-      EnvironmentFile = config.sops.templates.crowdsec-firewall-bouncer-secrets.path;
-    };
-  };
-
-  # Enable the OpenSSH daemon.
   services = {
 
     # SSH
@@ -177,10 +185,7 @@ in
     # Crowdsec Firewall Bouncer
     crowdsec-firewall-bouncer = {
       enable = true;
-      settings = {
-        api_key = "\${CS_FIREWALL_API_KEY}";
-        api_url = "http://localhost:3002";
-      };
+      settingsFile = config.sops.templates."crowdsec.yaml".path;
     };
 
     # ET

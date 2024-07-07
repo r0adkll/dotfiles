@@ -51,6 +51,13 @@ in
           filesystem rust-motd attribute set configuration
         '';
       };
+      dockerContainers = mkOption {
+        default = {};
+        type = lib.types.attrsOf format.type;
+        description = ''
+          docker rust-motd attribute set configuration
+        '';
+      };
     };
   };
 
@@ -72,6 +79,7 @@ in
         "last_login"
         "filesystems"
         "memory"
+        "docker"
         # "weather"
       ];
       settings = {
@@ -102,6 +110,8 @@ in
           name = user;
           value = 2;
         }) (builtins.attrNames config.home-manager.users));
+
+        docker = cfg.dockerContainers;
 
         # Display weather from wttr.in
         # FIXME: This API is busted at the moment

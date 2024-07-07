@@ -6,7 +6,7 @@
 }: let
   cfg = config.services.crowdsec-firewall-bouncer;
   format = pkgs.formats.yaml {};
-  configFile = format.generate "crowdsec.yaml" cfg.settings;
+  configFile = if (cfg.settingsFile != null) then cfg.settingsFile else format.generate "crowdsec.yaml" cfg.settings;
 
   pkg = cfg.package;
 
@@ -29,13 +29,20 @@
 in {
   options.services.crowdsec-firewall-bouncer = with lib; {
     enable = mkEnableOption "CrowdSec Firewall Bouncer";
-    package = mkPackageOption pkgs "crowdsec-firewall-bouncer" {};
+    package = mkPackageOption pkgs.r0adkll "crowdsec-firewall-bouncer" {};
     settings = mkOption {
       description = mdDoc ''
         Settings for CrowdSec Firewall Bouncer. Refer to <https://docs.crowdsec.net/u/bouncers/firewall/#configuration-directives> for details.
       '';
       type = format.type;
       default = {};
+    };
+    settingsFile = mkOption {
+      description = ''
+        File path for Settings for CrowdSec Firewall Bouncer. Refer to <https://docs.crowdsec.net/u/bouncers/firewall/#configuration-directives> for details.
+      '';
+      type = types.nullOr types.path;
+      default = null;
     };
   };
   config = lib.mkIf (cfg.enable) {
