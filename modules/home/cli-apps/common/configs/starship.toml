@@ -151,17 +151,17 @@ format = '[ $symbol ($version) ]($style)'
 
 [nix_shell]
 symbol = " "
-style = "bg:#5277c3"
+style = "bg:#86BBD8"
 format = '[ $symbol ($version) ]($style)'
 
 [package]
 symbol = "󰏗 "
-style = "bg:#5277c3"
+style = "bg:#86BBD8"
 format = '[ $symbol ($version) ]($style)'
 
 [python]
 symbol = " "
-style = "bg:#5277c3"
+style = "bg:#86BBD8"
 format = '[ $symbol ($version) ]($style)'
 
 [rust]
