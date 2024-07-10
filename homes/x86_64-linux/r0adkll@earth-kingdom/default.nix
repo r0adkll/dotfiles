@@ -38,21 +38,14 @@ with lib.r0adkll;
     shellAliases = {
       
     };
+  };
 
-    programs = {
-      
-      # 1Password
-      _1password.enable = true;
-      _1password-gui = {
-        enable = true;
-        polkitPolicyOwners = [ "r0adkll" ];
-      };
+  programs = {
 
-      # VSCode
-      vscode = {
-        enable = true;
-        package = pkgs.vscode.fhs;
-      };
+    # VSCode
+    vscode = {
+      enable = true;
+      package = pkgs.vscode.fhs;
     };
   };
 }

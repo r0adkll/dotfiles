@@ -150,5 +150,12 @@ in
         AddKeysToAgent yes
       '';
     };
+
+    # 1Password
+    _1password.enable = true;
+    _1password-gui = {
+      enable = true;
+      polkitPolicyOwners = [ "r0adkll" ];
+    };
   };
 }
