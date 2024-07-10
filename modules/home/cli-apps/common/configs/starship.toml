@@ -5,9 +5,11 @@ format = """
 [](#9A348E)\
 $os\
 $username\
-[](bg:#DA627D fg:#9A348E)\
+[](fg:#9A348E bg:#DA627D)\
+$hostname\
+[](fg:#DA627D bg:#33658A)\
 $directory\
-[](fg:#DA627D bg:#FCA17D)\
+[](fg:#33658A bg:#FCA17D)\
 $git_branch\
 $git_status\
 [](fg:#FCA17D bg:#86BBD8)\
@@ -26,9 +28,7 @@ $rust\
 $scala\
 [](fg:#86BBD8 bg:#06969A)\
 $docker_context\
-[](fg:#06969A bg:#33658A)\
-$time\
-[ ](fg:#33658A)\
+[ ](fg:#06969A)\
 """
 
 # Disable the blank line at the start of the prompt
@@ -43,18 +43,24 @@ style_root = "bg:#9A348E"
 format = '[$user ]($style)'
 disabled = false
 
+[hostname]
+ssh_only = true
+style = "bg:#DA627D"
+format = "[$hostname ]($style)"
+disabled = false
+
 # An alternative to the username module which displays a symbol that
 # represents the current operating system
 [os]
 style = "bg:#9A348E"
-disabled = true # Disabled by default
+disabled = false # Disabled by default
 
 [os.symbols]
 Android = " "
 NixOS = " "
 
 [directory]
-style = "bg:#DA627D"
+style = "bg:#33658A"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
