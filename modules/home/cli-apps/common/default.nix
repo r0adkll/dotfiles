@@ -1,30 +1,29 @@
 {
-    # Snowfall Lib provides a customized `lib` instance with access to your flake's library
-    # as well as the libraries available from your flake's inputs.
-    lib,
-    # An instance of `pkgs` with your overlays and packages applied is also available.
-    pkgs,
-    # You also have access to your flake's inputs.
-    inputs,
+# Snowfall Lib provides a customized `lib` instance with access to your flake's library
+# as well as the libraries available from your flake's inputs.
+lib,
+# An instance of `pkgs` with your overlays and packages applied is also available.
+pkgs,
+# You also have access to your flake's inputs.
+inputs,
 
-    # Additional metadata is provided by Snowfall Lib.
-    namespace, # The namespace used for your flake, defaulting to "internal" if not set.
-    system, # The system architecture for this host (eg. `x86_64-linux`).
-    target, # The Snowfall Lib target for this system (eg. `x86_64-iso`).
-    format, # A normalized name for the system target (eg. `iso`).
-    virtual, # A boolean to determine whether this system is a virtual target using nixos-generators.
-    systems, # An attribute map of your defined hosts.
+# Additional metadata is provided by Snowfall Lib.
+namespace
+, # The namespace used for your flake, defaulting to "internal" if not set.
+system, # The system architecture for this host (eg. `x86_64-linux`).
+target, # The Snowfall Lib target for this system (eg. `x86_64-iso`).
+format, # A normalized name for the system target (eg. `iso`).
+virtual
+, # A boolean to determine whether this system is a virtual target using nixos-generators.
+systems, # An attribute map of your defined hosts.
 
-    # All other arguments come from the module system.
-    config,
-    ...
-}:
+# All other arguments come from the module system.
+config, ... }:
 
 let
   inherit (lib) mkEnableOption mkIf;
   cfg = config.r0adkll.cli-apps.common;
-in
-{
+in {
   # Module Options
   options = {
     r0adkll.cli-apps.common = {
@@ -34,9 +33,13 @@ in
 
   # Configure this module for common CLI configurations
   config = mkIf cfg.enable {
+
     home = {
       packages = with pkgs; [
         nix-search-cli
+        neofetch
+        neovim
+        helix
         nnn
         fd
         ripgrep
@@ -51,12 +54,8 @@ in
         delta
         gh
         eza
+        (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
       ];
-
-      sessionVariables = {
-        EDITOR = "nvim";
-        VISUAL = "nvim";
-      };
 
       shellAliases = {
         lg = "lazygit";
@@ -65,9 +64,11 @@ in
         ls = "eza -g";
         lla = "eza -gls";
         llt = "eza -gT";
-        reloadNix = "cd ~ && cd .config/nixos/ && git pull && sudo nixos-rebuild switch && cd ~";
+        reloadNix = "cd ~/.config/nixos/ && git pull && nh os switch && cd ~";
       };
     };
+
+    fonts.fontconfig.enable = true;
 
     programs = {
       fish = {
@@ -75,34 +76,61 @@ in
         interactiveShellInit = ''
           set fish_greeting
         '';
-        
+
         plugins = [
           # TODO - Find some good fish plugins!
         ];
       };
 
-      neovim = {
+      starship = {
+        enable = true;
+        enableFishIntegration = true;
+        enableTransience = true;
+
+        settings = {
+          format = "$all";
+
+          username = {
+            ssh_only = false;
+            detect_env_vars = ["!TMUX" "SSH_CONNECTION"];
+            disabled = false;
+          };
+        };
+      };
+
+      helix = {
         enable = true;
         defaultEditor = true;
-        viAlias = true;
-        vimAlias = true;
 
-        plugins = with pkgs.vimPlugins; [
-          LazyVim
+        settings = {
+          theme = "onedark";
+
+          editor.cursor-shape = {
+            normal = "block";
+            insert = "bar";
+            select = "underline";
+          };
+
+          whitespace.render = "all";
+          whitespace.characters = {
+            # space = "·";
+            nbsp = "⍽";
+            tab = "→";
+            newline = "⤶";
+          };
+        };
+
+        languages.language = [
+          {
+            name = "nix";
+            auto-format = true;
+            formatter.command = "${pkgs.nixfmt}/bin/nixfmt";
+          }
+          {
+            name = "python";
+            auto-format = false;
+          }
         ];
-
-        extraConfig = ''
-          set tabstop=2
-          set softtabstop=-1
-          set shiftwidth=0
-          set shiftround
-          set expandtab
-          
-          set autoindent
-          set smartindent
-          set cindent
-          filetype plugin indent on
-        '';
       };
     };
   };

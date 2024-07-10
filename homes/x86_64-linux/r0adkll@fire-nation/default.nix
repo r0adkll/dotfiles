@@ -31,6 +31,10 @@ with lib.r0adkll;
 
   # Home Configuration
   home = {
+    packages = with pkgs; [
+      kitty
+    ];
+
     shellAliases = {
       # This is a convienence alias to shortcut run a poetry2nix python project
       firelord = "nix run /home/r0adkll/.config/home -- ";

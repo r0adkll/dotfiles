@@ -65,7 +65,6 @@ in
         };
       };
     };
-
   };
 
   # Bootloader Configuration
@@ -152,7 +151,6 @@ in
   # System Profile Packages
   environment.systemPackages = with pkgs; [
     r0adkll.crowdsec-firewall-bouncer
-    neovim 
     wget
     git
     git-lfs
@@ -164,6 +162,7 @@ in
     python3
     docker-compose
     htop
+    iotop
     rsync
   ];
 
