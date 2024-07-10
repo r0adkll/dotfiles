@@ -24,6 +24,8 @@ $kotlin\
 $julia\
 $nodejs\
 $nim\
+$package\
+$python\
 $rust\
 $scala\
 [](fg:#86BBD8 bg:#06969A)\
@@ -149,6 +151,16 @@ format = '[ $symbol ($version) ]($style)'
 
 [nix_shell]
 symbol = " "
+style = "bg:#5277c3"
+format = '[ $symbol ($version) ]($style)'
+
+[package]
+symbol = "󰏗 "
+style = "bg:#5277c3"
+format = '[ $symbol ($version) ]($style)'
+
+[python]
+symbol = " "
 style = "bg:#5277c3"
 format = '[ $symbol ($version) ]($style)'
 
