@@ -33,6 +33,12 @@ $docker_context\
 [ ](fg:#06969A)\
 """
 
+right_format = """
+[](#33658A)\
+$time\
+[](#33658A)\
+"""
+
 # Disable the blank line at the start of the prompt
 # add_newline = false
 
