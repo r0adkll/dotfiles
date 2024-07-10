@@ -83,7 +83,7 @@ in
 
   # Networking Configuration
   networking = {
-    hostName = "fire-nation";
+    hostName = hostname;
     hostId = "787059bc";
     defaultGateway = "192.168.1.1";
     nameservers = [ "192.168.1.1" ];
@@ -143,6 +143,7 @@ in
         openssh.authorizedKeys.keys = [ 
           (builtins.readFile ../../keys/dhMBP.pub)
           (builtins.readFile ../../keys/dhWIN.pub) 
+          (builtins.readFile ../../keys/dhEK.pub) 
         ];
       };
     };
