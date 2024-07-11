@@ -77,7 +77,8 @@ in {
 
     fonts.fontconfig.enable = true;
 
-    xdg.configFile."starship.toml".source = cfg.starshipConfig;
+    # Alternative to the fromTOML (readFile ...) below
+    # xdg.configFile."starship.toml".source = cfg.starshipConfig;
 
     programs = {
       fish = {
@@ -95,6 +96,7 @@ in {
         enable = true;
         enableFishIntegration = true;
         enableTransience = true;
+        settings = builtins.fromTOML (builtins.readFile cfg.starshipConfig);
       };
 
       helix = {
