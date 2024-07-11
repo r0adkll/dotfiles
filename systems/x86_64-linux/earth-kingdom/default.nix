@@ -54,6 +54,15 @@ in
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # SOPS config
+  sops = {
+    defaultSopsFile = ./secrets/secrets.yaml;
+    defaultSopsFormat = "yaml";
+    age.sshKeyPaths = [ "${config.users.users.r0adkll.home}/.ssh/id_ed25519" ];
+
+    secrets."samba/cookie-jar" = { };
+  };
+
   # Set your time zone.
   time.timeZone = "America/New_York";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -79,6 +88,7 @@ in
     firewall.enable = false;
     networkmanager.enable = true;
   };
+  
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;

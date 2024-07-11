@@ -29,10 +29,21 @@ with lib.r0adkll;
     };
   };
 
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+      allowUnfreePredicate = (_: true);
+    };
+  };
+
   # Home Configuration
   home = {
     packages = with pkgs; [
       kitty
+      discord
+      orca-slicer
+      bambu-studio
+      prusa-slicer
     ];
 
     shellAliases = {

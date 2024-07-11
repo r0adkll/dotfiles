@@ -103,13 +103,13 @@ in {
             select = "underline";
           };
 
-          whitespace.render = "all";
-          whitespace.characters = {
-            # space = "·";
-            nbsp = "⍽";
-            tab = "→";
-            newline = "⤶";
-          };
+          # whitespace.render = "all";
+          # whitespace.characters = {
+          #   # space = "·";
+          #   nbsp = "⍽";
+          #   tab = "→";
+          #   newline = "⤶";
+          # };
         };
 
         languages.language = [
