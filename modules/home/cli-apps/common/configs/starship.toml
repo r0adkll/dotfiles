@@ -1,24 +1,18 @@
 # Get editor completions based on the config schema
 "$schema" = 'https://starship.rs/config-schema.json'
 
- 	#61210f 	(97,33,15)
-	#ea2b1f 	(234,43,31)
-	#edae49 	(237,174,73)
-	#f9df74 	(249,223,116)
-	#f9edcc
-
 format = """
-[](#61210f)\
+[](plum)\
 $os\
 $username\
-[](fg:#61210f bg:#ea2b1f)\
+[](fg:plum bg:darkest_red)\
 $hostname\
-[](fg:#ea2b1f bg:#edae49)\
+[](fg:darkest_red bg:darker_red)\
 $directory\
-[](fg:#edae49 bg:#f9df74)\
+[](fg:darker_red bg:red)\
 $git_branch\
 $git_status\
-[](fg:#f9df74 bg:#f9edcc)\
+[](fg:red bg:orange)\
 $c\
 $elixir\
 $elm\
@@ -34,16 +28,27 @@ $package\
 $python\
 $rust\
 $scala\
-[](fg:#f9edcc bg:#fff)\
+[](fg:orange bg:yelorange)\
 $docker_context\
-[ ](fg:#fff)\
+[ ](fg:yelorange)\
 """
 
 right_format = """
-[](#33658A)\
+[](peach)\
 $time\
-[](#33658A)\
+[](peach)\
 """
+
+palette = 'firenation'
+
+[palettes.firenation]
+peach = '#eba566'
+yelorange = '#e67b33'
+orange = '#da3c14'
+red = '#cc1b07'
+darker_red = '#96160b'
+darkest_red = '#550f0a'
+plum = '#39211c'
 
 # Disable the blank line at the start of the prompt
 # add_newline = false
@@ -52,14 +57,14 @@ $time\
 # and use the os module below
 [username]
 show_always = true
-style_user = "bg:#61210f"
-style_root = "bg:#61210f"
+style_user = "bg:plum"
+style_root = "bg:plum"
 format = '[$user ]($style)'
 disabled = false
 
 [hostname]
 ssh_only = true
-style = "bg:#ea2b1f"
+style = "bg:darkest_red"
 ssh_symbol = "󰒋"
 format = "[ $ssh_symbol $hostname ]($style)"
 disabled = false
@@ -67,7 +72,7 @@ disabled = false
 # An alternative to the username module which displays a symbol that
 # represents the current operating system
 [os]
-style = "bg:#61210f"
+style = "bg:plum"
 disabled = false # Disabled by default
 
 [os.symbols]
@@ -75,7 +80,7 @@ Android = " "
 NixOS = " "
 
 [directory]
-style = "bg:#edae49"
+style = "bg:darker_red"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
@@ -94,100 +99,100 @@ truncation_symbol = "…/"
 # "Important 󰈙 " = " 󰈙 "
 
 [c]
-symbol = " "
-style = "bg:#f9edcc"
+symbol = ""
+style = "bg:orange"
 format = '[ $symbol ($version) ]($style)'
 
 [docker_context]
-symbol = " "
-style = "bg:#fff"
+symbol = ""
+style = "bg:yelorange"
 format = '[ $symbol $context ]($style)'
 
 [elixir]
-symbol = " "
-style = "bg:#f9edcc"
+symbol = ""
+style = "bg:orange"
 format = '[ $symbol ($version) ]($style)'
 
 [elm]
-symbol = " "
-style = "bg:#f9edcc"
+symbol = ""
+style = "bg:orange"
 format = '[ $symbol ($version) ]($style)'
 
 [git_branch]
 symbol = ""
-style = "bg:#f9df74"
+style = "bg:red"
 format = '[ $symbol $branch ]($style)'
 
 [git_status]
-style = "bg:#f9df74"
+style = "bg:red"
 format = '[$all_status$ahead_behind ]($style)'
 
 [golang]
-symbol = " "
-style = "bg:#f9edcc"
+symbol = ""
+style = "bg:orange"
 format = '[ $symbol ($version) ]($style)'
 
 [gradle]
-style = "bg:#f9edcc"
+style = "bg:orange"
 format = '[ $symbol ($version) ]($style)'
 
 [haskell]
-symbol = " "
-style = "bg:#f9edcc"
+symbol = ""
+style = "bg:orange"
 format = '[ $symbol ($version) ]($style)'
 
 [java]
-symbol = " "
-style = "bg:#f9edcc"
+symbol = ""
+style = "bg:orange"
 format = '[ $symbol ($version) ]($style)'
 
 [kotlin]
-symbol = " "
-style = "bg:#f9edcc"
+symbol = ""
+style = "bg:orange"
 format = '[ $symbol ($version) ]($style)'
 
 [julia]
-symbol = " "
-style = "bg:#f9edcc"
+symbol = ""
+style = "bg:orange"
 format = '[ $symbol ($version) ]($style)'
 
 [nodejs]
 symbol = ""
-style = "bg:#f9edcc"
+style = "bg:orange"
 format = '[ $symbol ($version) ]($style)'
 
 [nim]
-symbol = "󰆥 "
-style = "bg:#f9edcc"
+symbol = "󰆥"
+style = "bg:orange"
 format = '[ $symbol ($version) ]($style)'
 
 [nix_shell]
-symbol = " "
-style = "bg:#f9edcc"
+symbol = ""
+style = "bg:orange"
 format = '[ $symbol ($version) ]($style)'
 
 [package]
-symbol = "󰏗 "
-style = "bg:#f9edcc"
+symbol = "󰏗"
+style = "bg:orange"
 format = '[ $symbol ($version) ]($style)'
 
 [python]
-symbol = " "
-style = "bg:#f9edcc"
+symbol = ""
+style = "bg:orange"
 format = '[ $symbol ($version) ]($style)'
 
 [rust]
 symbol = ""
-style = "bg:#f9edcc"
+style = "bg:orange"
 format = '[ $symbol ($version) ]($style)'
 
 [scala]
-symbol = " "
-style = "bg:#f9edcc"
+symbol = ""
+style = "bg:orange"
 format = '[ $symbol ($version) ]($style)'
 
 [time]
 disabled = false
 time_format = "%R" # Hour:Minute Format
-style = "bg:#33658A"
-format = '[ ♥ $time ]($style)'
+style = "bg:peach"
+format = '[  $time ]($style)'
