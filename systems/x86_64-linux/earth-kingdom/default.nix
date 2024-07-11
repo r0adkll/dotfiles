@@ -149,6 +149,7 @@ in
     git
     git-lfs
     gh
+    cifs-utils
   ];
 
   # Program configuration

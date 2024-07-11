@@ -21,13 +21,20 @@ systems, # An attribute map of your defined hosts.
 config, ... }:
 
 let
-  inherit (lib) mkEnableOption mkIf;
+  inherit (lib) mkEnableOption mkOption mkIf;
   cfg = config.r0adkll.cli-apps.common;
 in {
   # Module Options
   options = {
     r0adkll.cli-apps.common = {
       enable = mkEnableOption "Enable Common CLI module";
+      starshipConfig = mkOption {
+        default = ./configs/starship.toml;
+        type = lib.types.path;
+        description = ''
+          Starship.rs Prompt Configuration File
+        '';
+      };
     };
   };
 
@@ -70,7 +77,7 @@ in {
 
     fonts.fontconfig.enable = true;
 
-    xdg.configFile."starship.toml".source = ./configs/starship.toml;
+    xdg.configFile."starship.toml".source = cfg.starshipConfig;
 
     programs = {
       fish = {

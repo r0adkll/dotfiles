@@ -39,16 +39,9 @@ $time\
 [](time)\
 """
 
-palette = 'firenation'
+palette = 'earthkingdom'
 
-[palettes.firenation]
-time = '#eba566'
-dockerctx = '#e67b33'
-langs = '#da3c14'
-git = '#cc1b07'
-dir = '#96160b'
-host = '#550f0a'
-name = '#38101a'
+[palettes.earthkingdom]
 
 # Disable the blank line at the start of the prompt
 # add_newline = false
@@ -153,7 +146,7 @@ format = '[ $symbol ($version) ]($style)'
 
 [julia]
 symbol = ""
-style = "bg:langs"
+style = "bg:orangyellangse"
 format = '[ $symbol ($version) ]($style)'
 
 [nodejs]

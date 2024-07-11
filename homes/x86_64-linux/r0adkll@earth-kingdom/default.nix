@@ -26,6 +26,7 @@ with lib.r0adkll;
     # Enable the common CLI module configuration for this Home
     cli-apps = {
       common.enable = true;
+      common.starshipConfig = ./configs/starship.toml;
     };
   };
 
