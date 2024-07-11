@@ -103,23 +103,7 @@ in {
         enable = true;
         defaultEditor = true;
 
-        settings = {
-          theme = "onedark";
-
-          editor.cursor-shape = {
-            normal = "block";
-            insert = "bar";
-            select = "underline";
-          };
-
-          # whitespace.render = "all";
-          # whitespace.characters = {
-          #   # space = "·";
-          #   nbsp = "⍽";
-          #   tab = "→";
-          #   newline = "⤶";
-          # };
-        };
+        settings = builtins.fromTOML (builtins.readFile ./configs/helix.toml);
 
         languages.language = [
           {
