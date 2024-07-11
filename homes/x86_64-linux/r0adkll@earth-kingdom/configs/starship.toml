@@ -42,6 +42,13 @@ $time\
 palette = 'earthkingdom'
 
 [palettes.earthkingdom]
+time = '#631e17'
+dockerctx = '#d3eed3'
+langs = '#93d4b5'
+git = '#5fb391'
+dir = '#618c70'
+host = '#677255'
+name = '#78482a'
 
 # Disable the blank line at the start of the prompt
 # add_newline = false
@@ -56,10 +63,10 @@ format = '[$user ]($style)'
 disabled = false
 
 [hostname]
-ssh_only = true
+ssh_only = false
 style = "bg:host"
 ssh_symbol = "󰒋"
-format = "[ $ssh_symbol $hostname ]($style)"
+format = "[ $hostname ]($style)"
 disabled = false
 
 # An alternative to the username module which displays a symbol that
