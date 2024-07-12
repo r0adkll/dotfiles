@@ -35,7 +35,6 @@ with lib.r0adkll; {
     ];
 
     shellAliases = {
-
     };
   };
 }
