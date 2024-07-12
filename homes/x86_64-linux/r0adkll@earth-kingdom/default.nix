@@ -47,8 +47,7 @@ with lib.r0adkll; {
     ];
 
     shellAliases = {
-      renix =
-        "pushd $HOME/.config/nixos & git pull --rebase & nh os switch & popd";
+
     };
   };
 

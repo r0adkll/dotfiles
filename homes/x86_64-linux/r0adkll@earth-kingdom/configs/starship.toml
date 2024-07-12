@@ -82,7 +82,7 @@ NixOS = " "
 [directory]
 style = "bg:dir"
 format = "[ $path ]($style)"
-truncation_length = 3
+truncation_length = 2
 truncation_symbol = "…/"
 
 # Here is how you can shorten some long paths by text replacement

@@ -49,6 +49,7 @@ in {
         helix
         nnn
         fd
+        fzf
         ripgrep
         bat
         curl
@@ -71,7 +72,8 @@ in {
         ls = "eza -g";
         lla = "eza -gls";
         llt = "eza -gT";
-        reloadNix = "cd ~/.config/nixos/ && git pull && nh os switch && cd ~";
+        reloadNix =
+          "pushd ~/.config/nixos/ && git pull --rebase && nh os switch && popd";
       };
     };
 
@@ -88,7 +90,14 @@ in {
         '';
 
         plugins = [
-          # TODO - Find some good fish plugins!
+          {
+            name = "fzf-fish";
+            src = pkgs.fishPlugins.fzf-fish.src;
+          }
+          {
+            name = "colored-man-pages";
+            src = pkgs.fishPlugins.colored-man-pages.src;
+          }
         ];
       };
 
