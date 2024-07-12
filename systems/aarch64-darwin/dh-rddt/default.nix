@@ -4,6 +4,7 @@
     config,
     ...
 }:
+with lib.r0adkll;
 {
 
   r0adkll = {
@@ -18,7 +19,6 @@
       };
     };
   };
-
 
   homebrew = {
     casks = [

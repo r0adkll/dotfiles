@@ -59,7 +59,7 @@ in
     ];
 
     environment = lib.mkIf cfg.enable {
-      systemPackages = with pkgs; [ custom.nh ];
+      systemPackages = with pkgs; [ r0adkll.nh ];
       variables = {
         FLAKE = cfg.flake;
       };
@@ -68,7 +68,7 @@ in
     launchd = lib.mkIf cfg.clean.enable {
       agents = {
         nh-clean = {
-          command = "exec ${lib.getExe pkgs.custom.nh} clean all ${cfg.clean.extraArgs}";
+          command = "exec ${lib.getExe pkgs.r0adkll.nh} clean all ${cfg.clean.extraArgs}";
           serviceConfig = {
             StartInterval = 604800; # Weekly
           };

@@ -54,7 +54,7 @@
           namespace = "r0adkll";
 
           meta = {
-            name = "r0adkll";
+            name = "r0adkll-dotfile-flake";
             title = "r0adkll's Dotfile Flake";
           };
         };
