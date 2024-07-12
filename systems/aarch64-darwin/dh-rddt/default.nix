@@ -22,10 +22,6 @@
 with lib.r0adkll;
 {
   r0adkll = {
-    environments = {
-      common.enable = true;
-    };
-
     programs = {
       nh = {
         enable = true;
