@@ -1,0 +1,203 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+[╭](name)\
+$os\
+$username\
+[](fg:name bg:host)\
+[  ](bg:host fg:host_text)\
+[](fg:host bg:dir)\
+$directory\
+[](fg:dir bg:git)\
+$git_branch\
+$git_status\
+[](fg:git bg:langs)\
+$c\
+$elixir\
+$elm\
+$golang\
+$gradle\
+$haskell\
+$java\
+$kotlin\
+$julia\
+$nodejs\
+$nim\
+$package\
+$python\
+$rust\
+$scala\
+[](fg:langs bg:dockerctx)\
+$time\
+[ ](fg:dockerctx)
+[╰─⚡](fg:name)
+"""
+
+palette = 'reddit'
+
+[palettes.reddit]
+time = '#aeef0f'
+dockerctx = '#aeef0f'
+langs = '#ff5fc2'
+git = '#00e2b7'
+dir = '#9494ff'
+host = '#ff8864'
+name = '#ff4500'
+time_text = '#000000'
+dockerctx_text = '#000000'
+langs_text = '#000000'
+git_text = '#000000'
+dir_text = '#000000'
+host_text = '#000000'
+name_text = '#ffffff'
+
+# Disable the blank line at the start of the prompt
+# add_newline = false
+
+# You can also replace your username with a neat symbol like   or disable this
+# and use the os module below
+[username]
+show_always = true
+style_user = "bg:name fg:name_text"
+style_root = "bg:name fg:name_text"
+format = '[$user ]($style)'
+disabled = false
+aliases = { "drew.heavner" = "r0adkll" }
+
+[hostname]
+ssh_only = false
+style = "bg:host fg:host_text"
+ssh_symbol = ""
+format = "[  ]($style)"
+disabled = false
+
+# An alternative to the username module which displays a symbol that
+# represents the current operating system
+[os]
+style = "bg:name fg:name_text"
+disabled = false # Disabled by default
+
+[os.symbols]
+Android = " "
+NixOS = " "
+Macos = " "
+
+[directory]
+style = "bg:dir fg:dir_text"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+# Here is how you can shorten some long paths by text replacement
+# similar to mapped_locations in Oh My Posh:
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
+# Keep in mind that the order matters. For example:
+# "Important Documents" = " 󰈙 "
+# will not be replaced, because "Documents" was already substituted before.
+# So either put "Important Documents" before "Documents" or use the substituted version:
+# "Important 󰈙 " = " 󰈙 "
+
+[c]
+symbol = ""
+style = "bg:langs fg:langs_text"
+format = '[ $symbol ($version) ]($style)'
+
+[docker_context]
+symbol = ""
+style = "bg:dockerctx fg:docker_text"
+format = '[ $symbol $context ]($style)'
+
+[elixir]
+symbol = ""
+style = "bg:langs fg:langs_text"
+format = '[ $symbol ($version) ]($style)'
+
+[elm]
+symbol = ""
+style = "bg:langs fg:langs_text"
+format = '[ $symbol ($version) ]($style)'
+
+[git_branch]
+symbol = ""
+style = "bg:git fg:git_text"
+format = '[ $symbol $branch ]($style)'
+
+[git_status]
+style = "bg:git fg:git_text"
+format = '[$all_status$ahead_behind ]($style)'
+
+[golang]
+symbol = ""
+style = "bg:langs fg:langs_text"
+format = '[ $symbol ($version) ]($style)'
+
+[gradle]
+style = "bg:langs fg:langs_text"
+format = '[ $symbol ($version) ]($style)'
+
+[haskell]
+symbol = ""
+style = "bg:langs fg:langs_text"
+format = '[ $symbol ($version) ]($style)'
+
+[java]
+symbol = ""
+style = "bg:langs fg:langs_text"
+format = '[ $symbol ($version) ]($style)'
+
+[kotlin]
+symbol = ""
+style = "bg:langs fg:langs_text"
+format = '[ $symbol ($version) ]($style)'
+
+[julia]
+symbol = ""
+style = "bg:langs fg:langs_text"
+format = '[ $symbol ($version) ]($style)'
+
+[nodejs]
+symbol = ""
+style = "bg:langs fg:langs_text"
+format = '[ $symbol ($version) ]($style)'
+
+[nim]
+symbol = "󰆥"
+style = "bg:langs fg:langs_text"
+format = '[ $symbol ($version) ]($style)'
+
+[nix_shell]
+symbol = ""
+style = "bg:langs fg:langs_text"
+format = '[ $symbol ($version) ]($style)'
+
+[package]
+symbol = "󰏗"
+style = "bg:langs fg:langs_text"
+format = '[ $symbol ($version) ]($style)'
+
+[python]
+symbol = ""
+style = "bg:langs fg:langs_text"
+format = '[ $symbol ($version) ]($style)'
+
+[rust]
+symbol = ""
+style = "bg:langs fg:langs_text"
+format = '[ $symbol ($version) ]($style)'
+
+[scala]
+symbol = ""
+style = "bg:langs fg:langs_text"
+format = '[ $symbol ($version) ]($style)'
+
+[time]
+disabled = false
+use_12hr = true
+time_format = "%l:%M %P" # Hour:Minute Format
+style = "bg:time fg:time_text"
+format = '[ $time]($style)'
