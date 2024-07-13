@@ -2,7 +2,7 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
-[](name)\
+[╭](name)\
 $os\
 $username\
 [](fg:name bg:host)\
@@ -29,14 +29,9 @@ $python\
 $rust\
 $scala\
 [](fg:langs bg:dockerctx)\
-$docker_context\
-[ ](fg:dockerctx)\
-"""
-
-right_format = """
-[](time)\
 $time\
-[](time)\
+[ ](fg:dockerctx)
+[╰─⚡](fg:name)
 """
 
 palette = 'earthkingdom'
@@ -193,6 +188,7 @@ format = '[ $symbol ($version) ]($style)'
 
 [time]
 disabled = false
-time_format = "%R" # Hour:Minute Format
+use_12hr = true
+time_format = "%l:%M %P" # Hour:Minute Format
 style = "bg:time"
-format = '[  $time ]($style)'
+format = '[ $time]($style)'
