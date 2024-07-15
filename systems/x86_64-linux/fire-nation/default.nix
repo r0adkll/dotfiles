@@ -1,32 +1,31 @@
 {
-    # Snowfall Lib provides a customized `lib` instance with access to your flake's library
-    # as well as the libraries available from your flake's inputs.
-    lib,
-    # An instance of `pkgs` with your overlays and packages applied is also available.
-    pkgs,
-    # You also have access to your flake's inputs.
-    inputs,
+# Snowfall Lib provides a customized `lib` instance with access to your flake's library
+# as well as the libraries available from your flake's inputs.
+lib,
+# An instance of `pkgs` with your overlays and packages applied is also available.
+pkgs,
+# You also have access to your flake's inputs.
+inputs,
 
-    # Additional metadata is provided by Snowfall Lib.
-    namespace, # The namespace used for your flake, defaulting to "internal" if not set.
-    system, # The system architecture for this host (eg. `x86_64-linux`).
-    target, # The Snowfall Lib target for this system (eg. `x86_64-iso`).
-    format, # A normalized name for the system target (eg. `iso`).
-    virtual, # A boolean to determine whether this system is a virtual target using nixos-generators.
-    systems, # An attribute map of your defined hosts.
+# Additional metadata is provided by Snowfall Lib.
+namespace
+, # The namespace used for your flake, defaulting to "internal" if not set.
+system, # The system architecture for this host (eg. `x86_64-linux`).
+target, # The Snowfall Lib target for this system (eg. `x86_64-iso`).
+format, # A normalized name for the system target (eg. `iso`).
+virtual
+, # A boolean to determine whether this system is a virtual target using nixos-generators.
+systems, # An attribute map of your defined hosts.
 
-    # All other arguments come from the system system.
-    config,
-    ...
-}:
+# All other arguments come from the system system.
+config, ... }:
 let
   hostname = "fire-nation";
   zfs_pools = [
-    "ember-island"  # raidz0 SSD Cache  - /mnt/cache
-    "boiling-rock"  # raidz2 Media Tank - /mnt/data
+    "ember-island" # raidz0 SSD Cache  - /mnt/cache
+    "boiling-rock" # raidz2 Media Tank - /mnt/data
   ];
-in
-{
+in {
   imports = [
     ./hardware-configuration.nix
     ./file-systems.nix
@@ -35,7 +34,7 @@ in
 
   # Local Custom Configurations
   r0adkll = {
-    
+
     # Setup the MOTD for this system
     motd = {
       enable = true;
@@ -108,14 +107,17 @@ in
   sops = {
     defaultSopsFile = ./secrets/secrets.yaml;
     defaultSopsFormat = "yaml";
-    age.sshKeyPaths = [ "${config.users.users.r0adkll.home}/.ssh/firenation-sops" ];
+    age.sshKeyPaths =
+      [ "${config.users.users.r0adkll.home}/.ssh/firenation-sops" ];
 
     secrets."services/crowdsec/firewall-bouncer-api-key" = { };
     secrets."samba/cookie-jar" = { };
 
     templates = {
       "crowdsec.yaml".content = ''
-        api_key: ${config.sops.placeholder."services/crowdsec/firewall-bouncer-api-key"}
+        api_key: ${
+          config.sops.placeholder."services/crowdsec/firewall-bouncer-api-key"
+        }
         api_url: http://127.0.0.1:3002
         blacklists_ipv4: crowdsec-blacklists
         blacklists_ipv6: crowdsec6-blacklists
@@ -136,14 +138,14 @@ in
       # Default User
       r0adkll = {
         isNormalUser = true;
-        extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+        extraGroups = [ "wheel" "docker" ]; # Enable ‘sudo’ for the user.
         initialPassword = "pass";
         linger = true;
         shell = pkgs.fish;
-        openssh.authorizedKeys.keys = [ 
+        openssh.authorizedKeys.keys = [
           (builtins.readFile ../../keys/dhMBP.pub)
-          (builtins.readFile ../../keys/dhWIN.pub) 
-          (builtins.readFile ../../keys/dhEK.pub) 
+          (builtins.readFile ../../keys/dhWIN.pub)
+          (builtins.readFile ../../keys/dhEK.pub)
         ];
       };
     };
@@ -230,9 +232,7 @@ in
   };
 
   # Virtualisation / Docker
-  virtualisation.docker = {
-    enable = true;
-  };
+  virtualisation.docker = { enable = true; };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.

@@ -41,7 +41,7 @@ with lib.r0adkll;
       phoenixking = "sudo nix run /home/r0adkll/.config/home --";
 
       # Crowdsec aliases
-      csi = "sudo docker compose -f /home/r0adkll/.config/home/stacks/networking.yaml exec -t crowdsec cscli";
+      csi = "sudo docker compose -f /home/r0adkll/.config/home/docker-compose.yaml exec -t crowdsec cscli";
     };
   };
 }
