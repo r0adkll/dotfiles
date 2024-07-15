@@ -135,8 +135,18 @@ in {
         escapeTime = 0;
         secureSocket = false;
 
-        plugins = with pkgs; [
-          tmuxPlugins.better-mouse-mode
+        plugins = with pkgs.tmuxPlugins; [
+          better-mouse-mode
+          sensible
+          yank
+          {
+            plugin = dracula;
+            extraConfig = ''
+              set -g @dracula-show-battery false
+              set -g @dracula-show-powerline true
+              set -g @dracula-refresh-rate 10
+            '';
+          }
         ];
 
         extraConfig = ''
