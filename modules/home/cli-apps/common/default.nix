@@ -50,7 +50,6 @@ in {
         nnn
         fd
         fzf
-        jq
         ripgrep
         bat
         curl
