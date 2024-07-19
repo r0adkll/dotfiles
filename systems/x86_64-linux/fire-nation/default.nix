@@ -63,6 +63,12 @@ in {
           extraArgs = "--keep-since 4d --keep 3";
         };
       };
+
+      zfs-health-check = {
+        enable = true;
+        discordWebhookUrlFile = "/run/secrets/discord/zfs-webhook";
+        discordAdminRoleId = "1256258047639158877";
+      };
     };
   };
 
@@ -112,6 +118,9 @@ in {
 
     secrets."services/crowdsec/firewall-bouncer-api-key" = { };
     secrets."samba/cookie-jar" = { };
+    secrets."discord/zfs-webhook" = { 
+      owner = config.systemd.services.zfs-health-check.serviceConfig.User;
+    };
 
     templates = {
       "crowdsec.yaml".content = ''
@@ -157,7 +166,6 @@ in {
     wget
     git
     git-lfs
-    nerdfonts
     parted
     zfs
     cifs-utils

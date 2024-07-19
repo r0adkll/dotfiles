@@ -50,6 +50,7 @@ in {
         nnn
         fd
         fzf
+        jq
         ripgrep
         bat
         curl
@@ -62,6 +63,7 @@ in {
         delta
         gh
         eza
+        zellij
         (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
       ];
 
