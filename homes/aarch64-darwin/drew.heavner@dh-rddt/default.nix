@@ -31,10 +31,8 @@ with lib.r0adkll; {
 
   # Home Configuration
   home = {
-    packages = with pkgs; [
-    ];
+    packages = with pkgs; [ ];
 
-    shellAliases = {
-    };
+    shellAliases = { gw = "./gradlew"; };
   };
 }
