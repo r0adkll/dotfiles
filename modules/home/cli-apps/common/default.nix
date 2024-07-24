@@ -83,6 +83,10 @@ in {
     # Alternative to the fromTOML (readFile ...) below
     # xdg.configFile."starship.toml".source = cfg.starshipConfig;
 
+    xdg.configFile = {
+      "zellij/config.kdl".source = ./configs/zellij/config.kdl;
+    };
+
     programs = {
       fish = {
         enable = true;
@@ -113,7 +117,8 @@ in {
         enable = true;
         defaultEditor = true;
 
-        settings = builtins.fromTOML (builtins.readFile ./configs/helix.toml);
+        settings =
+          builtins.fromTOML (builtins.readFile ./configs/helix/config.toml);
 
         languages.language = [
           {

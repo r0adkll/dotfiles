@@ -33,6 +33,9 @@ with lib.r0adkll; {
   home = {
     packages = with pkgs; [ ];
 
-    shellAliases = { gw = "./gradlew"; };
+    shellAliases = {
+      gw = "./gradlew";
+      focus = "./scripts/configure_build --focus";
+    };
   };
 }
