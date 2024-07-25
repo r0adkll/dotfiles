@@ -1,13 +1,9 @@
-{
-    lib,
-    pkgs,
-    config,
-    ...
-}:
-with lib.r0adkll;
-{
+{ lib, pkgs, config, ... }:
+with lib.r0adkll; {
 
   r0adkll = {
+    environments = { common.enable = true; };
+
     programs = {
       nh = {
         enable = true;
@@ -21,14 +17,12 @@ with lib.r0adkll;
   };
 
   homebrew = {
-    casks = [
-      "orcaslicer"
-    ];
+    casks = [ "orcaslicer" ];
 
     masApps = {
       # TODO: List mac apps here.
       # Spark = 6445813049;
-      # Tailscale = 1475387142;
+      Tailscale = 1475387142;
       # WireGuard = 1451685025;
       # Infuse = 1136220934;
       # "MQTT Explorer" = 1455214828;
