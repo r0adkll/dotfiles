@@ -54,7 +54,7 @@ in {
     };
 
     homebrew = {
-      enable = true;
+      enable = false;
 
       # TODO: Un-comment this to make homebrew strict to this configuration
       #onActivation = {
