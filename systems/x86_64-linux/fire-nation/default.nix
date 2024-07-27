@@ -118,7 +118,7 @@ in {
 
     secrets."services/crowdsec/firewall-bouncer-api-key" = { };
     secrets."samba/cookie-jar" = { };
-    secrets."discord/zfs-webhook" = { 
+    secrets."discord/zfs-webhook" = {
       owner = config.systemd.services.zfs-health-check.serviceConfig.User;
     };
 
@@ -155,6 +155,7 @@ in {
           (builtins.readFile ../../keys/dhMBP.pub)
           (builtins.readFile ../../keys/dhWIN.pub)
           (builtins.readFile ../../keys/dhEK.pub)
+          (builtins.readFile ../../keys/dhRMBP.pub)
         ];
       };
     };
