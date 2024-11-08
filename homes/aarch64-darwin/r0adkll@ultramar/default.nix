@@ -27,10 +27,10 @@ with lib.r0adkll; {
       common.enable = true;
       common.starshipConfig = ./configs/starship.toml;
     };
+  };
 
-    environments = {
-      android.enable = true;
-    };
+  environments = {
+    android.enable = true;
   };
 
   # Home Configuration
