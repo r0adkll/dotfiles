@@ -2,7 +2,10 @@
 with lib.r0adkll; {
 
   r0adkll = {
-    environments = { common.enable = true; };
+    environments = { 
+      common.enable = true; 
+      android.enable = true;
+    };
 
     programs = {
       nh = {
