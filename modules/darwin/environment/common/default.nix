@@ -3,18 +3,18 @@
 let
   inherit (lib) mkEnableOption mkIf;
   cfg = config.r0adkll.environments.common;
-
-  #wallpaper = builtins.path {
-  #  path = ./StarrySur_Mac.png;
-  #  name = "StarrySur_Mac.png";
-  #};
 in {
   options.r0adkll.environments.common = { enable = mkEnableOption "common"; };
 
   config = mkIf cfg.enable {
     system = {
       defaults = {
-        dock = { magnification = true; };
+        dock = { 
+          magnification = false;
+          autohide = true;
+          tilesize = 40;
+          largesize = 40; 
+        };
 
         NSGlobalDomain = {
           AppleInterfaceStyle = "Dark";
@@ -26,6 +26,10 @@ in {
         };
 
         finder = { FXPreferredViewStyle = "clmv"; };
+
+        loginwindow = {
+          GuestEnabled = false;
+        };
 
         CustomUserPreferences = {
           "com.apple.finder" = {
@@ -71,12 +75,12 @@ in {
 
       casks = [
         "1password"
-        "arc"
         "obsidian"
         "spotify"
         "intellij-idea-ce"
+        "fleet"
         "kaleidoscope"
-        "iterm2"
+        "wezterm"
         "raycast"
         "visual-studio-code"
         "istat-menus"
