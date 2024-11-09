@@ -6,10 +6,8 @@ format = """
 $os\
 $username\
 [](fg:name bg:host)\
-[  ](bg:host fg:host_text)\
-[](fg:host bg:dir)\
 $directory\
-[](fg:dir bg:git)\
+[](fg:host bg:git)\
 $git_branch\
 $git_status\
 [](fg:git bg:langs)\
@@ -84,7 +82,7 @@ NixOS = " "
 Macos = " "
 
 [directory]
-style = "bg:dir fg:dir_text"
+style = "bg:host fg:host_text"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"

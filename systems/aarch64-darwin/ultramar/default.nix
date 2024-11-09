@@ -2,15 +2,15 @@
 with lib.r0adkll; {
 
   r0adkll = {
-    environments = { 
-      common.enable = true; 
+    environments = {
+      common.enable = true;
       android.enable = true;
     };
 
     programs = {
       nh = {
         enable = true;
-        flake = "path:/Users/drew.heavner/.config/nix";
+        flake = "path:/Users/r0adkll/.config/nix";
         clean = {
           enable = true;
           extraArgs = "--keep-since 4d --keep 3";
