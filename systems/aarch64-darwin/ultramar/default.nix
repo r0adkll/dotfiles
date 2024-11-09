@@ -5,6 +5,7 @@ with lib.r0adkll; {
     environments = {
       common.enable = true;
       android.enable = true;
+      ios.enable = true;
     };
 
     programs = {
@@ -20,7 +21,7 @@ with lib.r0adkll; {
   };
 
   homebrew = {
-    casks = [ "orcaslicer" ];
+    casks = [ "orcaslicer" "autodesk-fusion" ];
 
     masApps = {
       # TODO: List mac apps here.

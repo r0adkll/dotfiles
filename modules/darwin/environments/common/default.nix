@@ -9,11 +9,11 @@ in {
   config = mkIf cfg.enable {
     system = {
       defaults = {
-        dock = { 
+        dock = {
           magnification = false;
           autohide = true;
           tilesize = 40;
-          largesize = 40; 
+          largesize = 40;
         };
 
         NSGlobalDomain = {
@@ -27,9 +27,7 @@ in {
 
         finder = { FXPreferredViewStyle = "clmv"; };
 
-        loginwindow = {
-          GuestEnabled = false;
-        };
+        loginwindow = { GuestEnabled = false; };
 
         CustomUserPreferences = {
           "com.apple.finder" = {
@@ -58,7 +56,7 @@ in {
     };
 
     homebrew = {
-      enable = false;
+      enable = true;
 
       # TODO: Un-comment this to make homebrew strict to this configuration
       #onActivation = {
@@ -79,6 +77,7 @@ in {
         "spotify"
         "intellij-idea-ce"
         "fleet"
+        "webstorm"
         "kaleidoscope"
         "wezterm"
         "raycast"

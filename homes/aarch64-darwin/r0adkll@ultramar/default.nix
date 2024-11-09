@@ -30,12 +30,13 @@ with lib.r0adkll; {
 
     environments = {
       android.enable = true;
+      ios.enable = true;
     };
   };
 
   # Home Configuration
   home = {
-    packages = with pkgs; [ ];
-
+    packages = with pkgs; [ 
+    ];
   };
 }
