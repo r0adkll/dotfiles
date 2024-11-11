@@ -84,6 +84,7 @@ in {
         "visual-studio-code"
         "istat-menus"
         "docker"
+        "maccy"
       ];
 
       masApps = {
