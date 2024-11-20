@@ -85,6 +85,7 @@ in {
         "istat-menus"
         "docker"
         "maccy"
+        "signal"
       ];
 
       masApps = {
