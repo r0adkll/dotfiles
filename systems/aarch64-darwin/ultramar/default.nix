@@ -20,6 +20,19 @@ with lib.r0adkll; {
     };
   };
 
+  # imports = [
+  #   inputs.sops-nix.nixosModules.sops
+  # ];
+
+  # sops = {
+  #   defaultSopsFile = ./secrets/secrets.yaml;
+  #   defaultSopsFormat = "yaml";
+  #   age.sshKeyPaths =
+  #     [ "${config.users.users.r0adkll.home}/.ssh/firenation-sops" ];
+
+  #   secrets."samba/cookie-jar" = { };
+  # };
+
   homebrew = {
     casks = [ "orcaslicer" "autodesk-fusion" ];
 
@@ -32,6 +45,15 @@ with lib.r0adkll; {
       # "MQTT Explorer" = 1455214828;
     };
   };
+
+  # rPI Backups Samba Share
+  # fileSystems."/mnt/cookie-jar" = {
+  #   device = "//cookie-jar/shared";
+  #   fsType = "cifs";
+  #   options = let
+  #     automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+  #   in ["${automount_opts},credentials=/run/secrets/samba/cookie-jar"];
+  # };
 
   system.stateVersion = 4;
 }

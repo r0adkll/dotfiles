@@ -86,6 +86,7 @@ in {
         "docker"
         "maccy"
         "signal"
+        "discord"
       ];
 
       masApps = {
