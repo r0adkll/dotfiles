@@ -34,7 +34,7 @@ with lib.r0adkll; {
   # };
 
   homebrew = {
-    casks = [ "orcaslicer" "autodesk-fusion" ];
+    casks = [ "orcaslicer" "autodesk-fusion" "steam" "vlc"];
 
     masApps = {
       # TODO: List mac apps here.

@@ -63,6 +63,7 @@ in {
         gh
         eza
         zellij
+        gpg
         (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
       ];
 
@@ -75,6 +76,7 @@ in {
         llt = "eza -gT";
         reloadNix =
           "pushd ~/.config/nixos/ && git pull --rebase && nh os switch && popd";
+        vlc = "/Applications/VLC.app/Contents/MacOS/VLC";
       };
     };
 
