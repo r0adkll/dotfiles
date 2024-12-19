@@ -72,7 +72,7 @@ in {
       };
 
       casks = [
-        "1password"
+        # "1password" TODO - Uncomment when 1Password was not already previously installed
         "obsidian"
         "spotify"
         "intellij-idea-ce"
