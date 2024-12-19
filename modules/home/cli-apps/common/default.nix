@@ -63,7 +63,7 @@ in {
         gh
         eza
         zellij
-        gpg
+        gnupg
         (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
       ];
 
