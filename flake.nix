@@ -30,7 +30,7 @@
     ghostty = {
       url = "github:ghostty-org/ghostty";
       inputs.nixpkgs.follows = "nixpkgs";
-    }
+    };
 
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
@@ -39,18 +39,9 @@
 
     nix-inspect.url = "github:bluskript/nix-inspect";
   };
-  
-  outputs =
-    {
-      self,
-      snowfall-lib,
-      treefmt-nix,
-      sops-nix,
-      ghostty,
-      nixpkgs-unstable,
-      systems,
-      ...
-    }@inputs:
+
+  outputs = { self, snowfall-lib, treefmt-nix, sops-nix, ghostty
+    , nixpkgs-unstable, systems, ... }@inputs:
     let
       lib = snowfall-lib.mkLib {
         inherit inputs;
@@ -66,30 +57,24 @@
         };
       };
 
-      eachSystem =
-        f:
-        nixpkgs-unstable.lib.genAttrs (import systems) (
-          system: f nixpkgs-unstable.legacyPackages.${system}
-        );
+      eachSystem = f:
+        nixpkgs-unstable.lib.genAttrs (import systems)
+        (system: f nixpkgs-unstable.legacyPackages.${system});
 
-      treefmtEval = eachSystem (
-        pkgs:
+      treefmtEval = eachSystem (pkgs:
         treefmt-nix.lib.evalModule pkgs (pkgs: {
           projectRootFile = "flake.nix";
           settings.global.excludes = [ "./result/**" ];
 
           programs.nixfmt-rfc-style.enable = true; # *.nix
           programs.black.enable = true; # *.py
-        })
-      );
-    in
-    lib.mkFlake {
-      
-      channels-config = {
-        allowUnfree = true;
-      };
+        }));
+    in lib.mkFlake {
 
-      formatter = eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
+      channels-config = { allowUnfree = true; };
+
+      formatter =
+        eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
 
       checks = eachSystem (pkgs: {
         formatting = treefmtEval.${pkgs.system}.config.build.check self;
