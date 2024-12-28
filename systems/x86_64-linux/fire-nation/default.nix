@@ -177,6 +177,7 @@ in {
     htop
     iotop
     rsync
+    inputs.ghostty.packages.x86_64-linux.default
   ];
 
   # Program Configurations

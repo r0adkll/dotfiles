@@ -77,7 +77,6 @@ in {
         "spotify"
         "intellij-idea-ce"
         "fleet"
-        "ghosttile"
         "ghostty"
         "webstorm"
         "kaleidoscope"
