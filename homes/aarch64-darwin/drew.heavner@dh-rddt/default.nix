@@ -37,5 +37,11 @@ with lib.r0adkll; {
       gw = "./gradlew";
       focus = "./scripts/configure_build --focus";
     };
+
+    sessionPath = [
+      "$HOME/Library/Android/sdk/platform-tools"
+      "$HOME/Library/Android/sdk/tools/proguard/bin"
+      "$HOME/Scripts"
+    ];
   };
 }
