@@ -27,10 +27,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    ghostty = {
-      url = "github:ghostty-org/ghostty";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    #ghostty = {
+    #  url = "github:ghostty-org/ghostty";
+    #  inputs.nixpkgs.follows = "nixpkgs";
+    #};
 
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
@@ -40,7 +40,7 @@
     nix-inspect.url = "github:bluskript/nix-inspect";
   };
 
-  outputs = { self, snowfall-lib, treefmt-nix, sops-nix, ghostty
+  outputs = { self, snowfall-lib, treefmt-nix, sops-nix
     , nixpkgs-unstable, systems, ... }@inputs:
     let
       lib = snowfall-lib.mkLib {

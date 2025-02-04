@@ -2,7 +2,11 @@
 with lib.r0adkll; {
 
   r0adkll = {
-    environments = { common.enable = true; };
+    environments = { 
+      common.enable = true; 
+      android.enable = true;
+      ios.enable = true;
+    };
 
     programs = {
       nh = {
@@ -17,7 +21,7 @@ with lib.r0adkll; {
   };
 
   homebrew = {
-    casks = [ "orcaslicer" ];
+    casks = [ ];
 
     masApps = {
       # TODO: List mac apps here.
