@@ -52,6 +52,6 @@ in
       };
     };
 
-    programs.fish.interactiveShellInit = set_java_home 23;
+    programs.fish.interactiveShellInit = set_java_home 17;
   };
 }
