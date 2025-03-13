@@ -8,7 +8,7 @@
 
     darwin = {
       url = "github:lnl7/nix-darwin/nix-darwin-24.11";
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     snowfall-lib = {
