@@ -27,11 +27,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    #ghostty = {
-    #  url = "github:ghostty-org/ghostty";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #};
-
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";

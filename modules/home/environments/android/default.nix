@@ -31,6 +31,7 @@ in
         java11 = set_java_home 11;
         java17 = set_java_home 17;
         java21 = set_java_home 21;
+        java23 = set_java_home 23;
       };
 
       sessionVariables = {
@@ -47,9 +48,10 @@ in
         "jdk/zulu11.jdk".source = java_home 11;
         "jdk/zulu17.jdk".source = java_home 17;
         "jdk/zulu21.jdk".source = java_home 21;
+        "jdk/zulu23.jdk".source = java_home 23;
       };
     };
 
-    programs.fish.interactiveShellInit = set_java_home 17;
+    programs.fish.interactiveShellInit = set_java_home 23;
   };
 }

@@ -2,8 +2,8 @@
 with lib.r0adkll; {
 
   r0adkll = {
-    environments = { 
-      common.enable = true; 
+    environments = {
+      common.enable = true;
       android.enable = true;
       ios.enable = true;
     };
@@ -21,7 +21,7 @@ with lib.r0adkll; {
   };
 
   homebrew = {
-    casks = [ ];
+    casks = [ "grep" ];
 
     masApps = {
       # TODO: List mac apps here.
