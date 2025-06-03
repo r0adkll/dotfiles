@@ -41,6 +41,7 @@ with lib.r0adkll; {
     shellAliases = {
       gw = "./gradlew";
       focus = "./scripts/configure_build --focus";
+      bundletool = "java -jar ~/Scripts/bundletool-all-1.18.1.jar";
     };
 
     sessionPath = [

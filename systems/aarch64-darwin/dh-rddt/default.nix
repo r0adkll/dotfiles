@@ -21,7 +21,7 @@ with lib.r0adkll; {
   };
 
   homebrew = {
-    casks = [ "grep" ];
+    casks = [ ];
 
     masApps = {
       # TODO: List mac apps here.
