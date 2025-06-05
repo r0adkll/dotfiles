@@ -53,6 +53,6 @@ with lib.r0adkll; {
     ];
 
     # Copy our finicky configuration to the home directory
-    file.".finicky.js".source = .configs/finicky.js;
+    file.".finicky.js".source = ./configs/finicky.js;
   };
 }
