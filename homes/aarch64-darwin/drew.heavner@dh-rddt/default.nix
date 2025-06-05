@@ -51,5 +51,8 @@ with lib.r0adkll; {
       "$HOME/Library/Android/sdk/tools/proguard/bin"
       "$HOME/Scripts"
     ];
+
+    # Copy our finicky configuration to the home directory
+    file.".finicky.js".source = .configs/finicky.js;
   };
 }
