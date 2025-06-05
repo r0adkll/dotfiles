@@ -83,6 +83,7 @@ in {
         "maccy"
         "signal"
         "slack"
+        "firefox"
       ];
 
       masApps = {
