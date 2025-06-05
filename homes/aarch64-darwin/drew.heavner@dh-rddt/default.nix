@@ -36,12 +36,14 @@ with lib.r0adkll; {
 
   # Home Configuration
   home = {
-    packages = with pkgs; [ ];
+    packages = with pkgs; [ 
+      cloc
+    ];
 
     shellAliases = {
       gw = "./gradlew";
       focus = "./scripts/configure_build --focus";
-      bundletool = "java -jar ~/Scripts/bundletool-all-1.18.1.jar";
+      bundletool = "java -jar ~/script-src/bundletool-all-1.18.1.jar";
     };
 
     sessionPath = [

@@ -72,26 +72,20 @@ in {
       };
 
       casks = [
-        # "1password" TODO - Uncomment when 1Password was not already previously installed
         "obsidian"
         "spotify"
         "intellij-idea-ce"
-        "fleet"
         "ghostty"
-        "webstorm"
-        "kaleidoscope"
-        # "wezterm"
         "raycast"
         "visual-studio-code"
         "istat-menus"
         "docker"
         "maccy"
         "signal"
-        "discord"
+        "slack"
       ];
 
       masApps = {
-        Slack = 803453959;
         Gifski = 1351639930;
         Magnet = 441258766;
       };
