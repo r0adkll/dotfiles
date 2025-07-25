@@ -96,7 +96,7 @@ in {
     enableIPv6 = false;
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 80 443 ];
+      allowedTCPPorts = [ 80 443 8123 ];
     };
   };
 
