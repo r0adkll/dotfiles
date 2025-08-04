@@ -189,8 +189,12 @@ in {
     htop
     iotop
     rsync
+<<<<<<< HEAD
     rclone
     fuse
+=======
+    usbutils
+>>>>>>> 3f72376 (Adding usbutils to server)
     inputs.ghostty.packages.x86_64-linux.default
   ];
 
@@ -287,8 +291,8 @@ in {
   };
 
   # Virtualisation / Docker
-  virtualisation.docker = { 
-    enable = true; 
+  virtualisation.docker = {
+    enable = true;
     autoPrune.enable = true;
   };
 
