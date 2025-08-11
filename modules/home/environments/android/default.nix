@@ -1,29 +1,20 @@
-{
-  lib,
-  config,
-  pkgs,
-  format,
-  ...
-}:
+{ lib, config, pkgs, format, ... }:
 
 let
   inherit (lib) mkEnableOption mkIf;
   cfg = config.r0adkll.environments.android;
 
-  android_home =
-    if format == "darwin" then
-      "/Users/${config.snowfallorg.user.name}/Library/Android/sdk"
-    else
-      "${config.snowfallorg.user.home}/Android/Sdk";
-  java_home =
-    version:
-    "${pkgs."zulu${builtins.toString version}"}/zulu-${builtins.toString version}.jdk/Contents/Home";
+  android_home = if format == "darwin" then
+    "/Users/${config.snowfallorg.user.name}/Library/Android/sdk"
+  else
+    "${config.snowfallorg.user.home}/Android/Sdk";
+  java_home = version:
+    "${pkgs."zulu${builtins.toString version}"}/zulu-${
+      builtins.toString version
+    }.jdk/Contents/Home";
   set_java_home = version: "set -x JAVA_HOME ${java_home version}";
-in
-{
-  options.r0adkll.environments.android = {
-    enable = mkEnableOption "android";
-  };
+in {
+  options.r0adkll.environments.android = { enable = mkEnableOption "android"; };
 
   config = mkIf cfg.enable {
     home = {
@@ -34,11 +25,10 @@ in
         java23 = set_java_home 23;
       };
 
-      sessionVariables = {
-        ANDROID_HOME = android_home;
-      };
+      sessionVariables = { ANDROID_HOME = android_home; };
 
       sessionPath = [
+        "${android_home}/build-tools/36.0.0"
         "${android_home}/platform-tools"
         "${android_home}/tools"
       ];
