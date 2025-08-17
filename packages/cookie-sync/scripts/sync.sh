@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script is used to synchronize files between /mnt/cookie-jar and /mnt/gdrive/cookie-jar.
 # It uses rsync to copy files and directories, using an intermediary cache directory.
