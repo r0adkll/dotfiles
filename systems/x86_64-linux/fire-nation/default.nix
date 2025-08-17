@@ -121,6 +121,10 @@ in {
     secrets."discord/zfs-webhook" = {
       owner = config.systemd.services.zfs-health-check.serviceConfig.User;
     };
+    secrets."rclone/gdrive-token" = {
+      owner = config.users.users.r0adkll.name;
+      group = config.users.users.r0adkll.group;
+    };
 
     templates = {
       "crowdsec.yaml".content = ''
@@ -137,6 +141,14 @@ in {
         log_mode: stdout
         mode: iptables
         update_frequency: 10s
+      '';
+
+      "rclone.conf".content = ''
+        [gdrive]
+        type = drive
+        scope = drive
+        token = ${config.sops.placeholder."rclone/gdrive-token"}
+        team_drive = 
       '';
     };
   };
@@ -177,8 +189,61 @@ in {
     htop
     iotop
     rsync
+    rclone
+    fuse
     inputs.ghostty.packages.x86_64-linux.default
+    (pkgs.writeShellScriptBin "setup-gdrive" ''
+      #!/bin/bash
+      echo "Setting up Google Drive connection with rclone..."
+      echo "1. Run: rclone config"
+      echo "2. Choose 'n' for new remote"
+      echo "3. Name it 'gdrive'"
+      echo "4. Choose '13' for Google Drive"
+      echo "5. Leave client_id and client_secret empty"
+      echo "6. Choose '1' for full access scope"
+      echo "7. Leave root_folder_id empty"
+      echo "8. Leave service_account_file empty"
+      echo "9. Choose 'n' for advanced config"
+      echo "10. Choose 'y' to auto config (this will open a browser)"
+      echo "11. Choose 'n' for team drive"
+      echo "12. Choose 'y' to confirm"
+      echo ""
+      echo "After setup, copy the token from ~/.config/rclone/rclone.conf"
+      echo "and add it to your SOPS secrets file under 'rclone/gdrive-token'"
+      echo ""
+      echo "Then restart the mount-gdrive service:"
+      echo "sudo systemctl restart mount-gdrive"
+    '')
   ];
+
+  # Rclone configuration for Google Drive using SOPS template
+  environment.etc."rclone/rclone.conf".source = config.sops.templates."rclone.conf".path;
+
+  # Create systemd mount service for Google Drive
+  systemd.services.mount-gdrive = {
+    description = "Mount Google Drive with rclone";
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+    
+    serviceConfig = {
+      Type = "notify";
+      ExecStart = "${pkgs.rclone}/bin/rclone mount gdrive: /mnt/gdrive --config /etc/rclone/rclone.conf --allow-other --file-perms 0777 --dir-perms 0777 --vfs-cache-mode writes";
+      ExecStop = "/bin/fusermount -u /mnt/gdrive";
+      Restart = "on-failure";
+      RestartSec = 10;
+      User = "r0adkll";
+      Group = "users";
+    };
+    
+    preStart = ''
+      mkdir -p /mnt/gdrive
+      chown r0adkll:users /mnt/gdrive
+    '';
+  };
+
+  # Enable FUSE for rclone mounting
+  programs.fuse.userAllowOther = true;
 
   # Program Configurations
   programs = {
