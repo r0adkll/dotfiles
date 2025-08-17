@@ -192,7 +192,6 @@ in {
     rclone
     fuse
     usbutils
-    inputs.ghostty.packages.x86_64-linux.default
   ];
 
   # Rclone configuration for Google Drive using SOPS template
