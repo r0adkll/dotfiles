@@ -189,17 +189,15 @@ in {
     htop
     iotop
     rsync
-<<<<<<< HEAD
     rclone
     fuse
-=======
     usbutils
->>>>>>> 3f72376 (Adding usbutils to server)
     inputs.ghostty.packages.x86_64-linux.default
   ];
 
   # Rclone configuration for Google Drive using SOPS template
-  environment.etc."rclone/rclone.conf".source = config.sops.templates."rclone.conf".path;
+  environment.etc."rclone/rclone.conf".source =
+    config.sops.templates."rclone.conf".path;
 
   # Create systemd mount service for Google Drive
   systemd.services.mount-gdrive = {
@@ -207,10 +205,11 @@ in {
     after = [ "network-online.target" ];
     wants = [ "network-online.target" ];
     wantedBy = [ "multi-user.target" ];
-    
+
     serviceConfig = {
       Type = "forking";
-      ExecStart = "${pkgs.rclone}/bin/rclone mount gdrive: /mnt/gdrive --config /etc/rclone/rclone.conf --allow-other --file-perms 0777 --dir-perms 0777 --vfs-cache-mode writes --daemon";
+      ExecStart =
+        "${pkgs.rclone}/bin/rclone mount gdrive: /mnt/gdrive --config /etc/rclone/rclone.conf --allow-other --file-perms 0777 --dir-perms 0777 --vfs-cache-mode writes --daemon";
       ExecStop = "${pkgs.util-linux}/bin/umount /mnt/gdrive";
       Restart = "on-failure";
       RestartSec = 10;
@@ -218,7 +217,7 @@ in {
       User = "root";
       Group = "root";
     };
-    
+
     preStart = ''
       mkdir -p /mnt/gdrive
       chown r0adkll:users /mnt/gdrive
