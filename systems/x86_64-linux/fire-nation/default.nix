@@ -69,6 +69,10 @@ in {
         discordWebhookUrlFile = "/run/secrets/discord/zfs-webhook";
         discordAdminRoleId = "1256258047639158877";
       };
+
+      cookie-sync = {
+        enable = true;
+      };
     };
   };
 
@@ -195,6 +199,7 @@ in {
   ];
 
   # Rclone configuration for Google Drive using SOPS template
+  # TODO: Move this to its own package/module
   environment.etc."rclone/rclone.conf".source =
     config.sops.templates."rclone.conf".path;
 
