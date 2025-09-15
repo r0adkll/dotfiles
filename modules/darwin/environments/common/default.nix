@@ -87,6 +87,8 @@ in {
         "handbrake"
       ];
 
+      brews = [ "ffmpeg" ];
+
       masApps = {
         Gifski = 1351639930;
         Magnet = 441258766;
