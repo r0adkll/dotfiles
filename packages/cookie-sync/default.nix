@@ -1,31 +1,19 @@
-{ 
-  stdenv,
-  pkgs,
-  lib,
-  makeWrapper
-}:
-let
-  runtimeDeps = with pkgs; [
-    rsync
-    figlet
-    lolcat
-  ];
-in
-stdenv.mkDerivation {
+{ stdenv, pkgs, lib, makeWrapper }:
+let runtimeDeps = with pkgs; [ rsync figlet lolcat ];
+in stdenv.mkDerivation {
   pname = "cookie-sync";
   version = "0.1.0";
   src = ./scripts;
   buildInputs = [ makeWrapper ];
-  buildPhase = ''
-  '';
+  buildPhase = "";
   installPhase = ''
     mkdir -p $out/bin
 
-    cp sync.sh $out/bin
+    cp cookie-sync $out/bin
 
     patchShebangs $out/bin
-    
-    wrapProgram $out/bin/sync.sh \
+
+    wrapProgram $out/bin/cookie-sync \
       --prefix PATH : ${lib.makeBinPath runtimeDeps}
   '';
 }
