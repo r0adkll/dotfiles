@@ -35,6 +35,7 @@ with lib.r0adkll; {
 
   homebrew = {
     casks = [ 
+      "claude-code"
       "orcaslicer" 
       "autodesk-fusion" 
       "steam" 

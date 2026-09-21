@@ -42,8 +42,10 @@ in {
             DSDontWriteNetworkStores = true;
             DSDontWriteUSBStores = true;
           };
+          # com.apple.TextEdit is omitted deliberately: it is sandboxed, so the
+          # write lands in its TCC-protected container and aborts activation
+          # before the remaining domains are applied.
           "com.apple.AdLib" = { allowApplePersonalizedAdvertising = false; };
-          "com.apple.TextEdit" = { RichText = 0; };
         };
       };
     };

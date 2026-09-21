@@ -25,7 +25,8 @@ with lib.r0adkll; {
 
     brews = [ "buildkite/buildkite/bk@3" "hex-inc/hex-cli/hex" ];
 
-    casks = [ "finicky" "claude-code" "cursor-cli" "gcloud-cli" ];
+    # claude-code is deliberately absent: not permitted on the work machine.
+    casks = [ "finicky" "cursor-cli" "gcloud-cli" ];
 
     masApps = {
       Amphetamine = 937984704;
