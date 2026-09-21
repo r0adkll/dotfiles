@@ -44,7 +44,7 @@ in {
     home = {
       packages = with pkgs; [
         nix-search-cli
-        neofetch
+        fastfetch
         neovim
         helix
         nnn
@@ -64,7 +64,7 @@ in {
         eza
         zellij
         gnupg
-        (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+        nerd-fonts.jetbrains-mono
       ];
 
       shellAliases = {
@@ -104,6 +104,10 @@ in {
           {
             name = "colored-man-pages";
             src = pkgs.fishPlugins.colored-man-pages.src;
+          }
+          {
+            name = "bass";
+            src = pkgs.fishPlugins.bass.src;
           }
         ];
       };

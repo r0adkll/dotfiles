@@ -33,4 +33,6 @@ stdenv.mkDerivation {
     wrapProgram $out/bin/zfs-health-check \
       --prefix PATH : ${lib.makeBinPath runtimeDeps}
   '';
+
+  meta.mainProgram = "zfs-health-check";
 }

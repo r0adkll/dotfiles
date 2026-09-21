@@ -23,7 +23,10 @@ export default {
         "prusa3d.com/*",
         "*.prusa3d.com/*",
         "prusament.com/*",
-        "*.prusament.com/*"
+        "*.prusament.com/*",
+
+        "*.elgato.com/*",
+        "elgato.com/*",
       ],
       browser: "Firefox"
     }

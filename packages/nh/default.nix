@@ -4,7 +4,6 @@
   rustPlatform,
   installShellFiles,
   makeBinaryWrapper,
-  darwin,
   nvd,
   nix-output-monitor,
   figlet,
@@ -37,8 +36,6 @@ rustPlatform.buildRustPackage {
     makeBinaryWrapper
   ];
 
-  buildInputs = lib.optionals stdenv.isDarwin [ darwin.apple_sdk.frameworks.SystemConfiguration ];
-
   doCheck = false; # faster builds
 
   preFixup = ''
@@ -54,7 +51,7 @@ rustPlatform.buildRustPackage {
       --prefix PATH : ${lib.makeBinPath runtimeDeps}
   '';
 
-  cargoHash = "sha256-aNB2SMjj2ErrFPNeIozl9AB8645QQ1xed9e+8aRz8I0=";
+  cargoHash = "sha256-J7j46zS88Rpgu1mXCgaU6yJiBhnuzjTA6R7d6WCMRqY=";
 
   meta = {
     description = "Yet another nix cli helper";

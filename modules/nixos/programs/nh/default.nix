@@ -12,7 +12,8 @@ in
     enable = lib.mkEnableOption "nh";
 
     flake = lib.mkOption {
-      type = lib.types.str;
+      type = lib.types.nullOr lib.types.str;
+      default = null;
       description = ''
         The path that will be used for the `FLAKE` environment variable.
         `FLAKE` is used by nh as the default flake for performing actions, like `nh os switch`.

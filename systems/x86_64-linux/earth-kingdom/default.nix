@@ -96,6 +96,7 @@ in
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
+  services.gnome.gcr-ssh-agent.enable = false;
 
   # Configure keymap in X11
   services.xserver = {
@@ -156,6 +157,7 @@ in
   programs = {
     fish.enable = true;
     ssh = {
+      # GNOME enables gcr-ssh-agent by default; only one agent may be installed.
       startAgent = true;
       extraConfig = ''
         AddKeysToAgent yes

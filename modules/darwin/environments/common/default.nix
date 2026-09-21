@@ -68,23 +68,24 @@ in {
       global = {
         autoUpdate = true;
         brewfile = true;
-        lockfiles = true;
       };
 
       casks = [
         "obsidian"
         "spotify"
         "intellij-idea-ce"
+        "jetbrains-toolbox"
         "ghostty"
         "raycast"
         "visual-studio-code"
         "istat-menus"
-        "docker"
+        "docker-desktop"
         "maccy"
         "signal"
         "slack"
         "firefox"
-        "handbrake"
+        "handbrake-app"
+        "audacity"
       ];
 
       brews = [ "ffmpeg" ];
@@ -95,7 +96,6 @@ in {
       };
     };
 
-    fonts.packages =
-      [ (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; }) ];
+    fonts.packages = [ pkgs.nerd-fonts.jetbrains-mono ];
   };
 }

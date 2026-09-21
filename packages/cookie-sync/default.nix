@@ -16,4 +16,6 @@ in stdenv.mkDerivation {
     wrapProgram $out/bin/cookie-sync \
       --prefix PATH : ${lib.makeBinPath runtimeDeps}
   '';
+
+  meta.mainProgram = "cookie-sync";
 }

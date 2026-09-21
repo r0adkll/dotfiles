@@ -21,9 +21,15 @@ with lib.r0adkll; {
   };
 
   homebrew = {
-    casks = [ "finicky" "claude-code" "cursor-cli" ];
+    taps = [ "buildkite/buildkite" "hex-inc/hex-cli" ];
+
+    brews = [ "buildkite/buildkite/bk@3" "hex-inc/hex-cli/hex" ];
+
+    casks = [ "finicky" "claude-code" "cursor-cli" "gcloud-cli" ];
 
     masApps = {
+      Amphetamine = 937984704;
+
       # TODO: List mac apps here.
       # Spark = 6445813049;
       # WireGuard = 1451685025;
@@ -31,6 +37,12 @@ with lib.r0adkll; {
       # "MQTT Explorer" = 1455214828;
     };
   };
+
+  programs.fish.shellInit = ''
+    source ~/.rddt.fish
+  '';
+
+  system.primaryUser = "drew.heavner";
 
   system.stateVersion = 4;
 }

@@ -27,6 +27,9 @@
     iptables_chains = mkDefault ["INPUT"];
   };
 in {
+  # nixpkgs ships its own bouncer module since 25.11; this one owns the option.
+  disabledModules = ["services/security/crowdsec-firewall-bouncer.nix"];
+
   options.services.crowdsec-firewall-bouncer = with lib; {
     enable = mkEnableOption "CrowdSec Firewall Bouncer";
     package = mkPackageOption pkgs.r0adkll "crowdsec-firewall-bouncer" {};

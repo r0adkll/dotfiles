@@ -21,6 +21,5 @@
     generateRegistryFromInputs = true;
     generateNixPathFromInputs = true;
     linkInputs = true;
-    useDaemon = true;
   };
 }

@@ -62,5 +62,7 @@ with lib.r0adkll; {
   #   in ["${automount_opts},credentials=/run/secrets/samba/cookie-jar"];
   # };
 
+  system.primaryUser = "r0adkll";
+
   system.stateVersion = 4;
 }

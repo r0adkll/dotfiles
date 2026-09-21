@@ -8,11 +8,24 @@ in {
 
   config = mkIf cfg.enable {
     homebrew = {
-      taps = [ "pbreault/gww" "borneygit/brew" ];
+      taps = [
+        "pbreault/gww"
+        "borneygit/brew"
+        "danger/tap"
+        "composegears/repo"
+        "livewire-kt/tap"
+      ];
 
-      brews = [ "gradle-profiler" "pbreault/gww/gww" "borneygit/brew/pidcat" ];
+      brews = [
+        "gradle-profiler"
+        "pbreault/gww/gww"
+        "borneygit/brew/pidcat"
+        "danger/tap/danger-js"
+        "danger/tap/danger-kotlin"
+        "composegears/repo/valkyrie"
+      ];
 
-      casks = [ "android-studio" ];
+      casks = [ "android-studio" "livewire-kt/tap/livewire" ];
     };
 
     environment = {
