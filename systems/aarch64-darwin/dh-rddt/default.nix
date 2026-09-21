@@ -42,6 +42,10 @@ with lib.r0adkll; {
     source ~/.rddt.fish
   '';
 
+  # Nix was installed by the Determinate installer, which uses GID 350 rather
+  # than the 30000 that `system.stateVersion = 4` expects.
+  ids.gids.nixbld = 350;
+
   system.primaryUser = "drew.heavner";
 
   system.stateVersion = 4;

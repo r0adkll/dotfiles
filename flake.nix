@@ -63,15 +63,25 @@
           programs.nixfmt-rfc-style.enable = true; # *.nix
           programs.black.enable = true; # *.py
         }));
-    in lib.mkFlake {
 
-      channels-config = { allowUnfree = true; };
+      flake = lib.mkFlake {
 
-      formatter =
-        eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
+        channels-config = { allowUnfree = true; };
 
-      checks = eachSystem (pkgs: {
-        formatting = treefmtEval.${pkgs.system}.config.build.check self;
-      });
+        formatter =
+          eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
+
+        checks = eachSystem (pkgs: {
+          formatting = treefmtEval.${pkgs.system}.config.build.check self;
+        });
+      };
+
+      # Fleet MDM enforces the device name as the hardware serial, so alias the
+      # serial to the readable host name to keep hostname-based rebuilds working.
+      hostAliases = { JF0VV2XVW7 = "dh-rddt"; };
+    in flake // {
+      darwinConfigurations = flake.darwinConfigurations
+        // builtins.mapAttrs (_: target: flake.darwinConfigurations.${target})
+        hostAliases;
     };
 }
