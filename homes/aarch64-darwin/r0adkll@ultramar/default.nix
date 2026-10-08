@@ -36,7 +36,11 @@ with lib.r0adkll; {
 
   # Home Configuration
   home = {
-    packages = with pkgs; [ 
+    packages = with pkgs; [
+      # Obsidian CLI (ships with the Obsidian.app installer >= 1.12)
+      (writeShellScriptBin "obsidian" ''
+        exec /Applications/Obsidian.app/Contents/MacOS/obsidian-cli "$@"
+      '')
     ];
   };
 }

@@ -34,14 +34,15 @@ with lib.r0adkll; {
   # };
 
   homebrew = {
-    casks = [ 
+    casks = [
       "claude-code"
-      "orcaslicer" 
-      "autodesk-fusion" 
-      "steam" 
+      "orcaslicer"
+      "autodesk-fusion"
+      "steam"
       "vlc"
       "discord"
       "mullvad-vpn"
+      "claude"
     ];
 
     masApps = {
