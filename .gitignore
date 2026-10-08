@@ -1,2 +1,4 @@
 result
 .sopsrc
+# Temporary decrypted secrets
+*.tmp.yaml
