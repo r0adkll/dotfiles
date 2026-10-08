@@ -170,7 +170,6 @@ in {
         openssh.authorizedKeys.keys = [
           (builtins.readFile ../../keys/dhMBP.pub)
           (builtins.readFile ../../keys/dhWIN.pub)
-          (builtins.readFile ../../keys/dhEK.pub)
           (builtins.readFile ../../keys/dhRMBP.pub)
           (builtins.readFile ../../keys/ultramar.pub)
         ];
