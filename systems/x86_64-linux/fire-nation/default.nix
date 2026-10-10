@@ -36,6 +36,14 @@ in {
 
   firenation.enable = true;
   firenation.edge.enable = true;
+  # host services' ports; a service hostPort on one of these fails the build
+  firenation.reservedPorts = [
+    80 # caddy
+    443 # caddy
+    3002 # crowdsec API
+    6061 # crowdsec metrics
+    8123 # homeassistant (host network)
+  ];
 
   # Local Custom Configurations
   r0adkll = {
@@ -316,6 +324,8 @@ in {
           enable = true;
           listen_uri = "127.0.0.1:3002";
         };
+        # 6060 is the module default, and grimmory publishes 127.0.0.1:6060
+        general.prometheus.listen_port = 6061;
         lapi.credentialsFile = "/var/lib/crowdsec/state/local_api_credentials.yaml";
         capi.credentialsFile = "/var/lib/crowdsec/state/online_api_credentials.yaml";
       };

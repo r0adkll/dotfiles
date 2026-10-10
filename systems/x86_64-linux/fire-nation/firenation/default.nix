@@ -60,6 +60,12 @@ in
       description = "Pinned start of the runner's subuid/subgid range; host IDs are computed from it.";
     };
 
+    reservedPorts = mkOption {
+      type = types.listOf types.port;
+      default = [ ];
+      description = "Ports host services own; no service may use one as its hostPort.";
+    };
+
     domain = mkOption {
       type = types.str;
       default = "firenation.app";
@@ -151,6 +157,10 @@ in
       (uniqueBy "subdomains" (s: s.subdomain) services)
     ]
     ++ refsExist "dependsOn" (s: s.dependsOn)
+    ++ lib.mapAttrsToList (n: s: {
+      assertion = s.hostPort == null || !(lib.elem s.hostPort cfg.reservedPorts);
+      message = "firenation.services.${n}: hostPort ${toString s.hostPort} is reserved by a host service";
+    }) services
     ++ lib.mapAttrsToList (n: s: {
       assertion = !s.rootful || (s.network == null && s.vpn == null && s.dependsOn == [ ]);
       message = "firenation.services.${n}: rootful services run outside the runner's network and units; use network = null and no vpn/dependsOn";
