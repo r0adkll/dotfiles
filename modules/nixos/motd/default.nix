@@ -91,22 +91,27 @@ in
     systemd.services.rust-motd.serviceConfig = mkIf (cfg.userServices != { }) {
       # reaching the user's bus needs /run/user, which ProtectHome hides
       ProtectHome = lib.mkForce false;
-      ExecStartPost = "${pkgs.writeShellScript "motd-user-services" ''
-        {
-          printf '\nUser services (${cfg.userServicesOf}):\n'
+      ExecStartPost = "${pkgs.writeShellScript "motd-user-services" (
+        let
+          width = lib.foldl' lib.max 0 (map lib.stringLength (lib.attrNames cfg.userServices)) + 1;
+        in
+        ''
+          # styled like rust-motd's service_status block; assembled first, written once
+          block=$'\nUser Services:\n'
           ${lib.concatStrings (
             lib.mapAttrsToList (label: unit: ''
               state=$(${pkgs.systemd}/bin/systemctl --user -M ${cfg.userServicesOf}@ is-active ${lib.escapeShellArg "${unit}.service"} 2>/dev/null || true)
               case "$state" in
-                active) color='\e[32m' ;;
-                activating|reloading) color='\e[33m' ;;
-                *) color='\e[31m'; state=''${state:-unknown} ;;
+                active) color=$'\e[38;5;2m' ;;
+                activating|reloading) color=$'\e[38;5;3m' ;;
+                *) color=$'\e[38;5;1m'; state=''${state:-unknown} ;;
               esac
-              printf '  %s: %b%s\e[0m\n' ${lib.escapeShellArg label} "$color" "$state"
+              block+=$(printf '  %-${toString width}s %s%s\e[m' ${lib.escapeShellArg "${label}:"} "$color" "$state")$'\n'
             '') cfg.userServices
           )}
-        } >> motd
-      ''}";
+          printf '%s' "$block" >> motd
+        ''
+      )}";
     };
 
     programs.rust-motd = {
