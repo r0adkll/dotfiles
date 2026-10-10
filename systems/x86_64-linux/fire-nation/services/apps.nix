@@ -73,7 +73,7 @@ in
     };
 
     pocket-id = {
-      image = "ghcr.io/pocket-id/pocket-id:v1";
+      image = "ghcr.io/pocket-id/pocket-id:v2";
       autoUpdate = false;
       uid = 1018;
       port = 1411;
