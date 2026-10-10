@@ -31,14 +31,24 @@ let
     ++ map (c: "usenet/complete/${c}") cats
     ++ map (c: "media/${c}") cats;
   mediaDirs = lib.listToAttrs (
-    map (rel: {
-      name = "${cfg.media.root}/${rel}";
-      # leave existing owners alone; the group and setgid bit are what writers share
-      value.d = {
-        inherit group;
-        mode = "2775";
-      };
-    }) ([ "torrents" "usenet" "usenet/complete" "media" ] ++ mediaTree)
+    map
+      (rel: {
+        name = "${cfg.media.root}/${rel}";
+        # leave existing owners alone; the group and setgid bit are what writers share
+        value.d = {
+          inherit group;
+          mode = "2775";
+        };
+      })
+      (
+        [
+          "torrents"
+          "usenet"
+          "usenet/complete"
+          "media"
+        ]
+        ++ mediaTree
+      )
   );
 in
 {

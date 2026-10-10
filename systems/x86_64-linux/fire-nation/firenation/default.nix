@@ -143,26 +143,25 @@ in
   };
 
   config = mkIf cfg.enable {
-    assertions =
-      [
-        (uniqueBy "uids" (s: if s.identity == "image" then null else s.uid) services)
-        (uniqueBy "host ports" (s: s.hostPort) services)
-        (uniqueBy "subdomains" (s: s.subdomain) services)
-      ]
-      ++ refsExist "dependsOn" (s: s.dependsOn)
-      ++ refsExist "vpn" (s: lib.optional (s.vpn != null) s.vpn)
-      ++ lib.mapAttrsToList (n: s: {
-        assertion = s.identity == "image" || s.uid > 0;
-        message = "firenation.services.${n}: uid 0 is the runner itself; use a non-root uid or identity = \"image\"";
-      }) services
-      ++ lib.mapAttrsToList (n: s: {
-        assertion = builtins.match "[^/]+[.:][^/]*/.+" s.image != null;
-        message = "firenation.services.${n}: image must include its registry (e.g. docker.io/...) for auto-update";
-      }) services
-      ++ lib.mapAttrsToList (n: s: {
-        assertion = s.access == "none" || (s.subdomain != null && s.port != null && s.hostPort != null);
-        message = "firenation.services.${n}: access = ${s.access} needs subdomain, port and hostPort";
-      }) services;
+    assertions = [
+      (uniqueBy "uids" (s: if s.identity == "image" then null else s.uid) services)
+      (uniqueBy "host ports" (s: s.hostPort) services)
+      (uniqueBy "subdomains" (s: s.subdomain) services)
+    ]
+    ++ refsExist "dependsOn" (s: s.dependsOn)
+    ++ refsExist "vpn" (s: lib.optional (s.vpn != null) s.vpn)
+    ++ lib.mapAttrsToList (n: s: {
+      assertion = s.identity == "image" || s.uid > 0;
+      message = "firenation.services.${n}: uid 0 is the runner itself; use a non-root uid or identity = \"image\"";
+    }) services
+    ++ lib.mapAttrsToList (n: s: {
+      assertion = builtins.match "[^/]+[.:][^/]*/.+" s.image != null;
+      message = "firenation.services.${n}: image must include its registry (e.g. docker.io/...) for auto-update";
+    }) services
+    ++ lib.mapAttrsToList (n: s: {
+      assertion = s.access == "none" || (s.subdomain != null && s.port != null && s.hostPort != null);
+      message = "firenation.services.${n}: access = ${s.access} needs subdomain, port and hostPort";
+    }) services;
 
     users.groups.${cfg.media.group}.gid = cfg.media.gid;
     users.users.${cfg.runner} = {

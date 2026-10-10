@@ -4,7 +4,9 @@ let
   cfg = config.firenation;
   services = lib.filterAttrs (_: s: s.enable) cfg.services;
 
-  subPath = root: name: key: "${root}/${name}" + lib.optionalString (key != "") "/${key}";
+  subPath =
+    root: name: key:
+    "${root}/${name}" + lib.optionalString (key != "") "/${key}";
   dirVolumes =
     root: name: map':
     lib.mapAttrsToList (key: target: "${subPath root name key}:${target}") map';
@@ -35,7 +37,9 @@ let
         }
         // identityEnv s
         // s.environment;
-        environmentFiles = lib.optional (s.secrets.env != { }) config.sops.templates."firenation-${name}.env".path;
+        environmentFiles = lib.optional (
+          s.secrets.env != { }
+        ) config.sops.templates."firenation-${name}.env".path;
         volumes =
           dirVolumes cfg.paths.state name s.state
           ++ dirVolumes cfg.paths.cache name s.cache
@@ -66,7 +70,9 @@ let
         };
     } s.extraConfig;
 
-  networkNames = lib.unique (lib.filter (n: n != null) (lib.mapAttrsToList (_: s: s.network) services));
+  networkNames = lib.unique (
+    lib.filter (n: n != null) (lib.mapAttrsToList (_: s: s.network) services)
+  );
 in
 {
   config = lib.mkIf cfg.enable {
