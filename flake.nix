@@ -34,6 +34,13 @@
     };
 
     nix-inspect.url = "github:bluskript/nix-inspect";
+
+    # FireNation: rootless Podman quadlets, pull-based deploys
+    quadlet-nix.url = "github:SEIAROTg/quadlet-nix";
+    comin = {
+      url = "github:nlewo/comin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, snowfall-lib, treefmt-nix, sops-nix

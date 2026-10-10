@@ -29,8 +29,12 @@ in {
   imports = [
     ./hardware-configuration.nix
     ./file-systems.nix
+    ./firenation
+    ./services
     inputs.sops-nix.nixosModules.sops
   ];
+
+  firenation.enable = true;
 
   # Local Custom Configurations
   r0adkll = {
