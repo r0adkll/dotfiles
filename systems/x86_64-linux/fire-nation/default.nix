@@ -90,10 +90,6 @@ in {
         discordWebhookUrlFile = "/run/secrets/discord/zfs-webhook";
         discordAdminRoleId = "1256258047639158877";
       };
-
-      cookie-sync = {
-        enable = true;
-      };
     };
   };
 
@@ -146,20 +142,6 @@ in {
     secrets."discord/zfs-webhook" = {
       owner = config.systemd.services.zfs-health-check.serviceConfig.User;
     };
-    secrets."rclone/gdrive-token" = {
-      owner = config.users.users.r0adkll.name;
-      group = config.users.users.r0adkll.group;
-    };
-
-    templates = {
-      "rclone.conf".content = ''
-        [gdrive]
-        type = drive
-        scope = drive
-        token = ${config.sops.placeholder."rclone/gdrive-token"}
-        team_drive = 
-      '';
-    };
   };
 
   users = {
@@ -196,8 +178,6 @@ in {
     htop
     iotop
     rsync
-    rclone
-    fuse
     usbutils
   ];
 
@@ -243,8 +223,6 @@ in {
     };
   };
 
-  # Enable FUSE for rclone mounting
-  programs.fuse.userAllowOther = true;
 
   # Program Configurations
   programs = {

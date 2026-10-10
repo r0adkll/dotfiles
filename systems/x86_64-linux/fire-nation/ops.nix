@@ -1,5 +1,5 @@
-# Keeping fire-nation running on its own: Google Drive, nightly backups, pull-based
-# deploys (comin) and Discord alerts when something fails.
+# Keeping fire-nation running on its own: nightly backups, pull-based deploys (comin)
+# and Discord alerts when something fails.
 {
   config,
   lib,
@@ -9,7 +9,6 @@
 }:
 let
   runner = config.firenation.runner;
-  rcloneConfig = "/var/lib/rclone/rclone.conf";
   podman = "${config.virtualisation.podman.package}/bin/podman";
 
   # `notify-discord <unit> <system|user>`: post the unit's failure and its last log lines
@@ -59,80 +58,19 @@ in
 {
   imports = [ inputs.comin.nixosModules.comin ];
 
-  # ── Google Drive ─────────────────────────────────────────────────────────
-  # rclone writes refreshed OAuth tokens back into its config, so it gets a writable
-  # copy of the sops-rendered one (the read-only original made the old mount fail).
-  systemd.services = lib.mkMerge [
-    {
-      rclone-config = {
-        description = "Writable rclone config, seeded from sops";
-        wantedBy = [ "multi-user.target" ];
-        serviceConfig = {
-          Type = "oneshot";
-          RemainAfterExit = true;
-        };
-        script = "install -D -m 600 ${config.sops.templates."rclone.conf".path} ${rcloneConfig}";
-      };
-
-      restic-backups-gdrive = {
-        requires = [ "rclone-config.service" ];
-        after = [ "rclone-config.service" ];
-      };
-
-      # Any unit that ends up failed (listed below, plus every quadlet via the firenation
-      # module) posts to the Discord channel the ZFS health check uses.
-      "notify-discord@" = {
-        description = "Discord alert for %i";
-        serviceConfig = {
-          Type = "oneshot";
-          LoadCredential = "webhook:${config.sops.secrets."discord/zfs-webhook".path}";
-          Environment = "WEBHOOK_FILE=%d/webhook";
-          ExecStart = "${notify} %i system";
-        };
-      };
-    }
-    (lib.genAttrs
-      [
-        "restic-backups-cookie-jar"
-        "restic-backups-gdrive"
-        "comin"
-        "caddy"
-        "tailscaled"
-        "crowdsec"
-        "crowdsec-firewall-bouncer"
-        "rclone-config"
-      ]
-      (_: {
-        inherit onFailure;
-      })
-    )
-  ];
-
-  system.fsPackages = [ pkgs.rclone ];
-  fileSystems."/mnt/gdrive" = {
-    device = "gdrive:";
-    fsType = "rclone";
-    options = [
-      "nodev"
-      "nofail"
-      "_netdev"
-      "x-systemd.automount"
-      "x-systemd.requires=rclone-config.service"
-      "x-systemd.after=network-online.target"
-      "args2env"
-      "config=${rcloneConfig}"
-      "allow_other"
-      "vfs_cache_mode=writes"
-      "file_perms=0777"
-      "dir_perms=0777"
-    ];
-  };
-
   # ── Backups ──────────────────────────────────────────────────────────────
-  # Nightly restic snapshots of every service's state, to the rPi share and Google Drive.
+  # Nightly restic snapshots of every service's state, to the rPi share and Cloudflare R2.
   # The repository password is in sops (restic/password); keep a copy in your password
   # manager too, since restoring after losing this machine needs it.
   sops.secrets."restic/password" = { };
+  # bucket-scoped R2 token (docs/migration/r2-backup-wizard.sh in r0adkll/firenation)
+  sops.secrets."r2/access-key-id" = { };
+  sops.secrets."r2/secret-access-key" = { };
+  sops.templates."restic-r2.env".content = ''
+    AWS_ACCESS_KEY_ID=${config.sops.placeholder."r2/access-key-id"}
+    AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."r2/secret-access-key"}
+    AWS_DEFAULT_REGION=auto
+  '';
   services.restic.backups = {
     cookie-jar = backup // {
       repository = "/mnt/cookie-jar/restic/fire-nation";
@@ -142,12 +80,10 @@ in
         Persistent = true;
       };
     };
-    gdrive = backup // {
-      repository = "rclone:gdrive:backups/fire-nation";
-      rcloneConfigFile = rcloneConfig;
-      # Drive rate-limits API calls: fewer, larger packs and a request cap keep it happy
-      extraBackupArgs = [ "--pack-size=64" ];
-      rcloneOptions.tpslimit = "8";
+    # Cloudflare R2 (S3): the off-site copy; restores are free (no egress fees)
+    r2 = backup // {
+      repository = "s3:https://e3385a3a5652e8459c1cc28ecd5d2466.r2.cloudflarestorage.com/fire-nation-backups";
+      environmentFile = config.sops.templates."restic-r2.env".path;
       timerConfig = {
         OnCalendar = "03:30";
         RandomizedDelaySec = "15m";
@@ -174,7 +110,36 @@ in
     gpgPublicKeyPaths = [ "${./github-web-flow.gpg}" ];
   };
 
-  # ── Alerts (user side) ───────────────────────────────────────────────────
+  # ── Alerts ───────────────────────────────────────────────────────────────
+  # Any unit listed here (plus every quadlet, via the firenation module) that ends up
+  # failed posts its last log lines to the Discord channel the ZFS health check uses.
+  systemd.services = {
+    "notify-discord@" = {
+      description = "Discord alert for %i";
+      serviceConfig = {
+        Type = "oneshot";
+        LoadCredential = "webhook:${config.sops.secrets."discord/zfs-webhook".path}";
+        Environment = "WEBHOOK_FILE=%d/webhook";
+        ExecStart = "${notify} %i system";
+      };
+    };
+  }
+  //
+    lib.genAttrs
+      [
+        "restic-backups-cookie-jar"
+        "restic-backups-r2"
+        "comin"
+        "caddy"
+        "tailscaled"
+        "crowdsec"
+        "crowdsec-firewall-bouncer"
+      ]
+      (_: {
+        inherit onFailure;
+      });
+
+  # user units (r0adkll's quadlets, podman auto-update) use this user-level twin
   sops.secrets."discord/alerts-webhook-runner" = {
     key = "discord/zfs-webhook";
     owner = runner;
