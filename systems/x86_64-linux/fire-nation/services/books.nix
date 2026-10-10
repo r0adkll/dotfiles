@@ -44,56 +44,65 @@ in
       volumes = [ "${bookdrop}:/books" ];
     };
 
-    # Grimmory, Booklore's community successor: same database, paths and USER_ID/GROUP_ID.
-    # The name stays booklore so its state, route and database don't move. A dump taken
-    # just before the switch is in booklore-mariadb/pre-grimmory-*.sql.
-    booklore = {
+    # Grimmory, Booklore's community successor (same database, paths and USER_ID/GROUP_ID).
+    # Its MariaDB schema is still named booklore: MariaDB can't rename a database in place.
+    grimmory = {
       image = "docker.io/grimmory/grimmory:latest";
       uid = 1015;
       port = 6060;
       hostPort = 6060;
       access = "private";
-      subdomain = "booklore";
+      subdomain = "grimmory";
       state."" = "/app/data";
       volumes = [
         "${media}/ebooks:/books"
         "${bookdrop}:/bookdrop"
       ];
-      dependsOn = [ "booklore-mariadb" ];
+      dependsOn = [ "grimmory-db" ];
       # reads its own USER_ID/GROUP_ID instead of PUID/PGID
       environment = {
         USER_ID = "1015";
         GROUP_ID = "0";
         GRIMMORY_PORT = "6060";
+        DATABASE_URL = "jdbc:mariadb://grimmory-db:3306/booklore";
       };
       secrets.env = {
-        DATABASE_URL = "booklore/database-url";
-        DATABASE_USERNAME = "booklore/db-user";
-        DATABASE_PASSWORD = "booklore/db-password";
+        DATABASE_USERNAME = "grimmory/db-user";
+        DATABASE_PASSWORD = "grimmory/db-password";
+      };
+      # renamed from booklore; firenation-adopt moves the state over
+      migrateFrom = {
+        container = "booklore";
+        state."" = "/mnt/home/stacks/booklore";
       };
     };
 
-    booklore-mariadb = {
+    grimmory-db = {
       image = "lscr.io/linuxserver/mariadb:11.4.5";
       autoUpdate = false;
       uid = 1016;
+      environment.MYSQL_DATABASE = "booklore";
       secrets.env = {
-        MYSQL_ROOT_PASSWORD = "booklore/mysql-root-password";
-        MYSQL_DATABASE = "booklore/mysql-database";
-        MYSQL_USER = "booklore/db-user";
-        MYSQL_PASSWORD = "booklore/db-password";
+        MYSQL_ROOT_PASSWORD = "grimmory/mysql-root-password";
+        MYSQL_USER = "grimmory/db-user";
+        MYSQL_PASSWORD = "grimmory/db-password";
       };
-      # booklore starts only once the database answers, like Compose's service_healthy
+      # grimmory starts only once the database answers, like Compose's service_healthy
       extraConfig.containerConfig = {
         healthCmd = "mariadb-admin ping -h localhost";
         healthInterval = "5s";
         healthRetries = 10;
         notify = "healthy";
       };
+      # renamed from booklore-mariadb; holds the pre-grimmory-*.sql dump
+      migrateFrom = {
+        container = "booklore-mariadb";
+        state."" = "/mnt/home/stacks/booklore-mariadb";
+      };
     };
   };
 
-  # shared drop folder between shelfmark (writes) and booklore (imports)
+  # shared drop folder between shelfmark (writes) and grimmory (imports)
   systemd.tmpfiles.settings."21-firenation-shared".${bookdrop}.d = {
     group = "media";
     mode = "2775";

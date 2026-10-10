@@ -1,6 +1,7 @@
 # Dashboard, Home Assistant, the Discord bot, and identity (Pocket ID + tinyauth).
+{ config, ... }:
 let
-  old = "/mnt/home/stacks/config";
+  registryAuth = config.sops.templates."containers-auth.json".path;
 in
 {
   firenation.services = {
@@ -122,4 +123,17 @@ in
       };
     };
   };
+
+  # Rootless podman reads registry credentials from ~/.config/containers/auth.json;
+  # Azulon's image is private on ghcr.io (read:packages token from ghcr-token-wizard.sh)
+  sops.secrets."ghcr/auth" = { };
+  sops.templates."containers-auth.json" = {
+    owner = "r0adkll";
+    content = builtins.toJSON { auths."ghcr.io".auth = config.sops.placeholder."ghcr/auth"; };
+  };
+  home-manager.users.r0adkll =
+    { config, ... }:
+    {
+      xdg.configFile."containers/auth.json".source = config.lib.file.mkOutOfStoreSymlink registryAuth;
+    };
 }

@@ -167,7 +167,7 @@ in
         type = types.attrsOf types.str;
         default = { };
         example = {
-          DATABASE_PASSWORD = "booklore/db-password";
+          DATABASE_PASSWORD = "grimmory/db-password";
         };
         description = "ENV_VAR = sops key; rendered into an env file for the container.";
       };
