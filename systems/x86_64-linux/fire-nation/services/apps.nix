@@ -74,7 +74,6 @@ in
 
     pocket-id = {
       image = "ghcr.io/pocket-id/pocket-id:v2";
-      autoUpdate = false;
       uid = 1018;
       port = 1411;
       hostPort = 1411;
@@ -97,7 +96,6 @@ in
 
     tinyauth = {
       image = "ghcr.io/tinyauthapp/tinyauth:v5";
-      autoUpdate = false;
       identity = "image";
       uid = 0;
       port = 3003;

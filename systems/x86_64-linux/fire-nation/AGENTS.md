@@ -19,7 +19,7 @@ The home server: NixOS 26.05 on Intel, with ZFS. Everything it runs is declared 
 - **Deploys:** comin; see the root `AGENTS.md`. A manual `nh os switch` in `~/.config/nixos` on the server still works for debugging, and the next comin deploy replaces it.
 - **Backups:** restic snapshots `/mnt/home/stacks` and `/var/lib/tailscale` nightly, to `cookie-jar` (the rPi share, 03:00) and Cloudflare R2 (03:30), configured in `ops.nix`. Use `sudo restic-cookie-jar …` or `sudo restic-r2 …`.
 - **Alerts:** a unit that ends up failed posts its log tail to Discord through `notify-discord@` (`ops.nix`). That covers every quadlet, the backups, comin, the edge and CrowdSec.
-- **Updates:** `podman auto-update` runs nightly at 04:00. `autoUpdate = false` pins an image; today that's the databases, Pocket ID and tinyauth.
+- **Updates:** `podman auto-update` runs nightly at 04:00. `autoUpdate = false` pins an image; today that's the databases.
 - **CrowdSec** runs natively: the engine's API on `127.0.0.1:3002` and metrics on 6061, plus the firewall bouncer on `INPUT`. It reads Caddy's access log and sshd. The 26.05 modules have three bugs worked around in `default.nix` (nixpkgs#500515, #526506); read those comments before changing it.
 
 ## The ID model
