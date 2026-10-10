@@ -189,6 +189,20 @@ in {
     wants = [ "docker.service" ];
   };
 
+  # Workarounds for the 26.05 crowdsec modules:
+  # - setup runs `cscli machine add` before `capi register`, and machine add fails while
+  #   the CAPI credentials file is missing; an empty one is accepted as "not registered yet"
+  # - the bouncer's register service calls cscli without -c, so it reads
+  #   /etc/crowdsec/config.yaml (NixOS/nixpkgs#500515); drop this once that merges
+  systemd.tmpfiles.settings."11-crowdsec-workarounds" = with config.services.crowdsec; {
+    ${settings.capi.credentialsFile}.f = {
+      inherit user group;
+      mode = "0600";
+    };
+    "/etc/crowdsec/config.yaml"."L+".argument =
+      "${(pkgs.formats.yaml { }).generate "crowdsec.yaml" settings.general}";
+  };
+
   # Create systemd mount service for Google Drive
   systemd.services.mount-gdrive = {
     description = "Mount Google Drive with rclone";
