@@ -44,12 +44,11 @@ in
       volumes = [ "${bookdrop}:/books" ];
     };
 
+    # Grimmory, Booklore's community successor: same database, paths and USER_ID/GROUP_ID.
+    # The name stays booklore so its state, route and database don't move. A dump taken
+    # just before the switch is in booklore-mariadb/pre-grimmory-*.sql.
     booklore = {
-      image = "docker.io/booklore/booklore:latest";
-      # Frozen: upstream stopped publishing this image. The copy running in Docker was
-      # loaded into the runner's store (docker save | podman load). Successor: Grimmory (docker.io/grimmory/grimmory).
-      autoUpdate = false;
-      extraConfig.containerConfig.pull = "never";
+      image = "docker.io/grimmory/grimmory:latest";
       uid = 1015;
       port = 6060;
       hostPort = 6060;
@@ -61,11 +60,11 @@ in
         "${bookdrop}:/bookdrop"
       ];
       dependsOn = [ "booklore-mariadb" ];
-      # booklore reads its own USER_ID/GROUP_ID instead of PUID/PGID
+      # reads its own USER_ID/GROUP_ID instead of PUID/PGID
       environment = {
         USER_ID = "1015";
         GROUP_ID = "0";
-        BOOKLORE_PORT = "6060";
+        GRIMMORY_PORT = "6060";
       };
       secrets.env = {
         DATABASE_URL = "booklore/database-url";
