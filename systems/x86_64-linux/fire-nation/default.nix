@@ -47,7 +47,6 @@ in {
       };
       dockerContainers = {
         "/traefik" = "Traefik";
-        "/crowdsec" = "Crowdsec";
         "/watchtower" = "Watchtower";
         "/azulon" = "Azulon";
         "/vscode-server" = "VSCode";
@@ -120,7 +119,6 @@ in {
     # Host key is readable by root only, so containers running as r0adkll can't reach it
     age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
 
-    secrets."services/crowdsec/firewall-bouncer-api-key" = { };
     secrets."samba/cookie-jar" = { };
     secrets."discord/zfs-webhook" = {
       owner = config.systemd.services.zfs-health-check.serviceConfig.User;
@@ -131,22 +129,6 @@ in {
     };
 
     templates = {
-      "crowdsec.yaml".content = ''
-        api_key: ${
-          config.sops.placeholder."services/crowdsec/firewall-bouncer-api-key"
-        }
-        api_url: http://127.0.0.1:3002
-        blacklists_ipv4: crowdsec-blacklists
-        blacklists_ipv6: crowdsec6-blacklists
-        deny_action: DROP
-        ipset_type: nethash
-        iptables_chains:
-        - INPUT
-        log_mode: stdout
-        mode: iptables
-        update_frequency: 10s
-      '';
-
       "rclone.conf".content = ''
         [gdrive]
         type = drive
@@ -179,7 +161,6 @@ in {
 
   # System Profile Packages
   environment.systemPackages = with pkgs; [
-    r0adkll.crowdsec-firewall-bouncer
     wget
     git
     git-lfs
@@ -201,6 +182,12 @@ in {
   # TODO: Move this to its own package/module
   environment.etc."rclone/rclone.conf".source =
     config.sops.templates."rclone.conf".path;
+
+  # The bouncer inserts into DOCKER-USER, which only exists once dockerd is up
+  systemd.services.crowdsec-firewall-bouncer = {
+    after = [ "docker.service" ];
+    wants = [ "docker.service" ];
+  };
 
   # Create systemd mount service for Google Drive
   systemd.services.mount-gdrive = {
@@ -257,10 +244,45 @@ in {
       };
     };
 
-    # Crowdsec Firewall Bouncer
+    # CrowdSec engine + local API. The API listens on 3002 because sabnzbd owns 8080.
+    crowdsec = {
+      enable = true;
+      autoUpdateService = true;
+      hub.collections = [
+        "crowdsecurity/linux"
+        "crowdsecurity/sshd"
+        "crowdsecurity/traefik"
+        "crowdsecurity/http-cve"
+        "crowdsecurity/whitelist-good-actors"
+      ];
+      localConfig.acquisitions = [
+        {
+          source = "journalctl";
+          journalctl_filter = [ "_SYSTEMD_UNIT=sshd.service" ];
+          labels.type = "syslog";
+        }
+        {
+          # Traefik (still a Docker container) writes here; Caddy replaces it later
+          source = "file";
+          filenames = [ "/mnt/home/stacks/logs/traefik/access.log" ];
+          labels.type = "traefik";
+        }
+      ];
+      settings = {
+        general.api.server = {
+          enable = true;
+          listen_uri = "127.0.0.1:3002";
+        };
+        lapi.credentialsFile = "/var/lib/crowdsec/state/local_api_credentials.yaml";
+        capi.credentialsFile = "/var/lib/crowdsec/state/online_api_credentials.yaml";
+      };
+    };
+
+    # Registers itself with the local API above, so there's no API key to manage
     crowdsec-firewall-bouncer = {
       enable = true;
-      settingsFile = config.sops.templates."crowdsec.yaml".path;
+      # DOCKER-USER covers Docker-published ports (Traefik's 80/443), which skip INPUT
+      settings.iptables_chains = [ "INPUT" "DOCKER-USER" ];
     };
 
     # ET
