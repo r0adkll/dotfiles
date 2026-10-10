@@ -35,6 +35,7 @@ in {
   ];
 
   firenation.enable = true;
+  firenation.edge.enable = true;
 
   # Local Custom Configurations
   r0adkll = {
