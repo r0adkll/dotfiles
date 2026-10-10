@@ -42,5 +42,6 @@ The home server: NixOS 26.05 on Intel, with ZFS. Everything it runs is declared 
 - A `hostPort` in `firenation.reservedPorts` (Caddy, CrowdSec, Home Assistant) fails evaluation. This exists because CrowdSec's metrics once took Grimmory's port at boot.
 - Rootless containers can't load kernel modules (`wireguard` is loaded at boot) or reach Bluetooth and raw sockets; use `rootful` for those.
 - `sudo` asks for a password, so commands that need root are for the user to run. Read-only checks run as `r0adkll`: `podman ps`, `systemctl --user status <service>`, `journalctl --user -u <service>`, and `journalctl -u <unit>` for system units.
+- comin never prunes branches deleted on GitHub. A deleted `testing-fire-nation` stays selected until `main` gets a new commit (a testing branch counts only while it sits on top of `main`). After testing, land a commit on `main`.
 - The login shell is fish. Send bash over ssh as `ssh fire-nation 'bash -s' <<'EOF' … EOF`.
 - Known open issues: the WireGuard tunnel has never completed a handshake (the VPN account needs checking), and Homepage's container widgets need the Podman socket.

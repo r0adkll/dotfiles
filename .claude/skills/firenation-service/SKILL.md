@@ -23,7 +23,7 @@ description: Add, change, move, rename or remove a FireNation service on fire-na
    - `nix eval --raw .#nixosConfigurations.fire-nation.config.system.build.toplevel.drvPath` must pass; it runs the uniqueness, reserved-port and reference assertions.
    - Run `nix fmt` on the files you touched.
    - Read the generated quadlet: `nix eval --raw .#nixosConfigurations.fire-nation.config.home-manager.users.r0adkll.virtualisation.quadlet.containers.<name>._configText`.
-5. **Deploy.** Pushing to `main` deploys within a minute, so confirm with the user first. To try a change without touching the boot entry, push to the branch `testing-fire-nation` instead; it deploys with `switch-to-configuration test`.
+5. **Deploy.** Pushing to `main` deploys within a minute, so confirm with the user first. To try a change without touching the boot entry, push to the branch `testing-fire-nation` instead; it deploys with `switch-to-configuration test`. Deleting that branch afterwards isn't enough, because comin keeps its copy until `main` gets a new commit; finish by landing the change, or any commit, on `main`.
 6. **Verify on fire-nation** once comin finishes (`journalctl -u comin`):
    - `systemctl --user is-active <name>`
    - `podman logs <name>`
