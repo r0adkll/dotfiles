@@ -1,7 +1,4 @@
 # Players, transcoding, requests and stats.
-let
-  old = "/mnt/home/stacks/config";
-in
 {
   firenation.services = {
     # Clients find Plex through plex.tv and the LAN port, so it has no proxy route.
@@ -18,7 +15,6 @@ in
         PLEX_BETA_INSTALL = "true";
         PLEX_PURGE_CODECS = "false";
       };
-      migrateFrom.state."" = "${old}/plex";
     };
 
     jellyfin = {
@@ -31,7 +27,6 @@ in
       gpu = true;
       media = "ro";
       cache."" = "/cache";
-      migrateFrom.state."" = "${old}/jellyfin";
     };
 
     tdarr = {
@@ -60,11 +55,6 @@ in
         ffmpegVersion = "6";
         nodeName = "fire-nation-node";
       };
-      migrateFrom.state = {
-        server = "${old}/tdarr-server";
-        configs = "${old}/tdarr";
-        logs = "/mnt/home/stacks/logs/tdarr";
-      };
     };
 
     overseerr = {
@@ -78,7 +68,6 @@ in
       hostPort = 7979;
       access = "public";
       subdomain = "overseerr";
-      migrateFrom.state."" = "${old}/overseerr";
     };
 
     tautulli = {
@@ -89,7 +78,6 @@ in
       access = "private";
       subdomain = "tautulli";
       environment.WEBUI_PORTS = "8181/tcp,8181/udp";
-      migrateFrom.state."" = "${old}/tautulli";
     };
   };
 }

@@ -1,6 +1,5 @@
 # Audiobooks, ebooks and their download helpers.
 let
-  old = "/mnt/home/stacks/config";
   media = "/mnt/data/media";
   bookdrop = "/mnt/cache/bookdrop";
 in
@@ -21,7 +20,6 @@ in
         "${media}/podcasts:/podcasts"
         "${media}/ebooks:/ebooks:ro"
       ];
-      migrateFrom.state."" = "${old}/audiobookshelf";
     };
 
     flaresolverr = {
@@ -34,7 +32,6 @@ in
         LOG_HTML = "false";
         CAPTCHA_SOLVER = "none";
       };
-      migrateFrom = { };
     };
 
     shelfmark = {
@@ -45,7 +42,6 @@ in
       access = "private";
       subdomain = "shelfmark";
       volumes = [ "${bookdrop}:/books" ];
-      migrateFrom.state."" = "${old}/shelfmark";
     };
 
     booklore = {
@@ -76,7 +72,6 @@ in
         DATABASE_USERNAME = "booklore/db-user";
         DATABASE_PASSWORD = "booklore/db-password";
       };
-      migrateFrom.state."" = "${old}/booklore";
     };
 
     booklore-mariadb = {
@@ -96,7 +91,6 @@ in
         healthRetries = 10;
         notify = "healthy";
       };
-      migrateFrom.state."" = "${old}/booklore_db";
     };
   };
 

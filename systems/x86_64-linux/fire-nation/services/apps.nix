@@ -25,10 +25,6 @@ in
         LOG_TARGETS = "stdout";
         HOMEPAGE_ALLOWED_HOSTS = "fire-nation:3000,homepage.firenation.app";
       };
-      migrateFrom.state = {
-        "" = "${old}/homepage";
-        images = "/mnt/home/stacks/images/homepage";
-      };
     };
 
     # Host networking for device discovery; reached directly on :8123 (firewall already open).
@@ -94,10 +90,6 @@ in
         healthCmd = "/app/pocket-id healthcheck";
         healthInterval = "90s";
       };
-      migrateFrom = {
-        container = "home-pocket-id-1";
-        state."" = "${old}/pocket-id";
-      };
     };
 
     tinyauth = {
@@ -127,7 +119,6 @@ in
         USERS = "tinyauth/users";
         PROVIDERS_POCKETID_CLIENT_SECRET = "tinyauth/pocketid-client-secret";
       };
-      migrateFrom = { };
     };
   };
 }

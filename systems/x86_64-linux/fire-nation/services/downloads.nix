@@ -1,7 +1,6 @@
 # qBittorrent runs inside WireGuard's network namespace, so all of its traffic goes
 # through the tunnel and its web UI is published on the wireguard container.
 let
-  old = "/mnt/home/stacks/config";
   state = "/mnt/home/stacks";
 in
 {
@@ -15,10 +14,6 @@ in
       extraConfig.containerConfig = {
         addCapabilities = [ "NET_ADMIN" ];
         sysctl."net.ipv4.conf.all.src_valid_mark" = "1";
-      };
-      migrateFrom.state = {
-        config = "${old}/wireguard/config";
-        init = "${old}/wireguard/init";
       };
     };
 
@@ -35,10 +30,6 @@ in
       state = {
         "" = "/config";
         vuetorrent = "/vuetorrent";
-      };
-      migrateFrom.state = {
-        "" = "${old}/qtbittorrent";
-        vuetorrent = "${old}/vuetorrent";
       };
     };
   };

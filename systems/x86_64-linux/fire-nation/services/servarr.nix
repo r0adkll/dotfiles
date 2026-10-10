@@ -1,8 +1,5 @@
 # The *arr suite and its downloaders' companions. All share the firenation network and
 # reach each other by name (e.g. http://sonarr:8989), as they did under Compose.
-let
-  old = "/mnt/home/stacks/config";
-in
 {
   firenation.services = {
     sabnzbd = {
@@ -14,7 +11,6 @@ in
       subdomain = "sabnzbd";
       media = "rw";
       environment.WEBUI_PORTS = "8080/tcp,8080/udp";
-      migrateFrom.state."" = "${old}/sabnzbd";
     };
 
     sonarr = {
@@ -25,7 +21,6 @@ in
       access = "private";
       subdomain = "sonarr";
       media = "rw";
-      migrateFrom.state."" = "${old}/sonarr";
     };
 
     radarr = {
@@ -36,7 +31,6 @@ in
       access = "private";
       subdomain = "radarr";
       media = "rw";
-      migrateFrom.state."" = "${old}/radarr";
     };
 
     # Bookshelf (a Readarr fork); the name stays readarr because prowlarr syncs to readarr:8787
@@ -49,7 +43,6 @@ in
       access = "private";
       subdomain = "readarr";
       media = "rw";
-      migrateFrom.state."" = "${old}/readarr";
     };
 
     lidarr = {
@@ -60,7 +53,6 @@ in
       access = "private";
       subdomain = "lidarr";
       media = "rw";
-      migrateFrom.state."" = "${old}/lidarr";
     };
 
     bazarr = {
@@ -72,7 +64,6 @@ in
       subdomain = "bazarr";
       media = "rw";
       environment.WEBUI_PORTS = "6767/tcp,6767/udp";
-      migrateFrom.state."" = "${old}/bazarr";
     };
 
     recyclarr = {
@@ -80,7 +71,6 @@ in
       image = "ghcr.io/recyclarr/recyclarr:8";
       identity = "user";
       uid = 1007;
-      migrateFrom.state."" = "${old}/recyclarr";
     };
 
     prowlarr = {
@@ -90,7 +80,6 @@ in
       hostPort = 8989;
       access = "private";
       subdomain = "prowlarr";
-      migrateFrom.state."" = "${old}/prowlarr";
     };
 
     # Cloudflare solver for prowlarr; stateless
@@ -101,7 +90,6 @@ in
       port = 8191;
       hostPort = 8191;
       state = { };
-      migrateFrom = { };
     };
   };
 }
