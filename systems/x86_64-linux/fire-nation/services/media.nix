@@ -57,12 +57,10 @@
       };
     };
 
+    # Seerr is Overseerr's successor. It migrates the Overseerr database on first start, so the
+    # service keeps its name, UID, state directory and subdomain.
     overseerr = {
-      image = "ghcr.io/hotio/overseerr:latest";
-      # Frozen: upstream stopped publishing this image. The copy running in Docker was
-      # loaded into the runner's store (docker save | podman load). Successor: Seerr (ghcr.io/hotio/seerr).
-      autoUpdate = false;
-      extraConfig.containerConfig.pull = "never";
+      image = "ghcr.io/hotio/seerr:latest";
       uid = 1012;
       port = 5055;
       hostPort = 7979;
