@@ -96,7 +96,7 @@ in
     };
 
     tinyauth = {
-      image = "ghcr.io/steveiliop56/tinyauth:v4";
+      image = "ghcr.io/tinyauthapp/tinyauth:v5";
       autoUpdate = false;
       identity = "image";
       uid = 0;
@@ -106,21 +106,22 @@ in
       subdomain = "tinyauth";
       state = { };
       environment = {
-        PORT = "3003";
-        APP_URL = "https://tinyauth.firenation.app";
-        OAUTH_WHITELIST = "veedubusc@gmail.com";
-        OAUTH_AUTO_REDIRECT = "pocketid";
-        PROVIDERS_POCKETID_CLIENT_ID = "73510c5f-a757-42d9-b0bc-294e51538e6c";
-        PROVIDERS_POCKETID_AUTH_URL = "https://firenation.app/authorize";
-        PROVIDERS_POCKETID_TOKEN_URL = "https://firenation.app/api/oidc/token";
-        PROVIDERS_POCKETID_USER_INFO_URL = "https://firenation.app/api/oidc/userinfo";
-        PROVIDERS_POCKETID_REDIRECT_URL = "https://tinyauth.firenation.app/api/oauth/callback/pocketid";
-        PROVIDERS_POCKETID_SCOPES = "openid email profile groups";
-        PROVIDERS_POCKETID_NAME = "Pocket ID";
+        TINYAUTH_SERVER_PORT = "3003";
+        TINYAUTH_DATABASE_PATH = "/data/tinyauth.db";
+        TINYAUTH_APPURL = "https://tinyauth.firenation.app";
+        TINYAUTH_OAUTH_WHITELIST = "veedubusc@gmail.com";
+        TINYAUTH_OAUTH_AUTOREDIRECT = "pocketid";
+        TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTID = "73510c5f-a757-42d9-b0bc-294e51538e6c";
+        TINYAUTH_OAUTH_PROVIDERS_POCKETID_AUTHURL = "https://firenation.app/authorize";
+        TINYAUTH_OAUTH_PROVIDERS_POCKETID_TOKENURL = "https://firenation.app/api/oidc/token";
+        TINYAUTH_OAUTH_PROVIDERS_POCKETID_USERINFOURL = "https://firenation.app/api/oidc/userinfo";
+        TINYAUTH_OAUTH_PROVIDERS_POCKETID_REDIRECTURL = "https://tinyauth.firenation.app/api/oauth/callback/pocketid";
+        TINYAUTH_OAUTH_PROVIDERS_POCKETID_SCOPES = "openid email profile groups";
+        TINYAUTH_OAUTH_PROVIDERS_POCKETID_NAME = "Pocket ID";
       };
       secrets.env = {
-        USERS = "tinyauth/users";
-        PROVIDERS_POCKETID_CLIENT_SECRET = "tinyauth/pocketid-client-secret";
+        TINYAUTH_AUTH_USERS = "tinyauth/users";
+        TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTSECRET = "tinyauth/pocketid-client-secret";
       };
     };
   };
