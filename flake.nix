@@ -83,6 +83,39 @@
         checks = eachSystem (pkgs: {
           formatting = treefmtEval.${pkgs.system}.config.build.check self;
         });
+
+        # `nix run .#dns -- preview|push`: the firenation.app zone from fire-nation's
+        # service definitions (run from the repo root; uses your sops key)
+        outputs-builder = channels: {
+          apps.dns = {
+            type = "app";
+            program = "${
+              channels.nixpkgs.writeShellApplication {
+                name = "firenation-dns";
+                runtimeInputs = with channels.nixpkgs; [
+                  dnscontrol
+                  sops
+                ];
+                text = ''
+                  secrets=systems/x86_64-linux/fire-nation/secrets/secrets.yaml
+                  [ -f "$secrets" ] || { echo "run from the dotfiles repo root"; exit 1; }
+                  get() { sops decrypt --extract "$1" "$secrets"; }
+                  work=$(mktemp -d); trap 'rm -rf "$work"' EXIT
+
+                  nix eval --raw .#nixosConfigurations.fire-nation.config.firenation.dns.configText > "$work/dnsconfig.js"
+                  CLOUDFLARE_API_TOKEN=$(get '["cloudflare"]["dnscontrol"]["api-token"]')
+                  CLOUDFLARE_ACCOUNT_ID=$(get '["cloudflare"]["dnscontrol"]["account-id"]')
+                  export CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID
+                  # shellcheck disable=SC2016 # dnscontrol expands these itself
+                  echo '{"cloudflare":{"TYPE":"CLOUDFLAREAPI","apitoken":"$CLOUDFLARE_API_TOKEN","accountid":"$CLOUDFLARE_ACCOUNT_ID"}}' > "$work/creds.json"
+
+                  dnscontrol "''${1:-preview}" --config "$work/dnsconfig.js" --creds "$work/creds.json" \
+                    -v "HOME_IP=$(get '["cloudflare"]["home-ip"]')" "''${@:2}"
+                '';
+              }
+            }/bin/firenation-dns";
+          };
+        };
       };
 
       # Fleet MDM enforces the device name as the hardware serial, so alias the

@@ -41,6 +41,8 @@ in
     ./storage.nix
     ./secrets.nix
     ./adopt.nix
+    ./edge.nix
+    ./dns.nix
   ];
 
   options.firenation = {
@@ -159,8 +161,10 @@ in
       message = "firenation.services.${n}: image must include its registry (e.g. docker.io/...) for auto-update";
     }) services
     ++ lib.mapAttrsToList (n: s: {
-      assertion = s.access == "none" || (s.subdomain != null && s.port != null && s.hostPort != null);
-      message = "firenation.services.${n}: access = ${s.access} needs subdomain, port and hostPort";
+      assertion =
+        s.access == "none"
+        || (s.subdomain != null && s.port != null && (s.hostPort != null || s.lanPorts != [ ]));
+      message = "firenation.services.${n}: access = ${s.access} needs subdomain, port, and hostPort or lanPorts";
     }) services;
 
     users.groups.${cfg.media.group}.gid = cfg.media.gid;
