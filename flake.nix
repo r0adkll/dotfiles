@@ -6,7 +6,6 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     # Compatibility JDK required by the Android dev environment.
     nixpkgs-java23.url = "github:NixOS/nixpkgs/nixos-25.05";
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     darwin = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";

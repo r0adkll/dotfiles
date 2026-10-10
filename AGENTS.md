@@ -6,7 +6,6 @@ One Nix flake (Snowfall Lib, namespace `r0adkll`) for every machine:
 |---|---|---|
 | `ultramar` | personal Mac (nix-darwin) | `systems/aarch64-darwin/ultramar`, `homes/aarch64-darwin/r0adkll@ultramar` |
 | `dh-rddt` | work Mac (nix-darwin); MDM names it by serial `JF0VV2XVW7`, aliased in `flake.nix` | `systems/aarch64-darwin/dh-rddt` |
-| `nixpi` | Raspberry Pi (NixOS) | `systems/aarch64-linux/nixpi` |
 | `fire-nation` | home server (NixOS) running FireNation | `systems/x86_64-linux/fire-nation`; read its `AGENTS.md` before changing it |
 
 ## Layout
