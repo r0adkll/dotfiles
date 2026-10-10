@@ -1,6 +1,6 @@
 # The edge: native Caddy (one wildcard cert via Cloudflare DNS-01) routing to every
 # service's local port, native Tailscale for the private tier, and CrowdSec reading
-# Caddy's log. Routes reach Docker-published and Podman 127.0.0.1 ports alike.
+# Caddy's log. Routes go to each service's 127.0.0.1 (or LAN) port.
 {
   config,
   lib,

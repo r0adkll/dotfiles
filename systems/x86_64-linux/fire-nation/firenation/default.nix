@@ -189,7 +189,7 @@ in
       ];
     };
 
-    # Podman + the quadlet generator. Docker stays installed until Phase 5.
+    # Podman + the quadlet generator
     virtualisation.quadlet.enable = true;
 
     home-manager.sharedModules = [ inputs.quadlet-nix.homeManagerModules.quadlet ];

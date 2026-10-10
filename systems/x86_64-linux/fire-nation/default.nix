@@ -50,11 +50,19 @@ in {
         cache = "/mnt/cache";
         media = "/mnt/data";
       };
-      dockerContainers = {
-        "/traefik" = "Traefik";
-        "/watchtower" = "Watchtower";
-        "/azulon" = "Azulon";
-        "/vscode-server" = "VSCode";
+      services = {
+        Caddy = "caddy";
+        Tailscale = "tailscaled";
+        CrowdSec = "crowdsec";
+        "Home Assistant" = "homeassistant";
+      };
+      userServices = {
+        Plex = "plex";
+        Jellyfin = "jellyfin";
+        Sonarr = "sonarr";
+        Radarr = "radarr";
+        "Pocket ID" = "pocket-id";
+        Azulon = "azulon";
       };
     };
 
@@ -151,7 +159,7 @@ in {
       # Default User
       r0adkll = {
         isNormalUser = true;
-        extraGroups = [ "wheel" "docker" ]; # Enable ‘sudo’ for the user.
+        extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
         initialPassword = "pass";
         linger = true;
         shell = pkgs.fish;
@@ -176,7 +184,6 @@ in {
     cifs-utils
     eternal-terminal
     python3
-    docker-compose
     htop
     iotop
     rsync
@@ -189,12 +196,6 @@ in {
   # TODO: Move this to its own package/module
   environment.etc."rclone/rclone.conf".source =
     config.sops.templates."rclone.conf".path;
-
-  # The bouncer inserts into DOCKER-USER, which only exists once dockerd is up
-  systemd.services.crowdsec-firewall-bouncer = {
-    after = [ "docker.service" ];
-    wants = [ "docker.service" ];
-  };
 
   # Workarounds for the 26.05 crowdsec modules:
   # - setup runs `cscli machine add` before `capi register`, and machine add fails while
@@ -300,7 +301,6 @@ in {
       hub.collections = [
         "crowdsecurity/linux"
         "crowdsecurity/sshd"
-        "crowdsecurity/traefik"
         "crowdsecurity/http-cve"
         "crowdsecurity/whitelist-good-actors"
       ];
@@ -309,12 +309,6 @@ in {
           source = "journalctl";
           journalctl_filter = [ "_SYSTEMD_UNIT=sshd.service" ];
           labels.type = "syslog";
-        }
-        {
-          # Traefik (still a Docker container) writes here; Caddy replaces it later
-          source = "file";
-          filenames = [ "/mnt/home/stacks/logs/traefik/access.log" ];
-          labels.type = "traefik";
         }
       ];
       settings = {
@@ -334,8 +328,6 @@ in {
       enable = true;
       registerBouncer.enable = false;
       secrets.apiKeyPath = config.sops.secrets."crowdsec/bouncer-api-key".path;
-      # DOCKER-USER covers Docker-published ports (Traefik's 80/443), which skip INPUT
-      settings.iptables_chains = [ "INPUT" "DOCKER-USER" ];
     };
 
     # ET
@@ -365,12 +357,6 @@ in {
         monthly = lib.mkDefault 0;
       };
     };
-  };
-
-  # Virtualisation / Docker
-  virtualisation.docker = {
-    enable = true;
-    autoPrune.enable = true;
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,

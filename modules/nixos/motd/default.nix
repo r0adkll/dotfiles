@@ -51,6 +51,16 @@ in
           filesystem rust-motd attribute set configuration
         '';
       };
+      services = mkOption {
+        default = { };
+        type = lib.types.attrsOf lib.types.str;
+        description = "Label = systemd unit, shown with its status (rust-motd service_status)";
+      };
+      userServices = mkOption {
+        default = { };
+        type = lib.types.attrsOf lib.types.str;
+        description = "Label = user unit of the logged-in user (rust-motd user_service_status)";
+      };
       dockerContainers = mkOption {
         default = {};
         type = lib.types.attrsOf format.type;
@@ -79,7 +89,11 @@ in
         "last_login"
         "filesystems"
         "memory"
-        "docker"
+      ]
+      ++ lib.optional (cfg.services != { }) "service_status"
+      ++ lib.optional (cfg.userServices != { }) "user_service_status"
+      ++ lib.optional (cfg.dockerContainers != { }) "docker"
+      ++ [
         # "weather"
       ];
       settings = {
@@ -111,7 +125,9 @@ in
           value = 2;
         }) (builtins.attrNames config.home-manager.users));
 
-        docker = cfg.dockerContainers;
+        service_status = mkIf (cfg.services != { }) cfg.services;
+        user_service_status = mkIf (cfg.userServices != { }) cfg.userServices;
+        docker = mkIf (cfg.dockerContainers != { }) cfg.dockerContainers;
 
         # Display weather from wttr.in
         # FIXME: This API is busted at the moment
