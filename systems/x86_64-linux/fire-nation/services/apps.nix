@@ -9,7 +9,8 @@ in
       image = "ghcr.io/gethomepage/homepage:latest";
       uid = 1017;
       port = 3000;
-      hostPort = 3000;
+      # LAN devices without Tailscale still reach http://fire-nation:3000
+      lanPorts = [ "3000:3000" ];
       access = "private";
       subdomain = "homepage";
       state = {
