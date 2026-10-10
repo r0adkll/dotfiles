@@ -49,7 +49,8 @@ in
     azulon = {
       image = "ghcr.io/r0adkll/azulon:main";
       identity = "image";
-      uid = 0;
+      # the image runs as its node user; secret files must be readable by it
+      uid = 1000;
       state = { };
       environment = {
         TOKEN_FILE = "/run/secrets/discord_bot_token";
@@ -68,7 +69,6 @@ in
         "/run/secrets/bookshelf_api_token" = "azulon/bookshelf-api-token";
         "/run/secrets/cloudflare_api_key" = "azulon/cloudflare-api-key";
       };
-      migrateFrom = { };
     };
 
     pocket-id = {

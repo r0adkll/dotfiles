@@ -28,7 +28,7 @@ in
             _target: key:
             lib.nameValuePair "firenation/${name}/${key}" {
               inherit key;
-              uid = if s.identity == "image" then 0 else ids.hostId s.uid;
+              uid = ids.secretOwner s;
               gid = cfg.media.gid;
               mode = "0440";
             }

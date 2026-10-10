@@ -70,11 +70,6 @@ in
         DATABASE_USERNAME = "grimmory/db-user";
         DATABASE_PASSWORD = "grimmory/db-password";
       };
-      # renamed from booklore; firenation-adopt moves the state over
-      migrateFrom = {
-        container = "booklore";
-        state."" = "/mnt/home/stacks/booklore";
-      };
     };
 
     grimmory-db = {
@@ -93,11 +88,6 @@ in
         healthInterval = "5s";
         healthRetries = 10;
         notify = "healthy";
-      };
-      # renamed from booklore-mariadb; holds the pre-grimmory-*.sql dump
-      migrateFrom = {
-        container = "booklore-mariadb";
-        state."" = "/mnt/home/stacks/booklore-mariadb";
       };
     };
   };

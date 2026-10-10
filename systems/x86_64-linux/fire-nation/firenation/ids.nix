@@ -6,6 +6,17 @@ rec {
 
   # tmpfiles owner for a service's directories. Images that pick their own user get
   # runner-owned dirs so their entrypoint (container root) can chown them.
+  # owner of a service's mounted secret files: whoever the container actually runs as.
+  # uid 0 is container root (the runner, which reads them via the media group).
+  secretOwner =
+    s:
+    if s.rootful then
+      s.uid
+    else if s.uid == 0 then
+      0
+    else
+      hostId s.uid;
+
   ownerOf =
     s:
     if s.rootful then
