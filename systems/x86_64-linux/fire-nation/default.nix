@@ -117,8 +117,8 @@ in {
   sops = {
     defaultSopsFile = ./secrets/secrets.yaml;
     defaultSopsFormat = "yaml";
-    age.sshKeyPaths =
-      [ "${config.users.users.r0adkll.home}/.ssh/firenation-sops" ];
+    # Host key is readable by root only, so containers running as r0adkll can't reach it
+    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
 
     secrets."services/crowdsec/firewall-bouncer-api-key" = { };
     secrets."samba/cookie-jar" = { };

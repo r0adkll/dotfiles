@@ -1,7 +1,12 @@
 keys:
-  - &host_firenation age1mcsg5w5vpm5wua80gzrm5umsq86gn8duj6xeynetw5pnlsk4gcgsrtfq35
+  # Personal key for editing secrets (Mac). Was also the server's key until
+  # fire-nation moved to its host key.
+  - &r0adkll age1mcsg5w5vpm5wua80gzrm5umsq86gn8duj6xeynetw5pnlsk4gcgsrtfq35
+  # fire-nation host key, from /etc/ssh/ssh_host_ed25519_key (readable by root only)
+  - &host_fire_nation age146wv9e848h7q3aldl9v7gu70u2j8yqfmhjruwsdp7plracn5eecsz098hs
 creation_rules:
   - path_regex: secrets/[^/]+\.yaml$
     key_groups:
-      - age: 
-        - *host_firenation
+      - age:
+        - *r0adkll
+        - *host_fire_nation
