@@ -162,6 +162,7 @@ in {
 
   # System Profile Packages
   environment.systemPackages = with pkgs; [
+    ghostty.terminfo # so SSH sessions from Ghostty (TERM=xterm-ghostty) work, including under sudo
     wget
     git
     git-lfs
@@ -196,6 +197,11 @@ in {
   # - plain cscli reads /etc/crowdsec/config.yaml, which the module never writes
   #   (NixOS/nixpkgs#500515); crowdsec-bouncer-enroll below relies on it
   systemd.tmpfiles.settings."11-crowdsec-workarounds" = with config.services.crowdsec; {
+    # the module creates subdirectories only; keep the root owned by the engine's user
+    "/var/lib/crowdsec".d = {
+      inherit user group;
+      mode = "0750";
+    };
     ${settings.capi.credentialsFile}.f = {
       inherit user group;
       mode = "0600";
