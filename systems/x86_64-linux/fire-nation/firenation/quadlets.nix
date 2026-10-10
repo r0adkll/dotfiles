@@ -64,7 +64,11 @@ let
         let
           deps = map (d: "${d}.service") (s.dependsOn ++ lib.optional (s.vpn != null) s.vpn);
         in
-        lib.optionalAttrs (deps != [ ]) {
+        {
+          # notify-discord@ is defined in ops.nix (system and user templates)
+          OnFailure = "notify-discord@%n.service";
+        }
+        // lib.optionalAttrs (deps != [ ]) {
           Requires = deps;
           After = deps;
         };

@@ -31,6 +31,7 @@ in {
     ./file-systems.nix
     ./firenation
     ./services
+    ./ops.nix
     inputs.sops-nix.nixosModules.sops
   ];
 
@@ -200,11 +201,6 @@ in {
     usbutils
   ];
 
-  # Rclone configuration for Google Drive using SOPS template
-  # TODO: Move this to its own package/module
-  environment.etc."rclone/rclone.conf".source =
-    config.sops.templates."rclone.conf".path;
-
   # Workarounds for the 26.05 crowdsec modules:
   # - setup runs `cscli machine add` before `capi register`, and machine add fails while
   #   the CAPI credentials file is missing; an empty one is accepted as "not registered yet"
@@ -245,31 +241,6 @@ in {
       Group = config.services.crowdsec.group;
       LoadCredential = "key:${config.sops.secrets."crowdsec/bouncer-api-key".path}";
     };
-  };
-
-  # Create systemd mount service for Google Drive
-  systemd.services.mount-gdrive = {
-    description = "Mount Google Drive with rclone";
-    after = [ "network-online.target" ];
-    wants = [ "network-online.target" ];
-    wantedBy = [ "multi-user.target" ];
-
-    serviceConfig = {
-      Type = "forking";
-      ExecStart =
-        "${pkgs.rclone}/bin/rclone mount gdrive: /mnt/gdrive --config /etc/rclone/rclone.conf --allow-other --file-perms 0777 --dir-perms 0777 --vfs-cache-mode writes --daemon";
-      ExecStop = "${pkgs.util-linux}/bin/umount /mnt/gdrive";
-      Restart = "on-failure";
-      RestartSec = 10;
-      # Run as root to have mount privileges
-      User = "root";
-      Group = "root";
-    };
-
-    preStart = ''
-      mkdir -p /mnt/gdrive
-      chown r0adkll:users /mnt/gdrive
-    '';
   };
 
   # Enable FUSE for rclone mounting
