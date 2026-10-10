@@ -50,6 +50,10 @@ in
 
     booklore = {
       image = "docker.io/booklore/booklore:latest";
+      # Frozen: upstream stopped publishing this image. The copy running in Docker was
+      # loaded into the runner's store (docker save | podman load). Successor: Grimmory (docker.io/grimmory/grimmory).
+      autoUpdate = false;
+      extraConfig.containerConfig.pull = "never";
       uid = 1015;
       port = 6060;
       hostPort = 6060;

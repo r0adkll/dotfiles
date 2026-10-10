@@ -76,7 +76,8 @@ in
     };
 
     recyclarr = {
-      image = "ghcr.io/recyclarr/recyclarr:latest";
+      # no :latest upstream; 8 floats within the major version
+      image = "ghcr.io/recyclarr/recyclarr:8";
       identity = "user";
       uid = 1007;
       migrateFrom.state."" = "${old}/recyclarr";

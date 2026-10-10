@@ -69,6 +69,10 @@ in
 
     overseerr = {
       image = "ghcr.io/hotio/overseerr:latest";
+      # Frozen: upstream stopped publishing this image. The copy running in Docker was
+      # loaded into the runner's store (docker save | podman load). Successor: Seerr (ghcr.io/hotio/seerr).
+      autoUpdate = false;
+      extraConfig.containerConfig.pull = "never";
       uid = 1012;
       port = 5055;
       hostPort = 7979;
