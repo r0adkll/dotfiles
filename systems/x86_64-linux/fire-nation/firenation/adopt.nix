@@ -30,15 +30,15 @@ let
         stop_docker
         ${moves cfg.paths.state name s.migrateFrom.state}
         ${moves cfg.paths.cache name s.migrateFrom.cache}
-        for d in ${
-          lib.concatMapStringsSep " " lib.escapeShellArg (
+        ${lib.concatMapStrings
+          (d: ''
+            own ${lib.escapeShellArg d}
+          '')
+          (
             lib.optional (s.state != { }) "${cfg.paths.state}/${name}"
             ++ lib.optional (s.cache != { }) "${cfg.paths.cache}/${name}"
           )
-        }; do
-          echo "chown -R $owner:${cfg.media.group} $d"
-          chown -R "$owner:${cfg.media.group}" "$d"
-        done
+        }
         ;;
     '') migrating
   );
@@ -60,6 +60,11 @@ let
           docker stop "$container" >/dev/null
           docker rm "$container" >/dev/null
         fi
+      }
+
+      own() {
+        echo "chown -R $owner:${cfg.media.group} $1"
+        chown -R "$owner:${cfg.media.group}" "$1"
       }
 
       # move OLD NEW: NEW is normally an empty dir tmpfiles created; refuse to clobber data
