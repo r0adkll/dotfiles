@@ -67,12 +67,13 @@ let
         chown -R "$owner:${cfg.media.group}" "$1"
       }
 
-      # move OLD NEW: NEW is normally an empty dir tmpfiles created; refuse to clobber data
+      # move OLD NEW: NEW is normally just the (empty) dirs tmpfiles created, possibly
+      # with empty state subdirs inside; anything holding a file is data, so refuse
       move() {
         local old=$1 new=$2
         [ "$old" = "$new" ] && return
         [ -e "$old" ] || { echo "nothing at $old, skipping"; return; }
-        if [ -d "$new" ] && [ -z "$(ls -A "$new")" ]; then rmdir "$new"; fi
+        if [ -d "$new" ] && [ -z "$(find "$new" -mindepth 1 ! -type d -print -quit)" ]; then rm -r "$new"; fi
         if [ -e "$new" ]; then echo "$new already has data; not moving $old"; exit 1; fi
         mkdir -p "$(dirname "$new")"
         echo "mv $old -> $new"
