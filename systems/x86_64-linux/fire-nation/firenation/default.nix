@@ -151,6 +151,10 @@ in
       (uniqueBy "subdomains" (s: s.subdomain) services)
     ]
     ++ refsExist "dependsOn" (s: s.dependsOn)
+    ++ lib.mapAttrsToList (n: s: {
+      assertion = !s.rootful || (s.network == null && s.vpn == null && s.dependsOn == [ ]);
+      message = "firenation.services.${n}: rootful services run outside the runner's network and units; use network = null and no vpn/dependsOn";
+    }) services
     ++ refsExist "vpn" (s: lib.optional (s.vpn != null) s.vpn)
     ++ lib.mapAttrsToList (n: s: {
       assertion = s.identity == "image" || s.uid > 0;

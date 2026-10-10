@@ -27,6 +27,7 @@ let
       ${name})
         container=${lib.escapeShellArg s.migrateFrom.container}
         owner=${lib.escapeShellArg (ids.ownerOf s)}
+        rootful=${lib.boolToString s.rootful}
         stop_docker
         ${moves cfg.paths.state name s.migrateFrom.state}
         ${moves cfg.paths.cache name s.migrateFrom.cache}
@@ -86,9 +87,15 @@ let
           echo "$svc isn't migrating (no migrateFrom)"; exit 1 ;;
       esac
 
-      echo "starting $svc.service for ${cfg.runner}"
-      systemctl --user -M ${cfg.runner}@ start "$svc.service"
-      systemctl --user -M ${cfg.runner}@ --no-pager status "$svc.service" | head -5 || true
+      if [ "$rootful" = true ]; then
+        echo "starting $svc.service (system, rootful)"
+        systemctl start "$svc.service"
+        systemctl --no-pager status "$svc.service" | head -5 || true
+      else
+        echo "starting $svc.service for ${cfg.runner}"
+        systemctl --user -M ${cfg.runner}@ start "$svc.service"
+        systemctl --user -M ${cfg.runner}@ --no-pager status "$svc.service" | head -5 || true
+      fi
     '';
   };
 in

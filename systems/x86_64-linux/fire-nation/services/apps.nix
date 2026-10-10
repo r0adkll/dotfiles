@@ -33,6 +33,8 @@ in
       identity = "image";
       uid = 0;
       network = null;
+      # Bluetooth (BlueZ over D-Bus) and DHCP discovery (raw sockets) need real root
+      rootful = true;
       volumes = [
         "/etc/localtime:/etc/localtime:ro"
         "/run/dbus:/run/dbus:ro"
@@ -41,7 +43,6 @@ in
         networks = [ "host" ];
         podmanArgs = [ "--privileged" ];
       };
-      migrateFrom.state."" = "${old}/homeassistant";
     };
 
     azulon = {

@@ -77,11 +77,16 @@ in
 {
   config = lib.mkIf cfg.enable {
     home-manager.users.${cfg.runner}.virtualisation.quadlet = {
-      containers = lib.mapAttrs mkContainer services;
+      containers = lib.mapAttrs mkContainer (lib.filterAttrs (_: s: !s.rootful) services);
       networks = lib.genAttrs networkNames (_: {
         networkConfig.driver = "bridge";
       });
     };
+
+    # rootful services are system units under root's podman
+    virtualisation.quadlet.containers = lib.mapAttrs mkContainer (
+      lib.filterAttrs (_: s: s.rootful) services
+    );
 
     # lanPorts are for LAN clients, so open them; 127.0.0.1 ports stay closed.
     networking.firewall =

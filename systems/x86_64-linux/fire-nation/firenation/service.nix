@@ -25,6 +25,15 @@ in
       '';
     };
 
+    rootful = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Run under root's Podman as a system unit, as Docker did, for host access rootless
+        can't give (Bluetooth over D-Bus, raw sockets). Needs network = null (host or none).
+      '';
+    };
+
     identity = mkOption {
       type = types.enum [
         "env"

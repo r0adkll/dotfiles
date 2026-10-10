@@ -6,5 +6,12 @@ rec {
 
   # tmpfiles owner for a service's directories. Images that pick their own user get
   # runner-owned dirs so their entrypoint (container root) can chown them.
-  ownerOf = s: if s.identity == "image" then cfg.runner else toString (hostId s.uid);
+  ownerOf =
+    s:
+    if s.rootful then
+      "root"
+    else if s.identity == "image" then
+      cfg.runner
+    else
+      toString (hostId s.uid);
 }
