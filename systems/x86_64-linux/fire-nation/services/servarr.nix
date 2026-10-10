@@ -33,18 +33,6 @@
       media = "rw";
     };
 
-    # Bookshelf (a Readarr fork); the name stays readarr because prowlarr syncs to readarr:8787
-    readarr = {
-      image = "ghcr.io/pennydreadful/bookshelf:hardcover-v0.4.20.91";
-      autoUpdate = false;
-      uid = 1004;
-      port = 8787;
-      hostPort = 8383;
-      access = "private";
-      subdomain = "readarr";
-      media = "rw";
-    };
-
     lidarr = {
       image = "ghcr.io/hotio/lidarr:latest";
       uid = 1005;

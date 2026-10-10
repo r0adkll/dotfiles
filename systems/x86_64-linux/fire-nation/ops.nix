@@ -145,6 +145,9 @@ in
     gdrive = backup // {
       repository = "rclone:gdrive:backups/fire-nation";
       rcloneConfigFile = rcloneConfig;
+      # Drive rate-limits API calls: fewer, larger packs and a request cap keep it happy
+      extraBackupArgs = [ "--pack-size=64" ];
+      rcloneOptions.tpslimit = "8";
       timerConfig = {
         OnCalendar = "03:30";
         RandomizedDelaySec = "15m";
