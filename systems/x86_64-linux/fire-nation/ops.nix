@@ -110,10 +110,68 @@ in
     gpgPublicKeyPaths = [ "${./github-web-flow.gpg}" ];
   };
 
+  # ── Deploy alerts ────────────────────────────────────────────────────────
+  # comin keeps running when a commit fails to evaluate, build or deploy, so its unit never
+  # fails. Its post-build/deploy hooks miss evaluation errors entirely, so this reads
+  # `comin status --json` instead and posts each new problem to Discord once.
+  systemd.timers.comin-watch = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "5min";
+      OnUnitActiveSec = "2min";
+    };
+  };
+
   # ── Alerts ───────────────────────────────────────────────────────────────
   # Any unit listed here (plus every quadlet, via the firenation module) that ends up
   # failed posts its last log lines to the Discord channel the ZFS health check uses.
   systemd.services = {
+    comin-watch = {
+      description = "Alert on comin evaluation, build, deploy and fetch failures";
+      inherit onFailure;
+      serviceConfig = {
+        Type = "oneshot";
+        StateDirectory = "comin-watch";
+        LoadCredential = "webhook:${config.sops.secrets."discord/zfs-webhook".path}";
+      };
+      path = [
+        pkgs.jq
+        pkgs.curl
+      ];
+      script = ''
+        # comin down or mid-restart: its own unit alerts on that
+        status=$(/run/current-system/sw/bin/comin status --json 2>/dev/null) || exit 0
+        seen=/var/lib/comin-watch/alerted
+        touch "$seen"
+        webhook=$(cat "$CREDENTIALS_DIRECTORY/webhook")
+
+        printf '%s' "$status" | jq -c '
+          def git: .source.git // {};
+          def first_line: (. // "") | split("\n")[0];
+          [
+            (.builder.generation // {} | select((.eval_err // "") != "")
+              | {key: "eval:\(.uuid)", what: "evaluation failed", sha: (git.selected_commit_id // ""), msg: (git.selected_commit_msg | first_line), err: .eval_err}),
+            (.builder.generation // {} | select((.build_err // "") != "")
+              | {key: "build:\(.uuid)", what: "build failed", sha: (git.selected_commit_id // ""), msg: (git.selected_commit_msg | first_line), err: .build_err}),
+            (.deployer.deployment // {} | select((.error_msg // "") != "")
+              | {key: "deploy:\(.uuid)", what: "deployment failed", sha: (.generation | git.selected_commit_id // ""), msg: (.generation | git.selected_commit_msg | first_line), err: .error_msg}),
+            (.fetcher.git_repository_status.remotes // [] | .[] | select((.fetch_error_msg // "") != "")
+              | {key: "fetch:\(.name):\(.fetch_error_msg | @base64 | .[0:48])", what: "fetch from \(.name) failed", sha: "", msg: "", err: .fetch_error_msg}),
+            (select(.need_to_reboot == true) | .deployer.deployment // {}
+              | {key: "reboot:\(.uuid)", what: "deployed; reboot needed to finish", sha: (.generation | git.selected_commit_id // ""), msg: (.generation | git.selected_commit_msg | first_line), err: ""})
+          ] | .[]' | while IFS= read -r item; do
+          key=$(jq -r .key <<<"$item")
+          grep -qxF "$key" "$seen" && continue
+          text=$(jq -r '"🚫 **fire-nation**: comin \(.what)"
+            + (if .sha != "" then " for `\(.sha[0:7])` \(.msg)" else "" end)
+            + (if .err != "" then "\n```\n\(.err | .[-1500:])\n```" else "" end)' <<<"$item")
+          jq -n --arg c "$text" '{content: $c}' \
+            | curl -fsS -H 'Content-Type: application/json' -d @- "$webhook" >/dev/null
+          echo "$key" >> "$seen"
+        done
+      '';
+    };
+
     "notify-discord@" = {
       description = "Discord alert for %i";
       serviceConfig = {
