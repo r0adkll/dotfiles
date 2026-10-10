@@ -119,6 +119,7 @@ in {
     # Host key is readable by root only, so containers running as r0adkll can't reach it
     age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
 
+    secrets."crowdsec/bouncer-api-key" = { };
     secrets."samba/cookie-jar" = { };
     secrets."discord/zfs-webhook" = {
       owner = config.systemd.services.zfs-health-check.serviceConfig.User;
@@ -192,8 +193,8 @@ in {
   # Workarounds for the 26.05 crowdsec modules:
   # - setup runs `cscli machine add` before `capi register`, and machine add fails while
   #   the CAPI credentials file is missing; an empty one is accepted as "not registered yet"
-  # - the bouncer's register service calls cscli without -c, so it reads
-  #   /etc/crowdsec/config.yaml (NixOS/nixpkgs#500515); drop this once that merges
+  # - plain cscli reads /etc/crowdsec/config.yaml, which the module never writes
+  #   (NixOS/nixpkgs#500515); crowdsec-bouncer-enroll below relies on it
   systemd.tmpfiles.settings."11-crowdsec-workarounds" = with config.services.crowdsec; {
     ${settings.capi.credentialsFile}.f = {
       inherit user group;
@@ -201,6 +202,29 @@ in {
     };
     "/etc/crowdsec/config.yaml"."L+".argument =
       "${(pkgs.formats.yaml { }).generate "crowdsec.yaml" settings.general}";
+  };
+
+  # Registers the bouncer's sops key with the local API, once; stands in for
+  # the module's registerBouncer (see the bouncer config above)
+  systemd.services.crowdsec-bouncer-enroll = {
+    description = "Register the firewall bouncer with the local CrowdSec API";
+    after = [ "crowdsec.service" ];
+    requires = [ "crowdsec.service" ];
+    before = [ "crowdsec-firewall-bouncer.service" ];
+    requiredBy = [ "crowdsec-firewall-bouncer.service" ];
+    path = [ config.services.crowdsec.package pkgs.jq ];
+    script = ''
+      if ! cscli bouncers list -o json | jq -e 'any(.[]?; .name == "crowdsec-firewall-bouncer")' >/dev/null; then
+        cscli bouncers add crowdsec-firewall-bouncer --key "$(cat "$CREDENTIALS_DIRECTORY/key")"
+      fi
+    '';
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      User = config.services.crowdsec.user;
+      Group = config.services.crowdsec.group;
+      LoadCredential = "key:${config.sops.secrets."crowdsec/bouncer-api-key".path}";
+    };
   };
 
   # Create systemd mount service for Google Drive
@@ -292,9 +316,13 @@ in {
       };
     };
 
-    # Registers itself with the local API above, so there's no API key to manage
+    # The module's auto-registration runs with DynamicUser, which makes systemd move
+    # /var/lib/crowdsec under /var/lib/private and locks the engine out
+    # (NixOS/nixpkgs#526506). crowdsec-bouncer-enroll registers this key instead.
     crowdsec-firewall-bouncer = {
       enable = true;
+      registerBouncer.enable = false;
+      secrets.apiKeyPath = config.sops.secrets."crowdsec/bouncer-api-key".path;
       # DOCKER-USER covers Docker-published ports (Traefik's 80/443), which skip INPUT
       settings.iptables_chains = [ "INPUT" "DOCKER-USER" ];
     };
