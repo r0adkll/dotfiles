@@ -46,6 +46,9 @@ let
       "${config.firenation.paths.state}/socks"
       # rebuildable
       "${config.firenation.paths.state}/plex/Library/Application Support/Plex Media Server/Cache"
+      # live Postgres files aren't a consistent copy; Immich's own nightly dump in
+      # immich/backups (02:00) is what gets restored
+      "${config.firenation.paths.state}/immich-db"
     ];
     backupPrepareCommand = dumpDatabases;
     pruneOpts = [

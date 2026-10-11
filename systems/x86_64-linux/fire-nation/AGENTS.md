@@ -33,6 +33,7 @@ The home server: NixOS 26.05 on Intel, with ZFS. Everything it runs is declared 
 | Path | Backing | Holds |
 |---|---|---|
 | `/mnt/data` | `boiling-rock`: ZFS raidz2, HDD | Media and downloads, about 21 TB. **Not backed up off-site.** |
+| `/mnt/data/photos` | `boiling-rock/photos`, a child dataset | Immich's originals, the only copy. ZFS auto-snapshots (14 daily, 8 weekly, 12 monthly); **not backed up off-site** yet |
 | `/mnt/cache` | `ember-island`: ZFS stripe, SSD, no redundancy | Caches, transcodes, and the runner's Podman image store |
 | `/mnt/home/stacks/<service>` | ext4 | Each service's state (backed up) |
 

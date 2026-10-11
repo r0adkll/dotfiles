@@ -5,6 +5,7 @@
     ./downloads.nix
     ./media.nix
     ./books.nix
+    ./photos.nix
     ./apps.nix
     ./homepage.nix
   ];

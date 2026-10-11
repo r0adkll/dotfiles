@@ -360,15 +360,16 @@ in
         interval = "weekly";
       };
 
-      # TODO: WTF does this configure???
+      # Snapshots only datasets with com.sun:auto-snapshot=true; today that's just
+      # boiling-rock/photos, so a deletion in Immich can be recovered from .zfs/snapshot.
       autoSnapshot = {
         enable = true;
         flags = "-k -p --utc";
         frequent = lib.mkDefault 0;
         hourly = lib.mkDefault 0;
-        daily = lib.mkDefault 3;
-        weekly = lib.mkDefault 3;
-        monthly = lib.mkDefault 0;
+        daily = lib.mkDefault 14;
+        weekly = lib.mkDefault 8;
+        monthly = lib.mkDefault 12;
       };
     };
   };
