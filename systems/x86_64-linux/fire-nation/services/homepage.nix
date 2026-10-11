@@ -389,29 +389,29 @@ let
     }
   ];
 
-  # JSON is valid YAML, so toJSON is enough.
-  configDir = pkgs.linkFarm "homepage-config" [
-    {
-      name = "services.yaml";
-      path = pkgs.writeText "services.yaml" (builtins.toJSON services);
-    }
-    {
-      name = "settings.yaml";
-      path = pkgs.writeText "settings.yaml" (builtins.toJSON settings);
-    }
-    {
-      name = "widgets.yaml";
-      path = pkgs.writeText "widgets.yaml" (builtins.toJSON widgets);
-    }
-    {
-      name = "bookmarks.yaml";
-      path = pkgs.writeText "bookmarks.yaml" (builtins.toJSON bookmarks);
-    }
-    {
-      name = "docker.yaml";
-      path = pkgs.writeText "docker.yaml" "{}";
-    }
-  ];
+  # JSON is valid YAML, so toJSON is enough. The files are copied, not linked: the mount
+  # only sees this directory, so symlinks into other store paths would dangle. Homepage
+  # copies a skeleton for any file it doesn't find, which fails on a read-only mount, so
+  # every file it knows about is present.
+  configFiles = {
+    "services.yaml" = builtins.toJSON services;
+    "settings.yaml" = builtins.toJSON settings;
+    "widgets.yaml" = builtins.toJSON widgets;
+    "bookmarks.yaml" = builtins.toJSON bookmarks;
+    "docker.yaml" = "{}";
+    "kubernetes.yaml" = "{}";
+    "proxmox.yaml" = "{}";
+    "custom.css" = "";
+    "custom.js" = "";
+  };
+  configDir = pkgs.runCommand "homepage-config" { } (
+    "mkdir $out\n"
+    + pkgs.lib.concatStrings (
+      pkgs.lib.mapAttrsToList (
+        name: text: "cp ${pkgs.writeText name text} $out/${name}\n"
+      ) configFiles
+    )
+  );
 in
 {
   firenation.services.homepage = {
