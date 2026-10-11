@@ -17,7 +17,8 @@ Every `modules/{nixos,darwin,home}/**/default.nix` is imported into **every** ho
 ## Validate
 
 - Any host evaluates from any machine: `nix eval --raw .#nixosConfigurations.<host>.config.system.build.toplevel.drvPath` (`darwinConfigurations` for the Macs). Assertions fail here, so this is the check before every push.
-- `nix fmt` (treefmt, nixfmt-rfc-style). Format the files you changed; some older files predate the formatter, and reflowing them buries the real diff.
+- `nix fmt` (treefmt: nixfmt, black, shellcheck). Format the files you changed, not the whole tree. Some older files predate the formatter: when you change one, reformat it in its own commit first, so the real change stays a readable diff.
+- `.githooks/pre-commit` runs that check on the staged files and blocks the commit if they aren't formatted or fail shellcheck. Enable it once per clone: `git config core.hooksPath .githooks`.
 
 ## Deploying
 

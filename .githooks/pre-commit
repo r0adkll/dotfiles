@@ -1,0 +1,13 @@
+#!/bin/sh
+# Format check on the staged files only: some older files predate the formatter,
+# and reflowing them would bury the real diff. Enable with:
+#   git config core.hooksPath .githooks
+
+files=$(git diff --cached --name-only --diff-filter=ACMR)
+[ -n "$files" ] || exit 0
+
+# shellcheck disable=SC2086 # one path per word; the repo has no spaces in paths
+if ! nix fmt -- --fail-on-change --on-unmatched=debug $files; then
+  echo "pre-commit: formatting changed or flagged staged files; review, git add and commit again." >&2
+  exit 1
+fi

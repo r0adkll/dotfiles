@@ -79,8 +79,13 @@
           projectRootFile = "flake.nix";
           settings.global.excludes = [ "./result/**" ];
 
-          programs.nixfmt-rfc-style.enable = true; # *.nix
+          programs.nixfmt.enable = true; # *.nix
           programs.black.enable = true; # *.py
+          programs.shellcheck.enable = true; # *.sh
+          # a fish script, which shellcheck can't parse
+          settings.formatter.shellcheck.excludes = [
+            "systems/x86_64-linux/fire-nation/scripts/createStoragePool.sh"
+          ];
         })
       );
 
@@ -90,10 +95,10 @@
           allowUnfree = true;
         };
 
-        formatter = eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
+        formatter = eachSystem (pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper);
 
         checks = eachSystem (pkgs: {
-          formatting = treefmtEval.${pkgs.system}.config.build.check self;
+          formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check self;
         });
 
         # `nix run .#dns -- preview|push`: the firenation.app zone from fire-nation's
