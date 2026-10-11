@@ -22,10 +22,6 @@ let
   needsLogin = "${state}/needs-login";
   loginUrl = "https://gphotos.${cfg.domain}";
 
-  # Items per run while the first batches get checked in Immich (files, dates, no
-  # duplicates); null for no limit.
-  limit = 20;
-
   webPort = 6080;
   vncPort = 5999;
   cdpPort = 9223;
@@ -83,8 +79,7 @@ let
       status=0
       # -loglevel matters: without it, gphotos-cdp logs nothing at all
       ${lib.getExe pkgs.r0adkll.gphotos-cdp} -profile ${profile} -dldir ${mirror} \
-        -headless -json -loglevel info -workers 2 -run ${lib.getExe toImmich} \
-        ${lib.optionalString (limit != null) "-n ${toString limit}"} 2>&1 |
+        -headless -json -loglevel info -workers 2 -run ${lib.getExe toImmich} 2>&1 |
         tee "$log" || status=$?
       if [ "$status" -ne 0 ] && grep -q 'authentication not possible' "$log"; then
         touch ${needsLogin}
