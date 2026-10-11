@@ -64,6 +64,8 @@ in
         OIDC_MEMBER_GROUP = "citizens";
         OIDC_ADMIN_GROUP = "admin";
         ABS_URL = "http://audiobookshelf";
+        # for "Open in Audiobookshelf" links in the UI
+        ABS_PUBLIC_URL = "https://bookshelf.firenation.app";
       };
       # values come from scripts/armarium-setup.sh, which writes them with sops
       secrets.env = {
