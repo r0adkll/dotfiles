@@ -219,11 +219,11 @@ banner "Armarium on fire-nation"
 
 # ── 1 ─────────────────────────────────────────────────────────────────────
 stage "Pocket ID — groups"
-say "Armarium admits members by group and grants admin by a second group."
+say "Armarium uses the groups you already have: 'citizens' are members, 'admin' are admins."
+say "Nothing to create. Just make sure the people you expect are in them."
 open_url "$POCKET_ID/settings/admin/user-groups"
-step "Administration → User Groups → create a group named exactly:  armarium"
-step "Create a second group named exactly:  armarium-admin"
-step "Add yourself to both. Add friends to 'armarium' as you invite them."
+step "Administration → User Groups → 'admin' contains you."
+step "'citizens' contains you and every friend who should be able to add books."
 pause "Done? Press Enter."
 
 # ── 2 ─────────────────────────────────────────────────────────────────────
@@ -234,7 +234,7 @@ step "Administration → OIDC Clients → Add OIDC Client."
 step "Name: Armarium.  Client type: confidential (the default)."
 step "Callback URL:  $ARMARIUM_URL/auth/callback"
 step "Create. The client page shows the Client ID and, once only, the Client secret."
-step "Then open the client's Access tab → Allowed User Groups → Selected user groups → tick 'armarium'."
+step "Then open the client's Access tab → Allowed User Groups → Selected user groups → tick 'citizens' and 'admin'."
 REPLACE_OIDC=1
 if has_sops oidc-client-secret; then
   note "armarium/oidc-client-id and oidc-client-secret already exist in sops."
