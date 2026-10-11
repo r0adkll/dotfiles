@@ -1,10 +1,20 @@
-{ lib, pkgs, inputs, system, config, ... }:
+{
+  lib,
+  pkgs,
+  inputs,
+  system,
+  config,
+  ...
+}:
 
 let
   inherit (lib) mkEnableOption mkIf;
   cfg = config.r0adkll.environments.common;
-in {
-  options.r0adkll.environments.common = { enable = mkEnableOption "common"; };
+in
+{
+  options.r0adkll.environments.common = {
+    enable = mkEnableOption "common";
+  };
 
   config = mkIf cfg.enable {
     system = {
@@ -25,9 +35,13 @@ in {
           NSAutomaticDashSubstitutionEnabled = false;
         };
 
-        finder = { FXPreferredViewStyle = "clmv"; };
+        finder = {
+          FXPreferredViewStyle = "clmv";
+        };
 
-        loginwindow = { GuestEnabled = false; };
+        loginwindow = {
+          GuestEnabled = false;
+        };
 
         CustomUserPreferences = {
           "com.apple.finder" = {
@@ -45,7 +59,9 @@ in {
           # com.apple.TextEdit is omitted deliberately: it is sandboxed, so the
           # write lands in its TCC-protected container and aborts activation
           # before the remaining domains are applied.
-          "com.apple.AdLib" = { allowApplePersonalizedAdvertising = false; };
+          "com.apple.AdLib" = {
+            allowApplePersonalizedAdvertising = false;
+          };
         };
       };
     };

@@ -1,5 +1,11 @@
-{ lib, pkgs, config, ... }:
-with lib.r0adkll; {
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
+with lib.r0adkll;
+{
 
   r0adkll = {
     environments = {
