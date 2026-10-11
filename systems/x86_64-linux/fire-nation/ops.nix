@@ -36,6 +36,7 @@ let
     paths = [
       config.firenation.paths.state
       "/var/lib/tailscale"
+      "/var/lib/azulon"
     ];
     exclude = [
       # leftovers from the Docker layout, removed in cleanup
@@ -194,6 +195,7 @@ in
       [
         "restic-backups-cookie-jar"
         "restic-backups-r2"
+        "azulon"
         "comin"
         "caddy"
         "tailscaled"

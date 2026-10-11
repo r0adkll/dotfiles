@@ -43,6 +43,7 @@ in
     ./adopt.nix
     ./edge.nix
     ./dns.nix
+    ./azulon.nix
   ];
 
   options.firenation = {

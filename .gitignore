@@ -2,3 +2,5 @@ result
 .sopsrc
 # Temporary decrypted secrets
 *.tmp.yaml
+# per-machine nix.conf extras (tokens)
+local/

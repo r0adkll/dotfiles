@@ -1,5 +1,26 @@
 {
   "nodes": {
+    "azulon": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791751734,
+        "narHash": "sha256-fprNJDL0haRal592vdqjMeZwkzeLk3ufJEXLvxCbghY=",
+        "owner": "r0adkll",
+        "repo": "Azulon",
+        "rev": "e3827cfe2040e6a9cf9e9a18b179708031bdf50d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "r0adkll",
+        "ref": "v2",
+        "repo": "Azulon",
+        "type": "github"
+      }
+    },
     "comin": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -435,6 +456,7 @@
     },
     "root": {
       "inputs": {
+        "azulon": "azulon",
         "comin": "comin",
         "darwin": "darwin",
         "home-manager": "home-manager",

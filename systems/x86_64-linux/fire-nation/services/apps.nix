@@ -1,8 +1,5 @@
 # Home Assistant, the Discord bot, and identity (Pocket ID + tinyauth).
-{ config, ... }:
-let
-  registryAuth = config.sops.templates."containers-auth.json".path;
-in
+{ ... }:
 {
   firenation.services = {
     # Host networking for device discovery; reached directly on :8123 (firewall already open).
@@ -20,34 +17,6 @@ in
       extraConfig.containerConfig = {
         networks = [ "host" ];
         podmanArgs = [ "--privileged" ];
-      };
-    };
-
-    azulon = {
-      # v1 bot, retired: the v2 rewrite runs from the Mac during development and replaces
-      # this as a native unit in Azulon phase 6. Disabled so deploys stop restarting it.
-      enable = false;
-      image = "ghcr.io/r0adkll/azulon:main";
-      identity = "image";
-      # the image runs as its node user; secret files must be readable by it
-      uid = 1000;
-      state = { };
-      environment = {
-        TOKEN_FILE = "/run/secrets/discord_bot_token";
-        BOOKSHELF_API_TOKEN_FILE = "/run/secrets/bookshelf_api_token";
-        CLOUDFLARE_EMAIL = "veedubusc@gmail.com";
-        CLOUDFLARE_API_KEY_FILE = "/run/secrets/cloudflare_api_key";
-        CLOUDFLARE_ACCOUNT_ID = "e3385a3a5652e8459c1cc28ecd5d2466";
-        CLOUDFLARE_ACCESS_GROUP_ID = "ccef5a7d-1050-40eb-85d3-967878a24a1e";
-        CLIENT_ID = "1256307018940285081";
-        # Compose passed the quotes through literally; kept for parity
-        CMD_PREFIX = "'!'";
-        SERVER_NAME_PRETTY = "FireNation";
-      };
-      secrets.files = {
-        "/run/secrets/discord_bot_token" = "azulon/discord-bot-token";
-        "/run/secrets/bookshelf_api_token" = "azulon/bookshelf-api-token";
-        "/run/secrets/cloudflare_api_key" = "azulon/cloudflare-api-key";
       };
     };
 
@@ -103,16 +72,31 @@ in
     };
   };
 
-  # Rootless podman reads registry credentials from ~/.config/containers/auth.json;
-  # Azulon's image is private on ghcr.io (read:packages token from ghcr-token-wizard.sh)
-  sops.secrets."ghcr/auth" = { };
-  sops.templates."containers-auth.json" = {
-    owner = "r0adkll";
-    content = builtins.toJSON { auths."ghcr.io".auth = config.sops.placeholder."ghcr/auth"; };
-  };
-  home-manager.users.r0adkll =
-    { config, ... }:
-    {
-      xdg.configFile."containers/auth.json".source = config.lib.file.mkOutOfStoreSymlink registryAuth;
+  # Azulon v2 (native unit; see firenation/azulon.nix). Ids are the production Discord
+  # channels and roles; the dev channels live only in the Mac's settings.local.json.
+  firenation.azulon = {
+    enable = true;
+    discord = {
+      guildId = "1254543229295005777";
+      clientId = "1256307018940285081";
+      channels = {
+        gate = "1256256920444997662"; # #great-gates-of-azulon
+        welcome = "1254543229781672109"; # #welcome
+        admin = "1256624897807876118"; # #citizenship-applications
+        requests = "1254999295271239772"; # #requests
+      };
+      roles = {
+        citizen = "1256259142935515136"; # Fire Nation Citizen
+        admin = "1256258047639158877"; # Firelord
+      };
     };
+    serverEmoji = "<:firenation:1256609498638848040>";
+    pocketIdInternalUrl = "http://127.0.0.1:1411";
+    cloudflare = {
+      accountId = "e3385a3a5652e8459c1cc28ecd5d2466";
+      accessAppIds = [ ];
+      legacyAccessGroupId = "ccef5a7d-1050-40eb-85d3-967878a24a1e";
+    };
+    legacyApplicationsChannel = "1256624897807876118";
+  };
 }
