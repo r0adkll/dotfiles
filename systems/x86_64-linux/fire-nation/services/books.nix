@@ -1,7 +1,16 @@
 # Audiobooks, ebooks and their download helpers.
+{ pkgs, ... }:
 let
   media = "/mnt/data/media";
   bookdrop = "/mnt/cache/bookdrop";
+
+  # LibationCli only reads Settings.json (the entrypoint copies it in), so it can be read-only.
+  # The folder template matches the library's existing Author/Year - Book N - Title {Narrator} [ASIN].
+  libationSettings = pkgs.writeText "libation-settings.json" (
+    builtins.toJSON {
+      FolderTemplate = "<first author>/<year> - <has series#->Book <series#> - <-has><audible title> {<first narrator>} [<id>]";
+    }
+  );
 in
 {
   firenation.services = {
@@ -20,6 +29,28 @@ in
         "${media}/podcasts:/podcasts"
         "${media}/ebooks:/ebooks:ro"
       ];
+    };
+
+    # Downloads the Audible library as m4b straight into Audiobookshelf's folder, whose watcher
+    # imports it. Accounts and the database live in /config. Each run exits whenever its scan
+    # fails, including before any account exists, so add an account with a one-off container:
+    # `podman run --rm -it --user 1019:0 -v /mnt/home/stacks/libation:/config docker.io/rmcrackan/libation:latest LibationCli login-external --libationFiles /config --locale us --account <email>`
+    libation = {
+      image = "docker.io/rmcrackan/libation:latest";
+      identity = "user";
+      uid = 1019;
+      volumes = [
+        "${media}/audiobooks:/data"
+        "${libationSettings}:/config/Settings.json:ro"
+      ];
+      # scan and download every 30 minutes; the image's default runs once and exits
+      environment.SLEEP_TIME = "30m";
+      # group-writable output, like the PUID/UMASK images, so Audiobookshelf can write beside it
+      extraConfig = {
+        containerConfig.podmanArgs = [ "--umask=0002" ];
+        # a failed scan (no account yet, Audible down) retries later instead of in a tight loop
+        serviceConfig.RestartSec = "5min";
+      };
     };
 
     flaresolverr = {
