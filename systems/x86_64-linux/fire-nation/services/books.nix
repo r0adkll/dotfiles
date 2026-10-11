@@ -1,16 +1,15 @@
 # Audiobooks, ebooks and their download helpers.
-{ pkgs, ... }:
+{ config, ... }:
 let
   media = "/mnt/data/media";
   bookdrop = "/mnt/cache/bookdrop";
+  ids = import ../firenation/ids.nix { cfg = config.firenation; };
 
-  # LibationCli only reads Settings.json (the entrypoint copies it in), so it can be read-only.
+  # LibationCli only reads Settings.json, so tmpfiles rewrites it on every switch.
   # The folder template matches the library's existing Author/Year - Book N - Title {Narrator} [ASIN].
-  libationSettings = pkgs.writeText "libation-settings.json" (
-    builtins.toJSON {
-      FolderTemplate = "<first author>/<year> - <has series#->Book <series#> - <-has><audible title> {<first narrator>} [<id>]";
-    }
-  );
+  libationSettings = builtins.toJSON {
+    FolderTemplate = "<first author>/<year> - <has series#->Book <series#> - <-has><audible title> {<first narrator>} [<id>]";
+  };
 in
 {
   firenation.services = {
@@ -39,10 +38,7 @@ in
       image = "docker.io/rmcrackan/libation:latest";
       identity = "user";
       uid = 1019;
-      volumes = [
-        "${media}/audiobooks:/data"
-        "${libationSettings}:/config/Settings.json:ro"
-      ];
+      volumes = [ "${media}/audiobooks:/data" ];
       # scan and download every 30 minutes; the image's default runs once and exits
       environment.SLEEP_TIME = "30m";
       # group-writable output, like the PUID/UMASK images, so Audiobookshelf can write beside it
@@ -128,4 +124,14 @@ in
     group = "media";
     mode = "2775";
   };
+
+  # A real file, not a mount: a file mounted inside /config leaves an unreadable placeholder
+  # behind for the one-off login container, which mounts only /config.
+  systemd.tmpfiles.settings."21-firenation-libation"."${config.firenation.paths.state}/libation/Settings.json"."f+" =
+    {
+      user = ids.ownerOf config.firenation.services.libation;
+      group = "media";
+      mode = "0640";
+      argument = libationSettings;
+    };
 }
