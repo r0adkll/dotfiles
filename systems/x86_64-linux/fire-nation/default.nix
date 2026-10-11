@@ -97,6 +97,52 @@ in
       forceImportRoot = false;
       extraPools = zfs_pools;
     };
+
+    # The ARC defaults to nearly all 62 GiB of RAM, and with no swap it gives memory
+    # back too slowly when the containers spike. Cap it at 32 GiB.
+    kernelParams = [ "zfs.zfs_arc_max=${toString (32 * 1024 * 1024 * 1024)}" ];
+
+    # Opening a socket autoloads its protocol's module, even unprivileged and from a
+    # rootless container, and these have a history of privilege-escalation bugs. None
+    # are used here; blacklisting stops the autoload but `modprobe` still works.
+    # hfsplus and udf stay loadable for Mac-formatted disks and DVDs.
+    blacklistedKernelModules = [
+      # network protocols
+      "esp4"
+      "esp6"
+      "rxrpc"
+      "dccp"
+      "sctp"
+      "rds"
+      "tipc"
+      "n-hdlc"
+      "ax25"
+      "netrom"
+      "x25"
+      "rose"
+      "decnet"
+      "econet"
+      "af_802154"
+      "ipx"
+      "appletalk"
+      "psnap"
+      "p8023"
+      "p8022"
+      "can"
+      "atm"
+      "phonet"
+      "ieee802154"
+      "6lowpan"
+      # filesystems
+      "cramfs"
+      "freevxfs"
+      "jffs2"
+      "hfs"
+      "squashfs"
+      # hardware this box doesn't have
+      "floppy"
+      "vivid"
+    ];
   };
 
   # Networking Configuration
