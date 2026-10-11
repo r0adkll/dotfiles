@@ -77,15 +77,6 @@ in
     };
 
     programs = {
-      nh = {
-        enable = true;
-        flake = "path:/home/r0adkll/.config/nixos";
-        clean = {
-          enable = true;
-          extraArgs = "--keep-since 4d --keep 3";
-        };
-      };
-
       zfs-health-check = {
         enable = true;
         discordWebhookUrlFile = "/run/secrets/discord/zfs-webhook";
@@ -237,6 +228,16 @@ in
     # Even though we enable this in r0adkll.cli-apps.common we need to enable here
     # due to a check on users.users.r0adkll.shell = pkgs.fish;
     fish.enable = true;
+
+    # comin deploys; `nh os switch` is for debugging on the box
+    nh = {
+      enable = true;
+      flake = "path:/home/r0adkll/.config/nixos";
+      clean = {
+        enable = true;
+        extraArgs = "--keep-since 4d --keep 3";
+      };
+    };
 
     ssh = {
       startAgent = true;

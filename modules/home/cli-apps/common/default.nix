@@ -75,7 +75,11 @@ in
         ls = "eza -g";
         lla = "eza -gls";
         llt = "eza -gT";
-        reloadNix = "pushd ~/.config/nixos/ && git pull --rebase && nh os switch && popd";
+        reloadNix =
+          if pkgs.stdenv.isDarwin then
+            "git -C ~/.config/nix pull --rebase && nh darwin switch"
+          else
+            "git -C ~/.config/nixos pull --rebase && nh os switch";
         vlc = "/Applications/VLC.app/Contents/MacOS/VLC";
       };
     };

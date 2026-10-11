@@ -8,15 +8,16 @@ let
   cfg = config.r0adkll.programs.nh;
 in
 {
+  # nix-darwin has no programs.nh (NixOS hosts use the upstream module)
   options.r0adkll.programs.nh = {
     enable = lib.mkEnableOption "nh";
 
     flake = lib.mkOption {
       type = lib.types.str;
       description = ''
-        The path that will be used for the `FLAKE` environment variable.
+        The path that will be used for the `NH_FLAKE` environment variable.
 
-        `FLAKE` is used by nh as the default flake for performing actions, like `nh os switch`.
+        `NH_FLAKE` is used by nh as the default flake for performing actions, like `nh darwin switch`.
       '';
     };
 
@@ -59,19 +60,29 @@ in
     ];
 
     environment = lib.mkIf cfg.enable {
-      systemPackages = with pkgs; [ r0adkll.nh ];
+      systemPackages = [ pkgs.nh ];
       variables = {
-        FLAKE = cfg.flake;
+        NH_FLAKE = cfg.flake;
       };
     };
 
-    launchd = lib.mkIf cfg.clean.enable {
-      agents = {
-        nh-clean = {
-          command = "exec ${lib.getExe pkgs.r0adkll.nh} clean all ${cfg.clean.extraArgs}";
-          serviceConfig = {
-            StartInterval = 604800; # Weekly
-          };
+    # A daemon, not an agent: removing system generations needs root, and an agent
+    # runs as the logged-in user.
+    launchd.daemons = lib.mkIf cfg.clean.enable {
+      nh-clean = {
+        command = "${lib.getExe pkgs.nh} clean all ${cfg.clean.extraArgs}";
+        path = [ config.nix.package ];
+        serviceConfig = {
+          # Sundays at noon; launchd runs a missed slot once the Mac wakes
+          StartCalendarInterval = [
+            {
+              Weekday = 0;
+              Hour = 12;
+              Minute = 0;
+            }
+          ];
+          StandardOutPath = "/var/log/nh-clean.log";
+          StandardErrorPath = "/var/log/nh-clean.log";
         };
       };
     };
