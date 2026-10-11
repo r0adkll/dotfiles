@@ -37,8 +37,9 @@ in
 
     # Armarium (github.com/r0adkll/armarium): friends connect their own Audible accounts, pick
     # books, and Armarium downloads them with its own LibationCli, dedupes against Audiobookshelf,
-    # and moves them into /audiobooks. It signs people in through Pocket ID itself (groups
-    # armarium / armarium-admin), so no tinyauth in front. Replaced the plain libation service.
+    # and moves them into /audiobooks. It signs people in through Pocket ID itself, using the
+    # existing groups (citizens = members, admin = admins), so no tinyauth in front.
+    # Replaced the plain libation service.
     armarium = {
       image = "ghcr.io/r0adkll/armarium:main";
       identity = "user";
@@ -60,8 +61,8 @@ in
         ARMARIUM_PUBLIC_URL = "https://armarium.firenation.app";
         ARMARIUM_LIBRARY_DIR = "/audiobooks";
         OIDC_ISSUER = "https://firenation.app";
-        OIDC_MEMBER_GROUP = "armarium";
-        OIDC_ADMIN_GROUP = "armarium-admin";
+        OIDC_MEMBER_GROUP = "citizens";
+        OIDC_ADMIN_GROUP = "admin";
         ABS_URL = "http://audiobookshelf";
       };
       # values come from scripts/armarium-setup.sh, which writes them with sops
