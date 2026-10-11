@@ -6,5 +6,6 @@
     ./media.nix
     ./books.nix
     ./apps.nix
+    ./homepage.nix
   ];
 }

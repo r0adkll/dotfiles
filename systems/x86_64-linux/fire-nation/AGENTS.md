@@ -44,4 +44,4 @@ The home server: NixOS 26.05 on Intel, with ZFS. Everything it runs is declared 
 - `sudo` asks for a password, so commands that need root are for the user to run. Read-only checks run as `r0adkll`: `podman ps`, `systemctl --user status <service>`, `journalctl --user -u <service>`, and `journalctl -u <unit>` for system units.
 - comin never prunes branches deleted on GitHub. A deleted `testing-fire-nation` stays selected until `main` gets a new commit (a testing branch counts only while it sits on top of `main`). After testing, land a commit on `main`.
 - The login shell is fish. Send bash over ssh as `ssh fire-nation 'bash -s' <<'EOF' … EOF`.
-- Known open issues: the WireGuard tunnel has never completed a handshake (the VPN account needs checking), and Homepage's container widgets need the Podman socket.
+- Known open issues: none. The WireGuard tunnel is pinned to one Mullvad server (`us-nyc-wg-001`, in `wg0.conf` under `/mnt/home/stacks/wireguard/config/wg_confs`); if Mullvad retires it, the unit stays "active" while the handshake is dead. Check `podman exec wireguard wg show wg0 latest-handshakes`.

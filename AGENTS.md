@@ -29,6 +29,6 @@ Every `modules/{nixos,darwin,home}/**/default.nix` is imported into **every** ho
 
 sops-nix. `.sops.yaml` lists the recipients: r0adkll's personal key (on the Mac at `~/Library/Application Support/sops/age/keys.txt`) and per-host keys derived from each host's SSH key.
 
-- Never print a secret value. Write one by piping its JSON-encoded value: `printf '"%s"' "$v" | sops set --value-stdin <file> '["a"]["b"]'`. Read one only to compare it, never to display it.
+- Never print a secret value. sops 3.9/3.10 (the Mac's, and nixpkgs') have no `--value-stdin`, and `sops set` would put the value in argv. Write values with `sops edit <file>` and a script as `$EDITOR` that takes them from the environment. Read one only to compare it, never to display it.
 - `sops updatekeys` drops every recipient `.sops.yaml` doesn't list, so check the file's current recipients first.
 - sops-nix fails the **build** when a declared secret is missing from the file. Add the value before pushing config that references it; otherwise comin's build fails, and its failure alert fires.

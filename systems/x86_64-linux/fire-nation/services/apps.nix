@@ -1,34 +1,10 @@
-# Dashboard, Home Assistant, the Discord bot, and identity (Pocket ID + tinyauth).
+# Home Assistant, the Discord bot, and identity (Pocket ID + tinyauth).
 { config, ... }:
 let
   registryAuth = config.sops.templates."containers-auth.json".path;
 in
 {
   firenation.services = {
-    homepage = {
-      image = "ghcr.io/gethomepage/homepage:latest";
-      uid = 1017;
-      port = 3000;
-      # LAN devices without Tailscale still reach http://fire-nation:3000
-      lanPorts = [ "3000:3000" ];
-      access = "private";
-      subdomain = "homepage";
-      state = {
-        "" = "/app/config";
-        images = "/app/public/images";
-      };
-      # read-only views for its disk widgets
-      volumes = [
-        "/mnt/data:/mnt/data:ro"
-        "/mnt/cache:/mnt/cache:ro"
-        "/mnt/home:/mnt/home:ro"
-      ];
-      environment = {
-        LOG_TARGETS = "stdout";
-        HOMEPAGE_ALLOWED_HOSTS = "fire-nation:3000,homepage.firenation.app";
-      };
-    };
-
     # Host networking for device discovery; reached directly on :8123 (firewall already open).
     homeassistant = {
       image = "ghcr.io/home-assistant/home-assistant:stable";
