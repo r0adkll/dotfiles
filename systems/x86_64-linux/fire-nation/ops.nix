@@ -199,6 +199,7 @@ in
         "tailscaled"
         "crowdsec"
         "crowdsec-firewall-bouncer"
+        "zfs-health-check"
       ]
       (_: {
         inherit onFailure;

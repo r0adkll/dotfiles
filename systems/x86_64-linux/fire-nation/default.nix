@@ -82,6 +82,7 @@ in
         enable = true;
         discordWebhookUrlFile = "/run/secrets/discord/zfs-webhook";
         discordAdminRoleId = "1256258047639158877";
+        pools = zfs_pools;
       };
     };
   };
@@ -182,9 +183,7 @@ in
 
     secrets."crowdsec/bouncer-api-key" = { };
     secrets."samba/cookie-jar" = { };
-    secrets."discord/zfs-webhook" = {
-      owner = config.systemd.services.zfs-health-check.serviceConfig.User;
-    };
+    secrets."discord/zfs-webhook" = { };
   };
 
   users = {

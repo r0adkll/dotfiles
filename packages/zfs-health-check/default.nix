@@ -1,38 +1,19 @@
-{ 
-  stdenv,
-  pkgs,
-  lib,
-  makeWrapper
+{
+  writeShellApplication,
+  zfs,
+  jq,
+  curl,
+  coreutils,
+  gnused,
 }:
-let
-  runtimeDeps = with pkgs; [
+writeShellApplication {
+  name = "zfs-health-check";
+  runtimeInputs = [
     zfs
-    gawk
-    curl
     jq
-    figlet
-    lolcat
+    curl
+    coreutils
+    gnused
   ];
-in
-stdenv.mkDerivation {
-  pname = "zfs-health-check";
-  version = "0.1.0";
-  src = ./scripts;
-  buildInputs = [ makeWrapper ];
-  buildPhase = ''
-  '';
-  installPhase = ''
-    mkdir -p $out/bin
-
-    cp discord-webhook.sh $out/bin
-    cp discord-webhook-data-limit-check.sh $out/bin
-    cp zfs-health-check $out/bin
-
-    patchShebangs $out/bin
-    
-    wrapProgram $out/bin/zfs-health-check \
-      --prefix PATH : ${lib.makeBinPath runtimeDeps}
-  '';
-
-  meta.mainProgram = "zfs-health-check";
+  text = builtins.readFile ./zfs-health-check.sh;
 }
