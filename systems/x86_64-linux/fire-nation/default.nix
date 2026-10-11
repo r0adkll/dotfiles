@@ -33,6 +33,7 @@ in
     ./firenation
     ./services
     ./ops.nix
+    ./gphotos.nix
     inputs.sops-nix.nixosModules.sops
   ];
 

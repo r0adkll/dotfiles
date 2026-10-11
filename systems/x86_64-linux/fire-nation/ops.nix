@@ -49,6 +49,10 @@ let
       # live Postgres files aren't a consistent copy; Immich's own nightly dump in
       # immich/backups (02:00) is what gets restored
       "${config.firenation.paths.state}/immich-db"
+      # a live Google session (signing in again recreates it) and in-flight downloads;
+      # the mirror's markers are what gets backed up
+      "${config.firenation.paths.state}/gphotos/profile"
+      "${config.firenation.paths.state}/gphotos/mirror/tmp"
     ];
     backupPrepareCommand = dumpDatabases;
     pruneOpts = [
