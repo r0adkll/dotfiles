@@ -163,6 +163,7 @@ let
           description = "Series";
           href = site "sonarr";
           url = "http://sonarr:8989";
+          monitor = "http://sonarr:8989/ping";
           widget = {
             type = "sonarr";
             key = ref "sonarr";
@@ -174,6 +175,7 @@ let
           description = "Movies";
           href = site "radarr";
           url = "http://radarr:7878";
+          monitor = "http://radarr:7878/ping";
           widget = {
             type = "radarr";
             key = ref "radarr";
@@ -185,6 +187,7 @@ let
           description = "Music";
           href = site "lidarr";
           url = "http://lidarr:8686";
+          monitor = "http://lidarr:8686/ping";
           widget = {
             type = "lidarr";
             key = ref "lidarr";
@@ -207,6 +210,7 @@ let
           description = "Indexers";
           href = site "prowlarr";
           url = "http://prowlarr:9696";
+          monitor = "http://prowlarr:9696/ping";
           widget = {
             type = "prowlarr";
             key = ref "prowlarr";
@@ -261,8 +265,9 @@ let
     theme = "dark";
     color = "zinc";
     headerStyle = "boxedWidgets";
-    showStatus = true;
-    showStats = true;
+    # Docker-only displays; there is no container integration any more.
+    showStatus = false;
+    showStats = false;
     iconStyle = "theme";
     favicon = "/images/favicon.ico";
     background = {
