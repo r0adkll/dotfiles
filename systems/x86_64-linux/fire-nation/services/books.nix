@@ -12,6 +12,14 @@ in
   firenation.services = {
     # Runs as container root (the runner), so files it writes are r0adkll:media.
     audiobookshelf = {
+      azulon = {
+        enable = true;
+        emoji = "<:audiobookshelf:1256609164235374672>";
+        description = "Audiobooks";
+        strategy = "sso";
+        healthPath = "/ping";
+        order = 2;
+      };
       image = "ghcr.io/advplyr/audiobookshelf:latest";
       identity = "image";
       uid = 0;

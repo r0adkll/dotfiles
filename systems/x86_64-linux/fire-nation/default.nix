@@ -34,6 +34,7 @@ in
     ./services
     ./ops.nix
     ./gphotos.nix
+    ./github-token.nix
     inputs.sops-nix.nixosModules.sops
   ];
 

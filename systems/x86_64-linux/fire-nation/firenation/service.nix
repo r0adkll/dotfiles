@@ -215,6 +215,55 @@ in
       '';
     };
 
+    azulon = {
+      enable = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Offer this service to citizens through Azulon (the service registry).";
+      };
+      name = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Display name; defaults to the service name capitalised.";
+      };
+      emoji = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Discord custom emoji mention, e.g. <:plex:123>.";
+      };
+      description = mkOption {
+        type = types.str;
+        default = "";
+      };
+      strategy = mkOption {
+        type = types.enum [
+          "external"
+          "sso"
+          "linked"
+        ];
+        description = "How a citizen gets access: external (Plex share), sso (Pocket ID), linked (own login, linked by the bot).";
+      };
+      behindAccess = mkOption {
+        type = types.bool;
+        default = false;
+        description = "The hostname is fronted by Cloudflare Access; reconcile audits coverage.";
+      };
+      healthPath = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Path Azulon polls on the service's local port for /status.";
+      };
+      url = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Public URL citizens use; defaults to https://<subdomain>.<domain>.";
+      };
+      order = mkOption {
+        type = types.int;
+        default = 100;
+      };
+    };
+
     extraConfig = mkOption {
       type = types.attrsOf types.anything;
       default = { };

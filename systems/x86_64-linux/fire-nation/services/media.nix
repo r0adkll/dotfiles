@@ -3,6 +3,14 @@
   firenation.services = {
     # Clients find Plex through plex.tv and the LAN port, so it has no proxy route.
     plex = {
+      azulon = {
+        enable = true;
+        emoji = "<:plex:1256609081242681366>";
+        description = "Movies and TV";
+        strategy = "external";
+        url = "https://app.plex.tv";
+        order = 1;
+      };
       image = "ghcr.io/hotio/plex:latest";
       uid = 1009;
       port = 32400;
@@ -60,6 +68,16 @@
     # Seerr is Overseerr's successor. It migrates the Overseerr database on first start, so the
     # service keeps its name, UID, state directory and subdomain.
     overseerr = {
+      azulon = {
+        enable = true;
+        name = "Seerr";
+        emoji = "<:overseerr:1256609472827359322>";
+        description = "Request movies and TV";
+        strategy = "linked";
+        behindAccess = true;
+        healthPath = "/api/v1/status";
+        order = 3;
+      };
       image = "ghcr.io/hotio/seerr:latest";
       uid = 1012;
       port = 5055;
