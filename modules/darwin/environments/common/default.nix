@@ -104,6 +104,7 @@ in
         "firefox"
         "handbrake-app"
         "audacity"
+        "openlogi"
       ];
 
       brews = [ "ffmpeg" ];
