@@ -70,6 +70,10 @@ with lib.r0adkll;
   #   in ["${automount_opts},credentials=/run/secrets/samba/cookie-jar"];
   # };
 
+  # Nix was installed by the Determinate installer, which uses GID 350 rather
+  # than the 30000 that `system.stateVersion = 4` expects.
+  ids.gids.nixbld = 350;
+
   system.primaryUser = "r0adkll";
 
   system.stateVersion = 4;
