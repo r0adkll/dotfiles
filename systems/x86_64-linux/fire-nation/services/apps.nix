@@ -24,6 +24,9 @@ in
     };
 
     azulon = {
+      # v1 bot, retired: the v2 rewrite runs from the Mac during development and replaces
+      # this as a native unit in Azulon phase 6. Disabled so deploys stop restarting it.
+      enable = false;
       image = "ghcr.io/r0adkll/azulon:main";
       identity = "image";
       # the image runs as its node user; secret files must be readable by it
