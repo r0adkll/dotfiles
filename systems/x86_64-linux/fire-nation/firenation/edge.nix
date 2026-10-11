@@ -10,6 +10,17 @@
 let
   cfg = config.firenation;
   routed = lib.filterAttrs (_: s: s.enable && s.access != "none") cfg.services;
+  # host services (firenation.routes), shaped like a private service for route below
+  hostRoutes = lib.mapAttrs' (
+    n: r:
+    lib.nameValuePair "route-${n}" (
+      r
+      // {
+        access = "private";
+        hostPort = r.port;
+      }
+    )
+  ) cfg.routes;
   routePort = import ./route-port.nix lib;
 
   hostOf = s: if s.subdomain == "@" then cfg.domain else "${s.subdomain}.${cfg.domain}";
@@ -90,7 +101,7 @@ in
             resolvers 1.1.1.1 1.0.0.1
           }
 
-          ${lib.concatStringsSep "\n" (lib.mapAttrsToList route routed)}
+          ${lib.concatStringsSep "\n" (lib.mapAttrsToList route (routed // hostRoutes))}
           handle {
             abort
           }

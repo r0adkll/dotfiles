@@ -66,6 +66,30 @@ in
       description = "Ports host services own; no service may use one as its hostPort.";
     };
 
+    routes = mkOption {
+      type = types.attrsOf (
+        types.submodule {
+          options = {
+            subdomain = mkOption { type = types.str; };
+            port = mkOption {
+              type = types.port;
+              description = "Port the host service listens on, on 127.0.0.1.";
+            };
+            auth = mkOption {
+              type = types.bool;
+              default = false;
+              description = "Put the route behind tinyauth (Pocket ID SSO).";
+            };
+          };
+        }
+      );
+      default = { };
+      description = ''
+        Proxy routes to host services that aren't containers. Always private (tailnet/LAN),
+        so they need no DNS record. Their ports are reserved, so no container can take them.
+      '';
+    };
+
     domain = mkOption {
       type = types.str;
       default = "firenation.app";
@@ -154,7 +178,9 @@ in
     assertions = [
       (uniqueBy "uids" (s: if s.identity == "image" then null else s.uid) services)
       (uniqueBy "host ports" (s: s.hostPort) services)
-      (uniqueBy "subdomains" (s: s.subdomain) services)
+      (uniqueBy "subdomains" (s: s.subdomain) (
+        services // lib.mapAttrs' (n: r: lib.nameValuePair "route-${n}" r) cfg.routes
+      ))
     ]
     ++ refsExist "dependsOn" (s: s.dependsOn)
     ++ lib.mapAttrsToList (n: s: {
@@ -180,6 +206,8 @@ in
         || (s.subdomain != null && s.port != null && (s.hostPort != null || s.lanPorts != [ ]));
       message = "firenation.services.${n}: access = ${s.access} needs subdomain, port, and hostPort or lanPorts";
     }) services;
+
+    firenation.reservedPorts = lib.mapAttrsToList (_: r: r.port) cfg.routes;
 
     users.groups.${cfg.media.group}.gid = cfg.media.gid;
     users.users.${cfg.runner} = {
