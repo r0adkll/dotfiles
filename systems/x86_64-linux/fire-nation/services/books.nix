@@ -4,12 +4,9 @@ let
   media = "/mnt/data/media";
   bookdrop = "/mnt/cache/bookdrop";
   ids = import ../firenation/ids.nix { cfg = config.firenation; };
-
-  # LibationCli only reads Settings.json, so tmpfiles rewrites it on every switch.
-  # The folder template matches the library's existing Author/Year - Book N - Title {Narrator} [ASIN].
-  libationSettings = builtins.toJSON {
-    FolderTemplate = "<first author>/<year> - <has series#->Book <series#> - <-has><audible title> {<first narrator>} [<id>]";
-  };
+  # Armarium's staging and per-user Libation state. On the same pool as the audiobooks so a
+  # finished book is renamed into the library atomically (Audiobookshelf never sees a half copy).
+  armariumData = "/mnt/data/armarium";
 in
 {
   firenation.services = {
@@ -30,23 +27,47 @@ in
       ];
     };
 
-    # Downloads the Audible library as m4b straight into Audiobookshelf's folder, whose watcher
-    # imports it. Accounts and the database live in /config. Each run exits whenever its scan
-    # fails, including before any account exists, so add an account with a one-off container:
-    # `podman run --rm -it --user 1019:0 -v /mnt/home/stacks/libation:/config docker.io/rmcrackan/libation:latest LibationCli login-external --libationFiles /config --locale us --account <email>`
-    libation = {
-      image = "docker.io/rmcrackan/libation:latest";
+    # Armarium (github.com/r0adkll/armarium): friends connect their own Audible accounts, pick
+    # books, and Armarium downloads them with its own LibationCli, dedupes against Audiobookshelf,
+    # and moves them into /audiobooks. It signs people in through Pocket ID itself (groups
+    # armarium / armarium-admin), so no tinyauth in front. Replaced the plain libation service.
+    armarium = {
+      image = "ghcr.io/r0adkll/armarium:main";
       identity = "user";
-      uid = 1019;
-      volumes = [ "${media}/audiobooks:/data" ];
-      # scan and download every 30 minutes; the image's default runs once and exits
-      environment.SLEEP_TIME = "30m";
-      # group-writable output, like the PUID/UMASK images, so Audiobookshelf can write beside it
-      extraConfig = {
-        containerConfig.podmanArgs = [ "--umask=0002" ];
-        # a failed scan (no account yet, Audible down) retries later instead of in a tight loop
-        serviceConfig.RestartSec = "5min";
+      uid = 1024;
+      port = 8080;
+      hostPort = 8090;
+      access = "public";
+      subdomain = "armarium";
+      state."" = "/config";
+      volumes = [
+        # the library at the same container path Audiobookshelf uses
+        "${media}/audiobooks:/audiobooks"
+        "${armariumData}:/data"
+      ];
+      dependsOn = [ "audiobookshelf" ];
+      environment = {
+        # the container user has no passwd entry; the JVM and .NET both want a writable home
+        HOME = "/config";
+        ARMARIUM_PUBLIC_URL = "https://armarium.firenation.app";
+        ARMARIUM_LIBRARY_DIR = "/audiobooks";
+        OIDC_ISSUER = "https://firenation.app";
+        OIDC_MEMBER_GROUP = "armarium";
+        OIDC_ADMIN_GROUP = "armarium-admin";
+        ABS_URL = "http://audiobookshelf";
       };
+      # values come from scripts/armarium-setup.sh, which writes them with sops
+      secrets.env = {
+        OIDC_CLIENT_ID = "armarium/oidc-client-id";
+        OIDC_CLIENT_SECRET = "armarium/oidc-client-secret";
+        ABS_API_KEY = "armarium/abs-api-key";
+        ABS_LIBRARY_ID = "armarium/abs-library-id";
+        LIBATION_MASTER_KEY = "armarium/libation-master-key";
+        ARMARIUM_SESSION_SECRET = "armarium/session-secret";
+        DISCORD_WEBHOOK_URL = "armarium/discord-webhook";
+      };
+      # group-writable output so Audiobookshelf (container root = r0adkll:media) can write beside it
+      extraConfig.containerConfig.podmanArgs = [ "--umask=0002" ];
     };
 
     flaresolverr = {
@@ -125,13 +146,10 @@ in
     mode = "2775";
   };
 
-  # A real file, not a mount: a file mounted inside /config leaves an unreadable placeholder
-  # behind for the one-off login container, which mounts only /config.
-  systemd.tmpfiles.settings."21-firenation-libation"."${config.firenation.paths.state}/libation/Settings.json"."f+" =
-    {
-      user = ids.ownerOf config.firenation.services.libation;
-      group = "media";
-      mode = "0640";
-      argument = libationSettings;
-    };
+  # Armarium's staging root, owned by its container user like a state dir would be
+  systemd.tmpfiles.settings."21-firenation-armarium".${armariumData}.d = {
+    user = ids.ownerOf config.firenation.services.armarium;
+    group = "media";
+    mode = "2775";
+  };
 }
