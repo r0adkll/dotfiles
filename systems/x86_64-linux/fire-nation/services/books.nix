@@ -4,8 +4,8 @@ let
   media = "/mnt/data/media";
   bookdrop = "/mnt/cache/bookdrop";
   ids = import ../firenation/ids.nix { cfg = config.firenation; };
-  # Armarium's staging and per-user Libation state. On the same pool as the audiobooks so a
-  # finished book is renamed into the library atomically (Audiobookshelf never sees a half copy).
+  # Armarium's per-user Libation state and temp downloads (staging itself lives inside the
+  # audiobooks folder, see ARMARIUM_STAGING_DIR below)
   armariumData = "/mnt/data/armarium";
 in
 {
@@ -60,6 +60,9 @@ in
         HOME = "/config";
         ARMARIUM_PUBLIC_URL = "https://armarium.firenation.app";
         ARMARIUM_LIBRARY_DIR = "/audiobooks";
+        # staging inside the library mount so a finished book is renamed into place atomically;
+        # Audiobookshelf ignores dot-folders
+        ARMARIUM_STAGING_DIR = "/audiobooks/.armarium";
         OIDC_ISSUER = "https://firenation.app";
         OIDC_MEMBER_GROUP = "citizens";
         OIDC_ADMIN_GROUP = "admin";
