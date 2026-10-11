@@ -1,31 +1,32 @@
 {
-# Snowfall Lib provides a customized `lib` instance with access to your flake's library
-# as well as the libraries available from your flake's inputs.
-lib,
-# An instance of `pkgs` with your overlays and packages applied is also available.
-pkgs,
-# You also have access to your flake's inputs.
-inputs,
+  # Snowfall Lib provides a customized `lib` instance with access to your flake's library
+  # as well as the libraries available from your flake's inputs.
+  lib,
+  # An instance of `pkgs` with your overlays and packages applied is also available.
+  pkgs,
+  # You also have access to your flake's inputs.
+  inputs,
 
-# Additional metadata is provided by Snowfall Lib.
-namespace
-, # The namespace used for your flake, defaulting to "internal" if not set.
-system, # The system architecture for this host (eg. `x86_64-linux`).
-target, # The Snowfall Lib target for this system (eg. `x86_64-iso`).
-format, # A normalized name for the system target (eg. `iso`).
-virtual
-, # A boolean to determine whether this system is a virtual target using nixos-generators.
-systems, # An attribute map of your defined hosts.
+  # Additional metadata is provided by Snowfall Lib.
+  namespace, # The namespace used for your flake, defaulting to "internal" if not set.
+  system, # The system architecture for this host (eg. `x86_64-linux`).
+  target, # The Snowfall Lib target for this system (eg. `x86_64-iso`).
+  format, # A normalized name for the system target (eg. `iso`).
+  virtual, # A boolean to determine whether this system is a virtual target using nixos-generators.
+  systems, # An attribute map of your defined hosts.
 
-# All other arguments come from the system system.
-config, ... }:
+  # All other arguments come from the system system.
+  config,
+  ...
+}:
 let
   hostname = "fire-nation";
   zfs_pools = [
     "ember-island" # raidz0 SSD Cache  - /mnt/cache
     "boiling-rock" # raidz2 Media Tank - /mnt/data
   ];
-in {
+in
+{
   imports = [
     ./hardware-configuration.nix
     ./file-systems.nix
@@ -117,7 +118,11 @@ in {
     enableIPv6 = false;
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 80 443 8123 ];
+      allowedTCPPorts = [
+        80
+        443
+        8123
+      ];
     };
   };
 
@@ -196,8 +201,9 @@ in {
       inherit user group;
       mode = "0600";
     };
-    "/etc/crowdsec/config.yaml"."L+".argument =
-      "${(pkgs.formats.yaml { }).generate "crowdsec.yaml" settings.general}";
+    "/etc/crowdsec/config.yaml"."L+".argument = "${(pkgs.formats.yaml { }).generate "crowdsec.yaml"
+      settings.general
+    }";
   };
 
   # Registers the bouncer's sops key with the local API, once; stands in for
@@ -208,7 +214,10 @@ in {
     requires = [ "crowdsec.service" ];
     before = [ "crowdsec-firewall-bouncer.service" ];
     requiredBy = [ "crowdsec-firewall-bouncer.service" ];
-    path = [ config.services.crowdsec.package pkgs.jq ];
+    path = [
+      config.services.crowdsec.package
+      pkgs.jq
+    ];
     script = ''
       if ! cscli bouncers list -o json | jq -e 'any(.[]?; .name == "crowdsec-firewall-bouncer")' >/dev/null; then
         cscli bouncers add crowdsec-firewall-bouncer --key "$(cat "$CREDENTIALS_DIRECTORY/key")"
@@ -222,7 +231,6 @@ in {
       LoadCredential = "key:${config.sops.secrets."crowdsec/bouncer-api-key".path}";
     };
   };
-
 
   # Program Configurations
   programs = {

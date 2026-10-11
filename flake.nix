@@ -42,8 +42,16 @@
     };
   };
 
-  outputs = { self, snowfall-lib, treefmt-nix, sops-nix
-    , nixpkgs-unstable, systems, ... }@inputs:
+  outputs =
+    {
+      self,
+      snowfall-lib,
+      treefmt-nix,
+      sops-nix,
+      nixpkgs-unstable,
+      systems,
+      ...
+    }@inputs:
     let
       lib = snowfall-lib.mkLib {
         inherit inputs;
@@ -59,25 +67,30 @@
         };
       };
 
-      eachSystem = f:
-        nixpkgs-unstable.lib.genAttrs (import systems)
-        (system: f nixpkgs-unstable.legacyPackages.${system});
+      eachSystem =
+        f:
+        nixpkgs-unstable.lib.genAttrs (import systems) (
+          system: f nixpkgs-unstable.legacyPackages.${system}
+        );
 
-      treefmtEval = eachSystem (pkgs:
+      treefmtEval = eachSystem (
+        pkgs:
         treefmt-nix.lib.evalModule pkgs (pkgs: {
           projectRootFile = "flake.nix";
           settings.global.excludes = [ "./result/**" ];
 
           programs.nixfmt-rfc-style.enable = true; # *.nix
           programs.black.enable = true; # *.py
-        }));
+        })
+      );
 
       flake = lib.mkFlake {
 
-        channels-config = { allowUnfree = true; };
+        channels-config = {
+          allowUnfree = true;
+        };
 
-        formatter =
-          eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
+        formatter = eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
 
         checks = eachSystem (pkgs: {
           formatting = treefmtEval.${pkgs.system}.config.build.check self;
@@ -119,10 +132,14 @@
 
       # Fleet MDM enforces the device name as the hardware serial, so alias the
       # serial to the readable host name to keep hostname-based rebuilds working.
-      hostAliases = { JF0VV2XVW7 = "dh-rddt"; };
-    in flake // {
-      darwinConfigurations = flake.darwinConfigurations
-        // builtins.mapAttrs (_: target: flake.darwinConfigurations.${target})
-        hostAliases;
+      hostAliases = {
+        JF0VV2XVW7 = "dh-rddt";
+      };
+    in
+    flake
+    // {
+      darwinConfigurations =
+        flake.darwinConfigurations
+        // builtins.mapAttrs (_: target: flake.darwinConfigurations.${target}) hostAliases;
     };
 }
