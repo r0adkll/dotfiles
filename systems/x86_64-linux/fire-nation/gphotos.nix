@@ -185,6 +185,10 @@ in
         "notify-discord@%n.service"
         "gphotos-login-trigger.service"
       ];
+      # A sync can run for hours, and a oneshot's start job lasts the whole run; restarting
+      # it on deploy would discard the run and hold the switch (and comin) until it ended.
+      # A running sync finishes on the old config; the next run picks up the new one.
+      restartIfChanged = false;
       environment.HOME = state;
       serviceConfig = hardening // {
         Type = "oneshot";

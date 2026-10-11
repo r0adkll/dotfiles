@@ -20,6 +20,7 @@ The home server: NixOS 26.05 on Intel, with ZFS. Everything it runs is declared 
   - `gphotos-sync` runs nightly. It scrapes the website with gphotos-cdp (`packages/gphotos-cdp`). Its hook uploads each file to Immich, then replaces the file with a `.immich` marker, so Immich holds the only copy.
   - When Google's session expires, `gphotos-login` serves a Chromium sign-in page at `gphotos.firenation.app` and restarts the sync after sign-in.
   - When Google changes its site and breaks the scraper, bump the fork's pinned commit.
+  - A deploy leaves a running sync alone (`restartIfChanged = false`), so a change to it takes effect on the next run.
 - **DNS** is code: `firenation/dns.nix`, applied with `nix run .#dns -- preview|push` from the repo root on the Mac. Pushing changes the public zone, so get the user's go-ahead.
 - **Deploys:** comin; see the root `AGENTS.md`. A manual `nh os switch` in `~/.config/nixos` on the server still works for debugging, and the next comin deploy replaces it.
 - **Backups:** restic snapshots `/mnt/home/stacks` and `/var/lib/tailscale` nightly, to `cookie-jar` (the rPi share, 03:00) and Cloudflare R2 (03:30), configured in `ops.nix`. Use `sudo restic-cookie-jar …` or `sudo restic-r2 …`.
