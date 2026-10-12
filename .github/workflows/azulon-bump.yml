@@ -1,0 +1,43 @@
+name: Azulon bump
+
+# Opens (or refreshes) a PR when Azulon's main is ahead of the `azulon` flake input.
+# Deploy with `scripts/deploy-to-fire-nation.sh` in r0adkll/Azulon, which also keeps
+# testing-fire-nation on top of main and closes this PR. Merging the PR here works too
+# (squash, for the signed-commit rule) but leaves testing-fire-nation behind main.
+#
+# Needs: repo secret AZULON_READ_TOKEN (read-only token for the private Azulon repo) and
+# "Allow GitHub Actions to create and approve pull requests" in this repo's settings.
+
+on:
+  schedule:
+    - cron: '17 13 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            access-tokens = github.com=${{ secrets.AZULON_READ_TOKEN }}
+      - uses: DeterminateSystems/update-flake-lock@main
+        with:
+          inputs: azulon
+          branch: azulon-bump
+          pr-title: 'fire-nation: update Azulon'
+          pr-labels: azulon-bump
+          commit-msg: 'fire-nation: update Azulon'
+          pr-body: |
+            Azulon's main is ahead of the locked `azulon` input.
+
+            ```
+            {{ env.GIT_COMMIT_MESSAGE }}
+            ```
+
+            **Deploy** with `scripts/deploy-to-fire-nation.sh` in r0adkll/Azulon: it checks CI, evaluates the host, signs the commit, keeps `testing-fire-nation` on top of `main`, and closes this PR.
