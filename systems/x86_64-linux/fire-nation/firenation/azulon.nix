@@ -84,12 +84,7 @@ in
     cloudflare = mkOption {
       type = types.nullOr (types.attrsOf types.anything);
       default = null;
-      description = "accountId, accessAppIds, legacyAccessGroupId; null disables the Access audit.";
-    };
-    legacyApplicationsChannel = mkOption {
-      type = types.nullOr types.str;
-      default = null;
-      description = "Channel with the v1 bot's application embeds, read by `azulon import`.";
+      description = "accountId and accessAppIds; null disables the Access audit.";
     };
   };
 
@@ -118,11 +113,6 @@ in
         plex.serverName = az.plexServerName;
         seerr.internalUrl = "http://127.0.0.1:${toString (routePort cfg.services.${az.seerrService})}";
         cloudflare = az.cloudflare;
-        import =
-          if az.legacyApplicationsChannel == null then
-            null
-          else
-            { legacyApplicationsChannel = az.legacyApplicationsChannel; };
         http = {
           port = az.port;
           bind = "127.0.0.1";
@@ -158,24 +148,5 @@ in
       port = az.port;
     };
 
-    # `azulon-import` / `azulon-import-apply`: the one-time migration, with the unit's env and credentials.
-    systemd.services =
-      let
-        base = config.systemd.services.azulon;
-        oneshot = args: {
-          description = "Azulon one-time import (${args})";
-          environment = base.environment;
-          serviceConfig = base.serviceConfig // {
-            Type = "oneshot";
-            Restart = "no";
-            ExecStart = "${lib.getExe config.services.azulon.package} import ${args}";
-            StandardOutput = "journal+console";
-          };
-        };
-      in
-      {
-        azulon-import = oneshot "";
-        azulon-import-apply = oneshot "--apply";
-      };
   };
 }

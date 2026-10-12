@@ -42,7 +42,7 @@
     };
     # Azulon v2: the Discord bot and admin console, a native unit on fire-nation
     azulon = {
-      url = "github:r0adkll/Azulon/v2";
+      url = "github:r0adkll/Azulon";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

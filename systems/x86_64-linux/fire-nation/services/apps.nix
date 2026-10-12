@@ -95,8 +95,6 @@
     cloudflare = {
       accountId = "e3385a3a5652e8459c1cc28ecd5d2466";
       accessAppIds = [ ];
-      legacyAccessGroupId = "ccef5a7d-1050-40eb-85d3-967878a24a1e";
     };
-    legacyApplicationsChannel = "1256624897807876118";
   };
 }
