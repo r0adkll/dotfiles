@@ -42,15 +42,19 @@ let
       # gphotos-cdp sets the file's mtime to the photo's date
       date=$(date -u -r "$file" +%Y-%m-%dT%H:%M:%S.000Z)
       checksum=$(sha1sum "$file" | cut -d' ' -f1)
+      # -F reads `,` and `;` in a bare @path as separators (curl exits 26), so quote the
+      # path in curl's syntax, and send the text fields verbatim with --form-string
+      quoted=''${file//\\/\\\\}
+      quoted=''${quoted//\"/\\\"}
       # the key goes in through --config on stdin, never argv
       response=$(
         printf 'header = "x-api-key: %s"\n' "$(<"$CREDENTIALS_DIRECTORY/immich-api-key")" |
           curl --config - -fsS \
             -H "x-immich-checksum: $checksum" \
-            -F "assetData=@$file" \
-            -F "filename=$(basename "$file")" \
-            -F "fileCreatedAt=$date" \
-            -F "fileModifiedAt=$date" \
+            -F "assetData=@\"$quoted\"" \
+            --form-string "filename=$(basename "$file")" \
+            --form-string "fileCreatedAt=$date" \
+            --form-string "fileModifiedAt=$date" \
             "http://127.0.0.1:${toString cfg.services.immich.hostPort}/api/assets"
       )
       status=$(jq -r .status <<<"$response")
