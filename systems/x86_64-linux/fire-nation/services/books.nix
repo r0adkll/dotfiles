@@ -42,7 +42,7 @@ in
     # setting (Audiobookshelf, sign-in, Discord, the folder template) lives encrypted in its own
     # database, not here. Replaced the plain libation service.
     armarium = {
-      image = "ghcr.io/r0adkll/armarium:0.1.0";
+      image = "ghcr.io/r0adkll/armarium:0.1.1";
       identity = "user";
       uid = 1024;
       port = 8080;
