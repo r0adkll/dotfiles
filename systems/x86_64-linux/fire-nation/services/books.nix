@@ -116,10 +116,10 @@ in
 
     # Grimmory, Booklore's community successor (same database, paths and USER_ID/GROUP_ID).
     # Its MariaDB schema is still named booklore: MariaDB can't rename a database in place.
+    # The public route is fronted by Cloudflare Access, ahead of Grimmory's own sign-in.
     grimmory = {
       azulon = {
-        # Hidden from citizens until the route is public behind Cloudflare Access.
-        enable = false;
+        enable = true;
         description = "Ebook library";
         strategy = "sso";
         behindAccess = true;
@@ -130,7 +130,7 @@ in
       uid = 1015;
       port = 6060;
       hostPort = 6060;
-      access = "private";
+      access = "public";
       subdomain = "grimmory";
       state."" = "/app/data";
       volumes = [
