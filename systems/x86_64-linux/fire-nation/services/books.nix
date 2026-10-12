@@ -71,7 +71,8 @@ in
 
     shelfmark = {
       azulon = {
-        enable = true;
+        # Hidden from citizens until the route is public behind Cloudflare Access.
+        enable = false;
         description = "Ebook requests";
         strategy = "sso";
         behindAccess = true;
@@ -91,7 +92,8 @@ in
     # Its MariaDB schema is still named booklore: MariaDB can't rename a database in place.
     grimmory = {
       azulon = {
-        enable = true;
+        # Hidden from citizens until the route is public behind Cloudflare Access.
+        enable = false;
         description = "Ebook library";
         strategy = "sso";
         behindAccess = true;
