@@ -40,8 +40,17 @@ in
     # and moves them into /audiobooks. It signs people in itself, so no tinyauth in front: built-in
     # accounts plus Pocket ID, both set up in its web UI (Server page). Since 0.1.0 every admin
     # setting (Audiobookshelf, sign-in, Discord, the folder template) lives encrypted in its own
-    # database, not here. Replaced the plain libation service.
+    # database, not here. Replaced the plain libation service. The public route is fronted by
+    # Cloudflare Access, ahead of Armarium's own sign-in.
     armarium = {
+      azulon = {
+        enable = true;
+        description = "Audible downloads";
+        strategy = "sso";
+        behindAccess = true;
+        healthPath = "/healthz";
+        order = 6;
+      };
       image = "ghcr.io/r0adkll/armarium:0.1.1";
       identity = "user";
       uid = 1024;
