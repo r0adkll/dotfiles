@@ -70,6 +70,14 @@ in
     };
 
     shelfmark = {
+      azulon = {
+        enable = true;
+        description = "Ebook requests";
+        strategy = "sso";
+        behindAccess = true;
+        healthPath = "/";
+        order = 5;
+      };
       image = "ghcr.io/calibrain/shelfmark:latest";
       uid = 1014;
       port = 8084;
@@ -82,6 +90,14 @@ in
     # Grimmory, Booklore's community successor (same database, paths and USER_ID/GROUP_ID).
     # Its MariaDB schema is still named booklore: MariaDB can't rename a database in place.
     grimmory = {
+      azulon = {
+        enable = true;
+        description = "Ebook library";
+        strategy = "sso";
+        behindAccess = true;
+        healthPath = "/";
+        order = 4;
+      };
       image = "docker.io/grimmory/grimmory:latest";
       uid = 1015;
       port = 6060;
