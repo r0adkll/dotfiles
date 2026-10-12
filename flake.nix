@@ -33,6 +33,8 @@
     };
 
     nix-inspect.url = "github:bluskript/nix-inspect";
+    # declared so the lock pins GitHub, not the local registry's store path (which GC can delete)
+    systems.url = "github:nix-systems/default";
 
     # FireNation: rootless Podman quadlets, pull-based deploys
     quadlet-nix.url = "github:SEIAROTg/quadlet-nix";
