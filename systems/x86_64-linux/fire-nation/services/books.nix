@@ -37,11 +37,12 @@ in
 
     # Armarium (github.com/r0adkll/armarium): friends connect their own Audible accounts, pick
     # books, and Armarium downloads them with its own LibationCli, dedupes against Audiobookshelf,
-    # and moves them into /audiobooks. It signs people in through Pocket ID itself, using the
-    # existing groups (citizens = members, admin = admins), so no tinyauth in front.
-    # Replaced the plain libation service.
+    # and moves them into /audiobooks. It signs people in itself, so no tinyauth in front: built-in
+    # accounts plus Pocket ID, both set up in its web UI (Server page). Since 0.1.0 every admin
+    # setting (Audiobookshelf, sign-in, Discord, the folder template) lives encrypted in its own
+    # database, not here. Replaced the plain libation service.
     armarium = {
-      image = "ghcr.io/r0adkll/armarium:main";
+      image = "ghcr.io/r0adkll/armarium:0.1.0";
       identity = "user";
       uid = 1024;
       port = 8080;
@@ -63,25 +64,11 @@ in
         # staging inside the library mount so a finished book is renamed into place atomically;
         # Audiobookshelf ignores dot-folders
         ARMARIUM_STAGING_DIR = "/audiobooks/.armarium";
-        # the library's existing Author/Year - Book N - Title {Narrator} [ASIN] layout, from the old
-        # libation service, so new books sit beside the old ones in the same convention
-        ARMARIUM_FOLDER_TEMPLATE = "<first author>/<year> - <has series#->Book <series#> - <-has><audible title> {<first narrator>} [<id>]";
-        OIDC_ISSUER = "https://firenation.app";
-        OIDC_MEMBER_GROUP = "citizens";
-        OIDC_ADMIN_GROUP = "admin";
-        ABS_URL = "http://audiobookshelf";
-        # for "Open in Audiobookshelf" links in the UI
-        ABS_PUBLIC_URL = "https://bookshelf.firenation.app";
       };
       # values come from scripts/armarium-setup.sh, which writes them with sops
       secrets.env = {
-        OIDC_CLIENT_ID = "armarium/oidc-client-id";
-        OIDC_CLIENT_SECRET = "armarium/oidc-client-secret";
-        ABS_API_KEY = "armarium/abs-api-key";
-        ABS_LIBRARY_ID = "armarium/abs-library-id";
         LIBATION_MASTER_KEY = "armarium/libation-master-key";
         ARMARIUM_SESSION_SECRET = "armarium/session-secret";
-        DISCORD_WEBHOOK_URL = "armarium/discord-webhook";
       };
       # group-writable output so Audiobookshelf (container root = r0adkll:media) can write beside it
       extraConfig.containerConfig.podmanArgs = [ "--umask=0002" ];
