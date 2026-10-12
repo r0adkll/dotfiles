@@ -63,6 +63,9 @@ in
         # staging inside the library mount so a finished book is renamed into place atomically;
         # Audiobookshelf ignores dot-folders
         ARMARIUM_STAGING_DIR = "/audiobooks/.armarium";
+        # the library's existing Author/Year - Book N - Title {Narrator} [ASIN] layout, from the old
+        # libation service, so new books sit beside the old ones in the same convention
+        ARMARIUM_FOLDER_TEMPLATE = "<first author>/<year> - <has series#->Book <series#> - <-has><audible title> {<first narrator>} [<id>]";
         OIDC_ISSUER = "https://firenation.app";
         OIDC_MEMBER_GROUP = "citizens";
         OIDC_ADMIN_GROUP = "admin";
