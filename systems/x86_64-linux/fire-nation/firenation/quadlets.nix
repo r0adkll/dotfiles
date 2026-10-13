@@ -72,6 +72,9 @@ let
           Requires = deps;
           After = deps;
         };
+      # Apps that don't handle SIGTERM (the JVM, most Node images) exit 128+15 when a deploy
+      # stops them; without this every restart counts as a failure and fires OnFailure.
+      serviceConfig.SuccessExitStatus = "143";
     } s.extraConfig;
 
   networkNames = lib.unique (
