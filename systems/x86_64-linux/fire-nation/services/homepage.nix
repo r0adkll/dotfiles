@@ -84,7 +84,7 @@ let
           name = "Audiobookshelf";
           icon = "audiobookshelf.png";
           description = "Audiobooks";
-          href = site "bookshelf";
+          href = site "abs";
           url = "http://audiobookshelf:80";
           widget = {
             type = "audiobookshelf";

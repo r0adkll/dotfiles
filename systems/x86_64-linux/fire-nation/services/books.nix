@@ -26,7 +26,7 @@ in
       port = 80;
       hostPort = 13378;
       access = "public";
-      subdomain = "bookshelf";
+      subdomain = "abs";
       cache."" = "/metadata";
       volumes = [
         "${media}/audiobooks:/audiobooks"
