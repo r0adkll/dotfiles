@@ -51,7 +51,7 @@ in
         healthPath = "/healthz";
         order = 6;
       };
-      image = "ghcr.io/r0adkll/armarium:0.1.1";
+      image = "ghcr.io/r0adkll/armarium:0.1.2";
       identity = "user";
       uid = 1024;
       port = 8080;
