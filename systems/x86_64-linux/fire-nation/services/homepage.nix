@@ -39,7 +39,11 @@ let
         inherit icon description href;
         siteMonitor = monitor;
       }
-      // pkgs.lib.optionalAttrs (widget != null) { widget = widget // { inherit url; }; };
+      // pkgs.lib.optionalAttrs (widget != null) {
+        widget = widget // {
+          inherit url;
+        };
+      };
     };
 
   site = host: "https://${host}.firenation.app";
@@ -412,9 +416,7 @@ let
   configDir = pkgs.runCommand "homepage-config" { } (
     "mkdir $out\n"
     + pkgs.lib.concatStrings (
-      pkgs.lib.mapAttrsToList (
-        name: text: "cp ${pkgs.writeText name text} $out/${name}\n"
-      ) configFiles
+      pkgs.lib.mapAttrsToList (name: text: "cp ${pkgs.writeText name text} $out/${name}\n") configFiles
     )
   );
 in
