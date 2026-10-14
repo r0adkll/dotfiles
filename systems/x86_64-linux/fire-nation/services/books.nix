@@ -49,6 +49,7 @@ in
     armarium = {
       azulon = {
         enable = true;
+        emoji = "<:armarium:1559772128847462460>";
         description = "Audible downloads";
         strategy = "sso";
         behindAccess = true;
@@ -124,6 +125,7 @@ in
     grimmory = {
       azulon = {
         enable = true;
+        emoji = "<:grimmory:1559772077249007717>";
         description = "Ebook library";
         strategy = "sso";
         behindAccess = true;
