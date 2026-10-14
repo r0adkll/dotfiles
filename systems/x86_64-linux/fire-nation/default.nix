@@ -241,10 +241,11 @@ in
     }";
   };
 
-  # Registers the bouncer's sops key with the local API, once; stands in for
-  # the module's registerBouncer (see the bouncer config above)
+  # Registers each bouncer's sops key with the local API, once; stands in for
+  # the module's registerBouncer (see the bouncer config above). The Caddy bouncer
+  # is the edge's (firenation/edge.nix).
   systemd.services.crowdsec-bouncer-enroll = {
-    description = "Register the firewall bouncer with the local CrowdSec API";
+    description = "Register the firewall and Caddy bouncers with the local CrowdSec API";
     after = [ "crowdsec.service" ];
     requires = [ "crowdsec.service" ];
     before = [ "crowdsec-firewall-bouncer.service" ];
@@ -254,16 +255,23 @@ in
       pkgs.jq
     ];
     script = ''
-      if ! cscli bouncers list -o json | jq -e 'any(.[]?; .name == "crowdsec-firewall-bouncer")' >/dev/null; then
-        cscli bouncers add crowdsec-firewall-bouncer --key "$(cat "$CREDENTIALS_DIRECTORY/key")"
-      fi
+      enroll() {
+        if ! cscli bouncers list -o json | jq -e --arg n "$1" 'any(.[]?; .name == $n)' >/dev/null; then
+          cscli bouncers add "$1" --key "$(cat "$CREDENTIALS_DIRECTORY/$2")"
+        fi
+      }
+      enroll crowdsec-firewall-bouncer key
+      enroll caddy-bouncer caddy-key
     '';
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
       User = config.services.crowdsec.user;
       Group = config.services.crowdsec.group;
-      LoadCredential = "key:${config.sops.secrets."crowdsec/bouncer-api-key".path}";
+      LoadCredential = [
+        "key:${config.sops.secrets."crowdsec/bouncer-api-key".path}"
+        "caddy-key:${config.sops.secrets."crowdsec/caddy-bouncer-key".path}"
+      ];
     };
   };
 

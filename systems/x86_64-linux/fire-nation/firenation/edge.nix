@@ -34,6 +34,10 @@ let
         @${id name}_outside not client_ip private_ranges 100.64.0.0/10
             respond @${id name}_outside 403
       ''
+    }${
+      lib.optionalString (s.access == "public") ''
+        crowdsec
+      ''
     }${lib.optionalString s.auth ''
       forward_auth 127.0.0.1:${toString cfg.services.tinyauth.hostPort} {
             uri /api/auth/caddy
@@ -77,14 +81,26 @@ in
       enable = true;
       email = cfg.edge.acmeEmail;
       package = pkgs.caddy.withPlugins {
-        plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
-        hash = "sha256-dQvk6ezY6TQ1J7PjhCXnThF/SqVgPwBO8/RXzHCY+js=";
+        plugins = [
+          "github.com/caddy-dns/cloudflare@v0.2.4"
+          # the module root, not /http, so withPlugins' install check can find it
+          "github.com/hslatman/caddy-crowdsec-bouncer@v0.14.1"
+        ];
+        hash = "sha256-X67gVAzX3E1yvaKQcZMZy/y9ez1OJ1QerK9W9Cks89Q=";
       };
       environmentFile = config.sops.templates."caddy.env".path;
+      # CrowdSec's bans are on the visitor's IP (its Caddy parser reads client_ip), which the
+      # firewall bouncer never sees behind Cloudflare; the `crowdsec` handler on public
+      # routes enforces them here. Caddy still starts if the local API is down
+      # (enable_hard_fails is off); it pulls decisions every 60s.
       globalConfig = ''
         servers {
           trusted_proxies static ${lib.concatStringsSep " " cloudflareRanges}
           client_ip_headers CF-Connecting-IP X-Forwarded-For
+        }
+        crowdsec {
+          api_url http://${config.services.crowdsec.settings.general.api.server.listen_uri}
+          api_key {env.CROWDSEC_API_KEY}
         }
       '';
       virtualHosts."${cfg.domain}, *.${cfg.domain}" = {
@@ -109,9 +125,20 @@ in
     };
 
     sops.secrets."cloudflare/dnscontrol/api-token" = { };
+    sops.secrets."crowdsec/caddy-bouncer-key" = { };
     sops.templates."caddy.env" = {
       owner = config.services.caddy.user;
-      content = "CF_API_TOKEN=${config.sops.placeholder."cloudflare/dnscontrol/api-token"}\n";
+      content = ''
+        CF_API_TOKEN=${config.sops.placeholder."cloudflare/dnscontrol/api-token"}
+        CROWDSEC_API_KEY=${config.sops.placeholder."crowdsec/caddy-bouncer-key"}
+      '';
+    };
+
+    # crowdsec-bouncer-enroll (default.nix) registers the key; wants, not requires, so a
+    # CrowdSec problem can't take the edge down
+    systemd.services.caddy = {
+      wants = [ "crowdsec-bouncer-enroll.service" ];
+      after = [ "crowdsec-bouncer-enroll.service" ];
     };
 
     # Only Cloudflare (public tier), the LAN and the tailnet (private tier) reach Caddy,
