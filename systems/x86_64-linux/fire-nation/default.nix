@@ -254,10 +254,12 @@ in
       config.services.crowdsec.package
       pkgs.jq
     ];
+    # `bouncers add` prints the key, so its stdout stays out of the journal. It only adds a
+    # missing bouncer: to rotate a key, `cscli bouncers delete <name>` and restart this.
     script = ''
       enroll() {
         if ! cscli bouncers list -o json | jq -e --arg n "$1" 'any(.[]?; .name == $n)' >/dev/null; then
-          cscli bouncers add "$1" --key "$(cat "$CREDENTIALS_DIRECTORY/$2")"
+          cscli bouncers add "$1" --key "$(cat "$CREDENTIALS_DIRECTORY/$2")" >/dev/null
         fi
       }
       enroll crowdsec-firewall-bouncer key
