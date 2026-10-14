@@ -4,3 +4,5 @@ result
 *.tmp.yaml
 # per-machine nix.conf extras (tokens)
 local/
+# Ignore Claude worktrees
+.claude/worktrees
