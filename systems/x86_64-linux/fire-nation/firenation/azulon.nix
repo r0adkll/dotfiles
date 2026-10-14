@@ -82,6 +82,30 @@ in
       default = "overseerr";
       description = "firenation.services entry running Seerr.";
     };
+    passport = {
+      enable = mkEnableOption "the citizen passport page (Azulon design Q64–Q68), public behind Access";
+      subdomain = mkOption {
+        type = types.str;
+        default = "passport";
+      };
+      port = mkOption {
+        type = types.port;
+        default = 7301;
+      };
+      accessTeam = mkOption {
+        type = types.str;
+        default = "r0adkll";
+        description = "Cloudflare Zero Trust team name (<team>.cloudflareaccess.com).";
+      };
+      accessAud = mkOption {
+        type = types.str;
+        description = "Audience tag of the passport's Access application.";
+      };
+      oidcClientId = mkOption {
+        type = types.str;
+        description = "Pocket ID OIDC client id of \"Azulon passport\".";
+      };
+    };
     cloudflare = mkOption {
       type = types.nullOr (types.attrsOf types.anything);
       default = null;
@@ -114,6 +138,19 @@ in
         plex.serverName = az.plexServerName;
         seerr.internalUrl = "http://127.0.0.1:${toString (routePort cfg.services.${az.seerrService})}";
         cloudflare = az.cloudflare;
+        passport =
+          if az.passport.enable then
+            {
+              url = "https://${az.passport.subdomain}.${cfg.domain}";
+              inherit (az.passport)
+                port
+                accessTeam
+                accessAud
+                oidcClientId
+                ;
+            }
+          else
+            null;
         http = {
           port = az.port;
           bind = "127.0.0.1";
@@ -126,6 +163,10 @@ in
         "plex-token" = secret "plex-token";
         "seerr-api-key" = secret "seerr-api-key";
         "webhook-secret" = secret "webhook-secret";
+      }
+      // lib.optionalAttrs az.passport.enable {
+        "passport-oidc-client-secret" = secret "passport-oidc-client-secret";
+        "passport-session-key" = secret "passport-session-key";
       }
       // lib.optionalAttrs (az.cloudflare != null) {
         # Access edit scope: the audit plus per-citizen app tokens (Azulon design Q55).
@@ -142,6 +183,10 @@ in
         "azulon/seerr-api-key"
         "azulon/webhook-secret"
       ]
+      ++ lib.optionals az.passport.enable [
+        "azulon/passport-oidc-client-secret"
+        "azulon/passport-session-key"
+      ]
       ++ lib.optionals (az.cloudflare != null) [
         "azulon/cloudflare-access-token"
         "azulon/token-encryption-key"
@@ -152,6 +197,13 @@ in
     firenation.routes.azulon = {
       subdomain = az.subdomain;
       port = az.port;
+    };
+    # The passport page: public, behind its own Access application; Azulon verifies the
+    # Access JWT and runs its own Pocket ID login (design Q65).
+    firenation.routes.azulon-passport = lib.mkIf az.passport.enable {
+      subdomain = az.passport.subdomain;
+      port = az.passport.port;
+      access = "public";
     };
 
   };

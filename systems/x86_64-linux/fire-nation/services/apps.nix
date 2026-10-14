@@ -92,6 +92,13 @@
     };
     serverEmoji = "<:firenation:1256609498638848040>";
     pocketIdInternalUrl = "http://127.0.0.1:1411";
+    # Citizen passport page at passport.firenation.app (Azulon design Q64–Q68): its own
+    # Access application and Pocket ID client, both from Azulon's scripts/passport-wizard.sh.
+    passport = {
+      enable = true;
+      accessAud = "2704852ad8826261c922df53e37cf3a5e777fcfd47e34b0df751ea47f953d769";
+      oidcClientId = "df908484-6ef0-4646-8fa2-feef1ad66142";
+    };
     cloudflare = {
       accountId = "e3385a3a5652e8459c1cc28ecd5d2466";
       accessAppIds = [

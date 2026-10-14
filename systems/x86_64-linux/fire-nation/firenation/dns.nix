@@ -6,7 +6,11 @@
 { config, lib, ... }:
 let
   cfg = config.firenation;
-  public = lib.filterAttrs (_: s: s.enable && s.access == "public") cfg.services;
+  public =
+    lib.filterAttrs (_: s: s.enable && s.access == "public") cfg.services
+    // lib.mapAttrs' (n: r: lib.nameValuePair "route-${n}" r) (
+      lib.filterAttrs (_: r: r.access == "public") cfg.routes
+    );
   label = s: s.subdomain; # "@" is already DNSControl's apex
 in
 {

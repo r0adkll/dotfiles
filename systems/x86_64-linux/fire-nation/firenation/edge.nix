@@ -16,7 +16,6 @@ let
     lib.nameValuePair "route-${n}" (
       r
       // {
-        access = "private";
         hostPort = r.port;
       }
     )

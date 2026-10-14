@@ -81,13 +81,21 @@ in
               default = false;
               description = "Put the route behind tinyauth (Pocket ID SSO).";
             };
+            access = mkOption {
+              type = types.enum [
+                "private"
+                "public"
+              ];
+              default = "private";
+              description = "private: tailnet/LAN only, no DNS record. public: a Cloudflare-proxied record, like a public service.";
+            };
           };
         }
       );
       default = { };
       description = ''
-        Proxy routes to host services that aren't containers. Always private (tailnet/LAN),
-        so they need no DNS record. Their ports are reserved, so no container can take them.
+        Proxy routes to host services that aren't containers. Private (tailnet/LAN) unless
+        `access = "public"`. Their ports are reserved, so no container can take them.
       '';
     };
 
