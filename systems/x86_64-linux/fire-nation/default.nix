@@ -40,6 +40,9 @@ in
 
   firenation.enable = true;
   firenation.edge.enable = true;
+  # Only Let's Encrypt (Caddy's wildcard) may issue for the zone; Cloudflare adds CAA
+  # for its own edge-certificate CAs itself, without a record here
+  firenation.dns.extraRecords = [ ''CAA("@", "issue", "letsencrypt.org")'' ];
   # host services' ports; a service hostPort on one of these fails the build
   firenation.reservedPorts = [
     80 # caddy
