@@ -17,6 +17,10 @@ in
         emoji = "<:audiobookshelf:1256609164235374672>";
         description = "Audiobooks";
         strategy = "sso";
+        # Behind Cloudflare Access since the app-token cutover: browsers sign in with Pocket ID,
+        # apps send the citizen's Azulon-issued service token.
+        behindAccess = true;
+        appToken = true;
         healthPath = "/ping";
         order = 2;
       };

@@ -248,6 +248,11 @@ in
         default = false;
         description = "The hostname is fronted by Cloudflare Access; reconcile audits coverage.";
       };
+      appToken = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Citizens' apps reach it with their Azulon-issued Cloudflare Access service token.";
+      };
       healthPath = mkOption {
         type = types.nullOr types.str;
         default = null;

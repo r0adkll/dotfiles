@@ -94,7 +94,11 @@
     pocketIdInternalUrl = "http://127.0.0.1:1411";
     cloudflare = {
       accountId = "e3385a3a5652e8459c1cc28ecd5d2466";
-      accessAppIds = [ ];
+      accessAppIds = [
+        "0cd38ffa-c9b4-42d9-a268-655b4cfdb805" # audiobookshelf (abs.)
+      ];
+      # Reusable Service Auth policy "Azulon app tokens"; Azulon owns its include list.
+      appTokenPolicyId = "4c7b71ae-1f04-495f-b972-7ba9fa3a2b23";
     };
   };
 }

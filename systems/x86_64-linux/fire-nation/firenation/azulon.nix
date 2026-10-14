@@ -25,6 +25,7 @@ let
         description
         strategy
         behindAccess
+        appToken
         healthPath
         order
         ;
@@ -84,7 +85,7 @@ in
     cloudflare = mkOption {
       type = types.nullOr (types.attrsOf types.anything);
       default = null;
-      description = "accountId and accessAppIds; null disables the Access audit.";
+      description = "accountId, accessAppIds and appTokenPolicyId; null disables the Access audit and app tokens.";
     };
   };
 
@@ -127,7 +128,9 @@ in
         "webhook-secret" = secret "webhook-secret";
       }
       // lib.optionalAttrs (az.cloudflare != null) {
-        "cloudflare-access-read-token" = secret "cloudflare-access-read-token";
+        # Access edit scope: the audit plus per-citizen app tokens (Azulon design Q55).
+        "cloudflare-access-token" = secret "cloudflare-access-token";
+        "token-encryption-key" = secret "token-encryption-key";
       };
     };
 
@@ -139,7 +142,10 @@ in
         "azulon/seerr-api-key"
         "azulon/webhook-secret"
       ]
-      ++ lib.optional (az.cloudflare != null) "azulon/cloudflare-access-read-token"
+      ++ lib.optionals (az.cloudflare != null) [
+        "azulon/cloudflare-access-token"
+        "azulon/token-encryption-key"
+      ]
     ) (_: { });
 
     # Console (tailnet/LAN) and Seerr's webhook target: https://azulon.<domain>
