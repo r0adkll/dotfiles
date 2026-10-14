@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791946697,
-        "narHash": "sha256-zlWR2AhLv1jUs54ug68QZBJkyoGmKXTUQC1Vmcps+IM=",
+        "lastModified": 1791949965,
+        "narHash": "sha256-oOhSphxm6nnC4uQ8XEAwGNOvUN8nDSzJFJD5fSc+yN4=",
         "owner": "r0adkll",
         "repo": "Azulon",
-        "rev": "f1795339e8a57f534f2c79d39ea4af201bc6292d",
+        "rev": "6dd76ecb114979c0ffd347ad56c9f2896a9a5807",
         "type": "github"
       },
       "original": {
