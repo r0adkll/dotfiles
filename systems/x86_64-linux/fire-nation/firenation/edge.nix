@@ -124,12 +124,14 @@ in
       };
     };
 
-    sops.secrets."cloudflare/dnscontrol/api-token" = { };
+    # fire-nation's own token (Zone DNS Edit on the zone), for Caddy's DNS-01 and
+    # cloudflare-dyndns (dns.nix); DNSControl's stays with `nix run .#dns` on the Mac
+    sops.secrets."cloudflare/fire-nation/api-token" = { };
     sops.secrets."crowdsec/caddy-bouncer-key" = { };
     sops.templates."caddy.env" = {
       owner = config.services.caddy.user;
       content = ''
-        CF_API_TOKEN=${config.sops.placeholder."cloudflare/dnscontrol/api-token"}
+        CF_API_TOKEN=${config.sops.placeholder."cloudflare/fire-nation/api-token"}
         CROWDSEC_API_KEY=${config.sops.placeholder."crowdsec/caddy-bouncer-key"}
       '';
     };

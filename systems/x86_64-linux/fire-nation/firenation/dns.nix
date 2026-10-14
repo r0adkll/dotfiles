@@ -51,10 +51,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # fire-nation's own zone DNS token, shared with Caddy's DNS-01 (edge.nix)
+    sops.secrets."cloudflare/fire-nation/api-token" = { };
     services.cloudflare-dyndns = {
       enable = true;
-      # the zone-scoped DNS token Caddy's DNS-01 and DNSControl already use
-      apiTokenFile = config.sops.secrets."cloudflare/dnscontrol/api-token".path;
+      apiTokenFile = config.sops.secrets."cloudflare/fire-nation/api-token".path;
       domains = lib.mapAttrsToList (_: host) public;
       proxied = true;
       ipv4 = true;
