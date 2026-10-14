@@ -22,6 +22,9 @@
 
     pocket-id = {
       image = "ghcr.io/pocket-id/pocket-id:v2";
+      # --user: the entrypoint execs straight away instead of chowning and su-exec'ing as
+      # root, so the container needs no capabilities (below)
+      identity = "user";
       uid = 1018;
       port = 1411;
       hostPort = 1411;
@@ -39,6 +42,10 @@
       extraConfig.containerConfig = {
         healthCmd = "/app/pocket-id healthcheck";
         healthInterval = "90s";
+        # It writes only /app/data; /tmp and /var/tmp become tmpfs
+        readOnly = true;
+        noNewPrivileges = true;
+        dropCapabilities = [ "all" ];
       };
     };
 
