@@ -158,11 +158,8 @@ in
     enableIPv6 = false;
     firewall = {
       enable = true;
-      allowedTCPPorts = [
-        80
-        443
-        8123
-      ];
+      # 80/443 are opened per source by the edge (firenation/edge.nix)
+      allowedTCPPorts = [ 8123 ];
     };
   };
 

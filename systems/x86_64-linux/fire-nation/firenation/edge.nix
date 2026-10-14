@@ -114,6 +114,19 @@ in
       content = "CF_API_TOKEN=${config.sops.placeholder."cloudflare/dnscontrol/api-token"}\n";
     };
 
+    # Only Cloudflare (public tier), the LAN and the tailnet (private tier) reach Caddy,
+    # so nothing skips Cloudflare's WAF by hitting the home IP directly. These rules run
+    # before nixos-fw's final refuse.
+    networking.firewall = {
+      interfaces.tailscale0.allowedTCPPorts = [
+        80
+        443
+      ];
+      extraCommands = lib.concatMapStrings (src: ''
+        iptables -A nixos-fw -p tcp -s ${src} -m multiport --dports 80,443 -j nixos-fw-accept
+      '') ([ "192.168.1.0/24" ] ++ cloudflareRanges);
+    };
+
     # Same node as the old container: its state is copied to /var/lib/tailscale at cutover.
     services.tailscale = {
       enable = true;
