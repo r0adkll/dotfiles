@@ -25,6 +25,19 @@ let
   hostOf = s: if s.subdomain == "@" then cfg.domain else "${s.subdomain}.${cfg.domain}";
   id = name: lib.replaceStrings [ "-" ] [ "_" ] name;
 
+  # host routes (firenation.routes) have no proxyHeaders
+  upstream =
+    s:
+    let
+      headers = s.proxyHeaders or { };
+    in
+    "reverse_proxy 127.0.0.1:${toString (routePort s)}"
+    + lib.optionalString (headers != { }) (
+      " {\n"
+      + lib.concatStrings (lib.mapAttrsToList (n: v: "        header_up ${n} ${v}\n") headers)
+      + "      }"
+    );
+
   route = name: s: ''
     @${id name} host ${hostOf s}
     handle @${id name} {
@@ -43,7 +56,7 @@ let
             uri /api/auth/caddy
             copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
           }
-    ''}    reverse_proxy 127.0.0.1:${toString (routePort s)}
+    ''}    ${upstream s}
       }
     }
   '';

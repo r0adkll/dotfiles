@@ -94,6 +94,15 @@ in
       description = "Put the route behind tinyauth (Pocket ID SSO).";
     };
 
+    proxyHeaders = mkOption {
+      type = types.attrsOf types.str;
+      default = { };
+      example = {
+        X-Client-IP = "{client_ip}";
+      };
+      description = "Request headers Caddy sets on the way to the app (header_up), replacing any the client sent.";
+    };
+
     media = mkOption {
       type = types.nullOr (
         types.enum [
