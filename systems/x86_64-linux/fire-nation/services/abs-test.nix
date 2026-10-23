@@ -103,7 +103,7 @@ let
       base=http://127.0.0.1:${toString hostPort}
       json='Content-Type: application/json'
 
-      # the first start downloads ffmpeg before the server listens
+      # the unit counts as started before the server listens
       for _ in $(seq 150); do
         curl -fs -o /dev/null "$base/healthcheck" && break
         sleep 2
@@ -174,8 +174,7 @@ in
     # real address (CF-Connecting-IP from a Cloudflare range).
     proxyHeaders.X-Client-IP = "{client_ip}";
     extraConfig = {
-      # It writes only /config and /metadata (ffmpeg 5.1 lands in /config, since it rejects
-      # the image's own); /tmp becomes a tmpfs
+      # It writes only /config and /metadata; /tmp becomes a tmpfs
       containerConfig = {
         readOnly = true;
         noNewPrivileges = true;
