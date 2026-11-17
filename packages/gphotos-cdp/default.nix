@@ -23,6 +23,12 @@ buildGoModule {
 
   vendorHash = "sha256-NOL0Klv+RLGwmvCNatyLaze5a1tPTftYP16pu22OpCs=";
 
+  patches = [
+    # A Google filename with slashes ("9/11/13 - 1") reaches disk as just its last part
+    # ("13 - 1.jpg"), which failed the name check and so the whole sync. Not upstream yet.
+    ./slash-in-filename.patch
+  ];
+
   nativeBuildInputs = lib.optional stdenv.hostPlatform.isLinux makeWrapper;
 
   # On Linux, pin the Chromium it drives; on macOS it finds Google Chrome itself.

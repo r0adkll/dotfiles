@@ -1,0 +1,16 @@
+diff --git a/main.go b/main.go
+index 38a5308..aa5fbe3 100644
+--- a/main.go
++++ b/main.go
+@@ -2576,6 +2576,11 @@ func compareMangled(_s1, _s2 string) bool {
+ 		return true
+ 	}
+ 
++	// Chrome keeps only what follows the last '/' of a name like "9/11/13 - 1"
++	if i := strings.LastIndex(_s1, "/"); i >= 0 && doCompare(_s1[i+1:], _s2) {
++		return true
++	}
++
+ 	// URL-decoding s1 since Google Photos may return URL-encoded filenames
+ 	if decoded, err := url.QueryUnescape(_s1); err == nil {
+ 		return doCompare(decoded, _s2)
